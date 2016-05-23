@@ -14,7 +14,8 @@ public class Coordinate implements Comparable<Coordinate>{
     // declare private class level variables
     private float latitude;
     private float longitude;
-    private DecimalFormat format;
+
+    private final static DecimalFormat format = new DecimalFormat("##.######");
 
     /**
      * Constructor for this class
@@ -31,12 +32,14 @@ public class Coordinate implements Comparable<Coordinate>{
             throw new IllegalArgumentException("The parameters did not pass validation as defined by the CoordinateManager class");
         }
 
-        this.format = new DecimalFormat("##.######");
+    }
+
+    public Coordinate() {
     }
 
     /*
-     * get and set methods
-     */
+         * get and set methods
+         */
     public float getLatitude() {
         return latitude;
     }
