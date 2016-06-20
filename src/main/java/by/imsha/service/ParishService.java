@@ -5,6 +5,7 @@ import by.imsha.repository.ParishRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -32,10 +33,12 @@ public class ParishService {
         return parishRepository.findOne(id);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Parish updateParish(Parish parish){
         return parishRepository.save(parish);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void removeParish(String id){
         parishRepository.delete(id);
     }
