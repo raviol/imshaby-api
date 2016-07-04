@@ -16,9 +16,14 @@ public class Parish {
     private String id;
 
     @NotNull
+    private String userId;
+
+    @NotNull
     private String name;
 
     private String address;
+
+
 
     @NotNull
     private Coordinate gps;
@@ -36,13 +41,33 @@ public class Parish {
 
     private String website;
 
-    @NotNull
-    @Size(min = 8, max = 16, message = "Please enter password with following rules: min letter count - 8, max - 16")
-    private String password;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Parish)) return false;
 
-    @NotNull
-    private String login;
+        Parish parish = (Parish) o;
 
+        if (!city.equals(parish.city)) return false;
+        if (!email.equals(parish.email)) return false;
+        if (!gps.equals(parish.gps)) return false;
+        if (!id.equals(parish.id)) return false;
+        if (!name.equals(parish.name)) return false;
+        if (!userId.equals(parish.userId)) return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id.hashCode();
+        result = 31 * result + userId.hashCode();
+        result = 31 * result + name.hashCode();
+        result = 31 * result + gps.hashCode();
+        result = 31 * result + city.hashCode();
+        result = 31 * result + email.hashCode();
+        return result;
+    }
 
     public String getId() {
         return id;
@@ -109,6 +134,14 @@ public class Parish {
         this.email = email;
     }
 
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
     public String getWebsite() {
         return website;
     }
@@ -117,47 +150,4 @@ public class Parish {
         this.website = website;
     }
 
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getLogin() {
-        return login;
-    }
-
-    public void setLogin(String login) {
-        this.login = login;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (!(o instanceof Parish)) return false;
-
-        Parish parish = (Parish) o;
-        if (!id.equals(parish.id)) return false;
-        if (!city.equals(parish.city)) return false;
-        if (!gps.equals(parish.gps)) return false;
-        if (!login.equals(parish.login)) return false;
-        if (!password.equals(parish.password)) return false;
-        if (!supportPhone.equals(parish.supportPhone)) return false;
-
-        return true;
-    }
-
-    @Override
-    public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + gps.hashCode();
-        result = 31 * result + city.hashCode();
-        result = 31 * result + supportPhone.hashCode();
-        result = 31 * result + password.hashCode();
-        result = 31 * result + login.hashCode();
-        return result;
-    }
 }

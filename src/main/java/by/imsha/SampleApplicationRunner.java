@@ -2,12 +2,30 @@ package by.imsha;
 
 import by.imsha.domain.City;
 import by.imsha.repository.CityRepository;
+import by.imsha.repository.factory.QuerableMongoRepositoryFactoryBean;
+import com.mangofactory.swagger.plugin.EnableSwagger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
+import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
-//@SpringBootApplication
+@SpringBootApplication
+@ComponentScan(basePackages = {"by.imsha", "com.auth"})
+
+@EnableAutoConfiguration(   )  // Sprint Boot Auto Configuration
+@EnableMongoRepositories(
+        repositoryFactoryBeanClass = QuerableMongoRepositoryFactoryBean.class
+)
+@EnableSwagger // auto generation of API docs
+@PropertySources({
+        @PropertySource("classpath:application.properties"),
+        @PropertySource("classpath:auth0.properties")
+})
 public class SampleApplicationRunner implements CommandLineRunner {
 
     @Autowired
@@ -28,6 +46,10 @@ public class SampleApplicationRunner implements CommandLineRunner {
             System.out.println(city);
         }
         System.out.println();
+
+        System.out.println("Query cities with:");
+        this.repository.search(null, null);
+
 
         // fetch an individual customer
         System.out.println("Customer found with findByName('Alice'):");

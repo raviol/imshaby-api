@@ -21,6 +21,16 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>ossrh</id>
+            <name>Repository for snapshots</name>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+        </repository>
+    </repositories>
 
 
     <dependencies>
@@ -28,6 +38,11 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-actuator</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-hateoas</artifactId>
         </dependency>
 
         <!-- web development, including Tomcat and spring-webmvc -->
@@ -61,6 +76,13 @@
             <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.github.rutledgepaulv</groupId>
+            <artifactId>rest-query-engine</artifactId>
+            <version>0.6.3-SNAPSHOT</version>
+        </dependency>
+
+
 
         <!--Auto0 dependency-->
         <dependency>
@@ -86,11 +108,13 @@
         </dependency>
 
 
-
+        <!-- only necessary if you're using the java.util.function.Predicate target type -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
+            <version>2.7.1</version>
         </dependency>
+
 
         <!-- attribute level json comparisons -->
         <dependency>

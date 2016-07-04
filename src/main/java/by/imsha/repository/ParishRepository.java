@@ -9,8 +9,6 @@ import java.util.List;
 /**
  *
  */
-public interface ParishRepository extends MongoRepository<Parish, String>{
-
-    public Parish findByLoginAndPassword(String login, String password);
-
+public interface ParishRepository extends QuerableMongoRepository<Parish, String>{
+    public Parish findByUserId(String userId);
 }
