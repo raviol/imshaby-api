@@ -23,10 +23,19 @@ public class Parish {
 
     private String address;
 
-
-
     @NotNull
     private Coordinate gps;
+
+    public Parish(){}
+
+    public Parish(String userId, String name, Coordinate gps, City city, String supportPhone, String email) {
+        this.userId = userId;
+        this.name = name;
+        this.gps = gps;
+        this.city = city;
+        this.supportPhone = supportPhone;
+        this.email = email;
+    }
 
     @NotNull
     private City city;
@@ -37,6 +46,7 @@ public class Parish {
     private String supportPhone;
 
     @Email
+    @NotNull
     private String email;
 
     private String website;

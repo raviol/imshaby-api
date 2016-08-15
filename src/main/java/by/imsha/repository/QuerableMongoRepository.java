@@ -17,6 +17,6 @@ import java.util.List;
 @NoRepositoryBean
 public interface QuerableMongoRepository<T, ID extends Serializable> extends MongoRepository<T, ID>{
 
-    public Page<T> search(Query query, Pageable pageable);
+    public List<T> search(Query query, Class<T> classEntity);
 
 }

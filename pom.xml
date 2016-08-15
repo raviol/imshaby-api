@@ -109,11 +109,11 @@
 
 
         <!-- only necessary if you're using the java.util.function.Predicate target type -->
-        <dependency>
+    <!--    <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>2.7.1</version>
-        </dependency>
+        </dependency>-->
 
 
         <!-- attribute level json comparisons -->

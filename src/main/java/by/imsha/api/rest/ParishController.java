@@ -16,10 +16,11 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
 
 /**
+ * Parish services
  */
 
 @RestController
-@RequestMapping(value = "/secured/parish")
+@RequestMapping(value = "/api/parish")
 public class ParishController extends AbstractRestHandler {
 
     @Autowired
@@ -71,6 +72,20 @@ public class ParishController extends AbstractRestHandler {
     }
 
 
+    @RequestMapping(value = "/user/{userId}",
+            method = RequestMethod.GET,
+            produces = {"application/json", "application/xml"})
+    @ResponseStatus(HttpStatus.OK)
+    @ResponseBody
+    public Resource<Parish> retrieveParishByUser(@PathVariable("userId") String userId, HttpServletRequest request, HttpServletResponse response){
+        Parish parishByUser = this.parishService.getParishByUser(userId);
+        checkResourceFound(parishByUser);
+        Resource<Parish> parishResource = new Resource<Parish>(parishByUser);
+        parishResource.add(linkTo(methodOn(ParishController.class).retrieveParishByUser(userId,request, response)).withSelfRel());
+        return parishResource;
+    }
+
+
     @RequestMapping(value = "",
             method = RequestMethod.GET,
             consumes = {"application/json", "application/xml"},
@@ -83,7 +98,7 @@ public class ParishController extends AbstractRestHandler {
                                      @RequestParam(value="sort", required = false, defaultValue = "+name") String sorting,
                                HttpServletRequest request, HttpServletResponse response ){
 //        parishService.search(filter);
-        return parishService.search(filter).getContent();
+        return parishService.search(filter, Integer.parseInt(page), Integer.parseInt(perPage), sorting);
     }
 
 }
