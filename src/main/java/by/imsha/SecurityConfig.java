@@ -2,6 +2,7 @@ package by.imsha;
 
 import by.imsha.auth0.Auth0Client;
 import com.auth0.spring.security.api.Auth0SecurityConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.security.SecurityProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,11 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfig extends Auth0SecurityConfig {
 
+
+    @Value("${spring.profiles.active}")
+    private String env;
+
+
     /**
      * Provides Auth0 API access
      */
@@ -41,7 +47,11 @@ public class SecurityConfig extends Auth0SecurityConfig {
         // include some Spring Boot Actuator endpoints to check metrics
         // add others or remove as you choose, this is just a sample config to illustrate
         // most specific rules must come - order is important (see Spring Security docs)
-        http.authorizeRequests().antMatchers(securedRoute).authenticated().antMatchers("/**").permitAll();
+//        if(env.equals("production")){
+        //TODO fix secured authorization
+            http.authorizeRequests().antMatchers(securedRoute).authenticated().antMatchers("/**").permitAll();
+//        }
+
     }
 
 }

@@ -23,6 +23,7 @@ public class LoginController extends AbstractRestHandler {
     @ResponseStatus(HttpStatus.OK)
     public void callback(HttpServletRequest request, HttpServletResponse response) {
         log.info("callback execution...");
+
     }
 
 

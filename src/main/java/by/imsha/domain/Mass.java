@@ -37,6 +37,20 @@ public class Mass {
 
     private short[] days;
 
+    public Mass() {
+    }
+
+    public Mass(String lang, long timestamp, long duration, String parishId,String time, long start, long end, short[] days) {
+        this.lang = lang;
+        this.timestamp = timestamp;
+        this.duration = duration;
+        this.parishId = parishId;
+        this.time = time;
+        this.start = start;
+        this.end = end;
+        this.days = days;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

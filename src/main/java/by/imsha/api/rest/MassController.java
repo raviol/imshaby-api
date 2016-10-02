@@ -83,6 +83,7 @@ public class MassController extends AbstractRestHandler {
         Mass massByUser = this.massService.getMassByParish(parishId);
         checkResourceFound(massByUser);
         Resource<Mass> massResource = new Resource<Mass>(massByUser);
+        // TODO add link to parish, not to self resource
         massResource.add(linkTo(methodOn(MassController.class).retrieveMassByParish(parishId,request, response)).withSelfRel());
         return massResource;
     }

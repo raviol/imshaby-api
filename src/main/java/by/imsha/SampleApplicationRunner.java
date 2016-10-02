@@ -1,7 +1,9 @@
 package by.imsha;
 
 import by.imsha.domain.City;
+import by.imsha.domain.Mass;
 import by.imsha.repository.CityRepository;
+import by.imsha.repository.MassRepository;
 import by.imsha.repository.factory.QuerableMongoRepositoryFactoryBean;
 import com.mangofactory.swagger.plugin.EnableSwagger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +15,11 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-/*
-@SpringBootApplication
+
+import java.util.Calendar;
+
+
+//@SpringBootApplication
 @ComponentScan(basePackages = {"by.imsha", "com.auth"})
 
 @EnableAutoConfiguration(   )  // Sprint Boot Auto Configuration
@@ -25,41 +30,27 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @PropertySources({
         @PropertySource("classpath:application.properties"),
         @PropertySource("classpath:auth0.properties")
-})*/
+})
 public class SampleApplicationRunner implements CommandLineRunner {
 
     @Autowired
     private CityRepository repository;
 
+    @Autowired
+    private MassRepository massRepo;
+
     @Override
     public void run(String... args) throws Exception {
-        this.repository.deleteAll();
 
         // save a couple of customers
-        this.repository.save(new City("Smith"));
-        this.repository.save(new City("Alice"));
-
-        // fetch all customers
-        System.out.println("City found with findAll():");
-        System.out.println("-------------------------------");
-        for (City city : this.repository.findAll()) {
-            System.out.println(city);
-        }
-        System.out.println();
-
-        System.out.println("Query cities with:");
-        this.repository.search(null, null);
-
-
-        // fetch an individual customer
-        System.out.println("Customer found with findByName('Alice'):");
-        System.out.println("--------------------------------");
-        System.out.println(this.repository.findByName("Alice"));
-
-        System.out.println("Customers found with findByName('Smith'):");
-        System.out.println("--------------------------------");
-        System.out.println(this.repository.findByName("Smith"));
-    }
+        Mass mass = new Mass();
+        mass.setDays(new short[]{1,2,3,4});
+        mass.setDuration(60*120);
+        mass.setLang("BY");
+        mass.setParishId("574360fcccbd5297c86047fd");
+        mass.setTime("11:30");
+        this.massRepo.save(mass);
+  }
 
     public static void main(String[] args) throws Exception {
         SpringApplication.run(SampleApplicationRunner.class, args);
