@@ -7,9 +7,8 @@ set -x
 export JAVA_HOME=/etc/alternatives/java_sdk_1.8.0
 export PATH=$JAVA_HOME/bin:$PATH
 export M2=$OPENSHIFT_DATA_DIR/apache-maven-3.3.9/bin
-export MAVEN_OPTS="-Xms384m -Xmx412m --server.port=${OPENSHIFT_DIY_PORT} --server.address=${OPENSHIFT_DIY_IP} --logging.file=${OPENSHIFT_LOG_DIR}app.log --spring.profiles.active=openshift"
-
+export MAVEN_OPTS="-Xms384m -Xmx412m"
 
 cd $OPENSHIFT_REPO_DIR
 
-$M2/mvn spring-boot:run
+$M2/mvn package && java -jar target/*.jar --server.port=${OPENSHIFT_DIY_PORT} --server.address=${OPENSHIFT_DIY_IP} --logging.file=${OPENSHIFT_LOG_DIR}app.log --spring.profiles.active=openshift
