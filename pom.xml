@@ -168,7 +168,17 @@
             <version>${guava.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>org.jsondoc</groupId>
+            <artifactId>spring-boot-starter-jsondoc</artifactId>
+            <version>1.2.16</version>
+        </dependency>
 
+        <dependency>
+            <groupId>org.jsondoc</groupId>
+            <artifactId>jsondoc-ui-webjar</artifactId>
+            <version>1.2.16</version>
+        </dependency>
 
 
         <!--
