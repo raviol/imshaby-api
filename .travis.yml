@@ -1,0 +1,9 @@
+deploy:
+  provider: openshift
+  user: andrei.misan@gmail.com
+  password:
+    secure: ZAG9wlN6Zfzu5+k2PwFHPyjVSktNkgS6ZsdNxY/nxR8N8AmcUW9fPJdTj5PJ9MA8NHNRyQKEVUWwh0r1+NGG6Hjam5pXZiAcuJdl5Tcajkmp+QSkxAQlyMe6sbpy1cGsVoJa6UExur/TIULFaGCk0hFS/9l1NwCHXQCTH3mYNWUiH+rTJfDVV709f671CseePTG/pduuWyh2bvXbk7p+0WbhHiHZkHnK5F2IUQwsFLqLTDvwtz3s8EODLKxKumSa7xgZap8LMhGAErNPK6Bd1UIRgxKjjMDOM6o+Ul4AHA5/HTYAF+6MW0s8pa+ZlzcgSK3hHig7Mf/bCg1oZ0z7lnleV9na9Q4hJQsV6dF1ynttbnvuacX45/IX15JtsVAvqgR3QBYAW3zGA0UgN1uKpVnBpl1YxA114/75iyLLxk4KuVoOrPWbxBYmH4p/1HnqP+M24E+2gH+u0NimpCJxj4ht5mH1Lx7k9WMDZ0YGnUeqsN/FlQG6JG80hbGLNbuuFBrMykaW81ItPDKJxw5z2/xAjSQbOv4VskQfEkHE3LLIdoHB14nZeKQhl8JRuNnMg6J/mkOs1TYoMB77FcC48sB07pahn+B0b9Bkg1gexvaDYWEP4FASfPvvq258yI4JZb3A8Ww6ZDX/tIOG2aZl+se+ZlpuqWUFYjl66/7mS3M=
+  app: api
+  domain: misan
+  on:
+    repo: childRon/imshaby-api
