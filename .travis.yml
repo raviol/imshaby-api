@@ -2,13 +2,10 @@ language: java
 jdk:
   - oraclejdk8
 
-install:
+script:
   - mvn -s settings.xml clean install
 
-script:
-  - java -Xms384m -Xmx412m -jar target/*.jar --server.port=${OPENSHIFT_DIY_PORT} --server.address=${OPENSHIFT_DIY_IP} --logging.file=${OPENSHIFT_LOG_DIR}app.log --spring.profiles.active=openshift
-
-
+install: true
 
 deploy:
   provider: openshift
