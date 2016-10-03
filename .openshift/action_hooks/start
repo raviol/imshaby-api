@@ -11,4 +11,4 @@ export MAVEN_OPTS="-Xms384m -Xmx412m"
 
 cd $OPENSHIFT_REPO_DIR
 
-$M2/mvn spring-boot:run -Drun.profiles=openshift
+$M2/mvn -s settings.xml spring-boot:run -Drun.profiles=openshift
