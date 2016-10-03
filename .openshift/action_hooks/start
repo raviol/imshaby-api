@@ -11,4 +11,4 @@ export MAVEN_OPTS="-Xms384m -Xmx412m"
 
 cd $OPENSHIFT_REPO_DIR
 
-$M2/mvn -s settings.xml  package -Dmaven.test.skip=true && java -jar target/*.jar --server.port=${OPENSHIFT_DIY_PORT} --server.address=${OPENSHIFT_DIY_IP} --logging.file=${OPENSHIFT_LOG_DIR}app.log --spring.profiles.active=openshift
+$M2/mvn spring-boot:run -Drun.profiles=openshift
