@@ -2,6 +2,8 @@ language: java
 jdk:
   - oraclejdk8
 
+script:
+  - mvn -s settings.xml clean install
 
 deploy:
   provider: openshift
