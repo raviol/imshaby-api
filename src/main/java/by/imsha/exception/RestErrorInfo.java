@@ -1,4 +1,4 @@
-package by.imsha.domain;
+package by.imsha.exception;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
