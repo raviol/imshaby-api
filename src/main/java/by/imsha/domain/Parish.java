@@ -1,54 +1,66 @@
 package by.imsha.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
+import org.jsondoc.core.annotation.ApiObject;
+import org.jsondoc.core.annotation.ApiObjectField;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
 /**
  *
  * Represent Parish class
  */
+@ApiObject(show = true, name = "Parish", description = "Parish object json structure.")
 public class Parish {
 
     @Id
     private String id;
 
+    @ApiObjectField(description = "Auth0 system user identificator. It is provided only after futhentification in auth0.com with current login API.", required = true)
     @NotNull
     private String userId;
 
+    @ApiObjectField(description = "Name of parish.", required = true)
     @NotNull
     private String name;
 
+    @ApiObjectField(description = "Address string of parish (only street and house number).", required = false)
     private String address;
 
+    @ApiObjectField(description = "Coordinates of parish in format ##.###### for longitude/latitude", required = true)
     @NotNull
     private Coordinate gps;
 
     public Parish(){}
 
-    public Parish(String userId, String name, Coordinate gps, City city, String supportPhone, String email) {
+    public Parish(String userId, String name, Coordinate gps, String cityId, String supportPhone, String email) {
         this.userId = userId;
         this.name = name;
         this.gps = gps;
-        this.city = city;
+        this.cityId = cityId;
         this.supportPhone = supportPhone;
         this.email = email;
     }
 
+    @ApiObjectField(description = "City ID of parish.", required = true)
     @NotNull
-    private City city;
+    private String cityId;
 
+    @ApiObjectField(description = "Official phone provided by parish; phone available for public audience.", required = false)
     private String phone;
 
+    @ApiObjectField(description = "Not available for public audience; used for internal purpose.", required = true)
     @NotNull
     private String supportPhone;
 
+    @ApiObjectField(description = "Parish email.", required = true)
     @Email
     @NotNull
     private String email;
 
+    @ApiObjectField(description = "Parish web-site link.", required = false)
     private String website;
 
     @Override
@@ -58,7 +70,7 @@ public class Parish {
 
         Parish parish = (Parish) o;
 
-        if (!city.equals(parish.city)) return false;
+        if (!cityId.equals(parish.cityId)) return false;
         if (!email.equals(parish.email)) return false;
         if (!gps.equals(parish.gps)) return false;
         if (!id.equals(parish.id)) return false;
@@ -74,7 +86,7 @@ public class Parish {
         int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (address != null ? address.hashCode() : 0);
         result = 31 * result + (gps != null ? gps.hashCode() : 0);
-        result = 31 * result + (city != null ? city.hashCode() : 0);
+        result = 31 * result + (cityId != null ? cityId.hashCode() : 0);
         result = 31 * result + (phone != null ? phone.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
         result = 31 * result + (website != null ? website.hashCode() : 0);
@@ -113,12 +125,12 @@ public class Parish {
         this.gps = gps;
     }
 
-    public City getCity() {
-        return city;
+    public String getCityId() {
+        return cityId;
     }
 
-    public void setCity(City city) {
-        this.city = city;
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
     }
 
     public String getPhone() {

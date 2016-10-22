@@ -1,53 +1,65 @@
 package by.imsha.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.jsondoc.core.annotation.ApiObject;
+import org.jsondoc.core.annotation.ApiObjectField;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
-import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Date;
 
 /**
  */
+@ApiObject(show = true, name = "Mass", description = "Mass object json structure.")
 public class Mass {
 
     @Id
     private String id;
 
+    @ApiObjectField(description = "Language code of provided mass. Available codes are presented in ISO 639-2 Language Code List.", required = true)
     @NotNull
-    private String lang;
+    private String langCode;
 
-    private long timestamp;
+    @ApiObjectField(description = "Duration of mass in ms, default value = 3600 (1 hour)",  required = false)
+    private long duration = 3600;
 
-    private long duration;
+    @ApiObjectField(description = "Time of regular mass, that is defined throw time and days.", required = false)
+    private LocalTime time;
 
+    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 0 to 6:  Sunday = 0, Monday = 1 .. Saturday = 6", required = false)
+    private short[] days;
+
+    @ApiObjectField(description =  "Parish ID for mass", required = true)
     @NotNull
     private String parishId;
 
+    @ApiObjectField(description = "Flag defines whether mass is deleted by merchant-user", required = false)
     private boolean deleted;
 
+    @ApiObjectField(description = "Notes for mass created", required = false)
     private String notes;
 
 
-    private String time;
+    @ApiObjectField(description = "Start time for non regular mass, that occurs and is defined only once", required = false)
+    private LocalDateTime  singleStartTime;
 
-    private long start;
 
-    private long end;
-
-    private short[] days;
+    @ApiObjectField(description = "End time for non regular mass, that occurs and is defined only once", required = false)
+    private LocalDateTime singleEndTime;
 
     public Mass() {
     }
 
-    public Mass(String lang, long timestamp, long duration, String parishId,String time, long start, long end, short[] days) {
-        this.lang = lang;
-        this.timestamp = timestamp;
+    public Mass(String langCode, long duration, String parishId, LocalTime time, LocalDateTime start, LocalDateTime end, short[] days) {
+        this.langCode = langCode;
         this.duration = duration;
         this.parishId = parishId;
         this.time = time;
-        this.start = start;
-        this.end = end;
+        this.singleStartTime = start;
+        this.singleEndTime = end;
         this.days = days;
     }
 
@@ -59,30 +71,28 @@ public class Mass {
         Mass mass = (Mass) o;
 
         if (duration != mass.duration) return false;
-        if (end != mass.end) return false;
-        if (start != mass.start) return false;
-        if (timestamp != mass.timestamp) return false;
+        if (singleEndTime != mass.singleEndTime) return false;
+        if (singleStartTime != mass.singleStartTime) return false;
         if (!Arrays.equals(days, mass.days)) return false;
-        if (!lang.equals(mass.lang)) return false;
+        if (!langCode.equals(mass.langCode)) return false;
         if (!parishId.equals(mass.parishId)) return false;
         if (time != null ? !time.equals(mass.time) : mass.time != null) return false;
 
         return true;
     }
 
+
     @Override
     public int hashCode() {
-        int result = lang != null ? lang.hashCode() : 0;
-        result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
+        int result = langCode != null ? langCode.hashCode() : 0;
         result = 31 * result + (int) (duration ^ (duration >>> 32));
-        result = 31 * result + (parishId != null ? parishId.hashCode() : 0);
         result = 31 * result + (time != null ? time.hashCode() : 0);
-        result = 31 * result + (int) (start ^ (start >>> 32));
-        result = 31 * result + (int) (end ^ (end >>> 32));
         result = 31 * result + (days != null ? Arrays.hashCode(days) : 0);
+        result = 31 * result + (parishId != null ? parishId.hashCode() : 0);
+        result = 31 * result + (singleStartTime != null ? singleStartTime.hashCode() : 0);
+        result = 31 * result + (singleEndTime != null ? singleEndTime.hashCode() : 0);
         return result;
     }
-
 
     public String getId() {
         return id;
@@ -92,21 +102,14 @@ public class Mass {
         this.id = id;
     }
 
-    public String getLang() {
-        return lang;
+    public String getLangCode() {
+        return langCode;
     }
 
-    public void setLang(String lang) {
-        this.lang = lang;
+    public void setLangCode(String langCode) {
+        this.langCode = langCode;
     }
 
-    public long getTimestamp() {
-        return timestamp;
-    }
-
-    public void setTimestamp(long timestamp) {
-        this.timestamp = timestamp;
-    }
 
     public long getDuration() {
         return duration;
@@ -140,28 +143,28 @@ public class Mass {
         this.notes = notes;
     }
 
-    public String getTime() {
+    public LocalTime getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(LocalTime time) {
         this.time = time;
     }
 
-    public long getStart() {
-        return start;
+    public LocalDateTime getSingleStartTime() {
+        return singleStartTime;
     }
 
-    public void setStart(long start) {
-        this.start = start;
+    public void setSingleStartTime(LocalDateTime singleStartTime) {
+        this.singleStartTime = singleStartTime;
     }
 
-    public long getEnd() {
-        return end;
+    public LocalDateTime getSingleEndTime() {
+        return singleEndTime;
     }
 
-    public void setEnd(long end) {
-        this.end = end;
+    public void setSingleEndTime(LocalDateTime singleEndTime) {
+        this.singleEndTime = singleEndTime;
     }
 
     public short[] getDays() {

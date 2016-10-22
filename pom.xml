@@ -16,7 +16,7 @@
     </parent>
 
     <properties>
-        <start-class>by.imsha.Application</start-class>
+        <singleStartTime-class>by.imsha.Application</singleStartTime-class>
         <java.version>1.8</java.version>
         <guava.version>16.0.1</guava.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -180,12 +180,6 @@
             <version>1.2.16</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>springloaded</artifactId>
-            <version>1.2.0.RELEASE</version>
-        </dependency>
-        <!--
 
 
         <dependency>

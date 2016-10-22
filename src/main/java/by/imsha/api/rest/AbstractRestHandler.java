@@ -1,6 +1,6 @@
 package by.imsha.api.rest;
 
-import by.imsha.domain.RestErrorInfo;
+import by.imsha.exception.RestErrorInfo;
 import by.imsha.exception.DataFormatException;
 import by.imsha.exception.ResourceNotFoundException;
 import by.imsha.exception.ValidationError;

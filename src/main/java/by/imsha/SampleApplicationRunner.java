@@ -1,6 +1,5 @@
 package by.imsha;
 
-import by.imsha.domain.City;
 import by.imsha.domain.Mass;
 import by.imsha.repository.CityRepository;
 import by.imsha.repository.MassRepository;
@@ -10,13 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
-
-import java.util.Calendar;
 
 
 //@SpringBootApplication
@@ -46,9 +42,9 @@ public class SampleApplicationRunner implements CommandLineRunner {
         Mass mass = new Mass();
         mass.setDays(new short[]{1,2,3,4});
         mass.setDuration(60*120);
-        mass.setLang("BY");
+        mass.setLangCode("BY");
         mass.setParishId("574360fcccbd5297c86047fd");
-        mass.setTime("11:30");
+//        mass.setTime("11:30");
         this.massRepo.save(mass);
   }
 

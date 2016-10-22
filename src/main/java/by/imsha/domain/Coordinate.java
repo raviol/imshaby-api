@@ -1,6 +1,7 @@
 package by.imsha.domain;
 
 import by.imsha.utils.CoordinateManager;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.text.DecimalFormat;
 
@@ -15,6 +16,7 @@ public class Coordinate implements Comparable<Coordinate>{
     private float latitude;
     private float longitude;
 
+    @JsonIgnore
     private final static DecimalFormat format = new DecimalFormat("##.######");
 
     /**

@@ -7,6 +7,10 @@ import by.imsha.service.CityService;
 import com.wordnik.swagger.annotations.Api;
 import com.wordnik.swagger.annotations.ApiOperation;
 import com.wordnik.swagger.annotations.ApiParam;
+import org.jsondoc.core.annotation.ApiAuthNone;
+import org.jsondoc.core.annotation.ApiVersion;
+import org.jsondoc.core.pojo.ApiStage;
+import org.jsondoc.core.pojo.ApiVisibility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,9 @@ import javax.validation.Valid;
  * Demonstrates how to set up RESTful API endpoints using Spring MVC
  */
 
+@org.jsondoc.core.annotation.Api(name = "City services", description = "Methods for managing cities", visibility = ApiVisibility.PUBLIC, stage = ApiStage.RC)
+@ApiVersion(since = "1.0")
+@ApiAuthNone
 @RestController
 @RequestMapping(value = "/api/cities")
 @Api(value = "cities", description = "ImshaBy API")
@@ -78,12 +85,13 @@ public class CityController extends AbstractRestHandler {
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Update a city resource.", notes = "You have to provide a valid city ID in the URL and in the payload. The ID attribute can not be updated.")
-    public void updateCity(@ApiParam(value = "The ID of the existing city resource.", required = true)
+    public City updateCity(@ApiParam(value = "The ID of the existing city resource.", required = true)
                                  @PathVariable("id") String id, @Valid @RequestBody City city,
                                  HttpServletRequest request, HttpServletResponse response) {
-        checkResourceFound(this.cityService.retrieveCity(id));
-        if (id != city.getId()) throw new DataFormatException("ID doesn't match!");
-        this.cityService.updateCity(city);
+        City resource = this.cityService.retrieveCity(id);
+        checkResourceFound(resource);
+        city.setId(id) ;
+      return this.cityService.updateCity(city);
     }
 
     //todo: @ApiImplicitParams, @ApiResponses

@@ -8,8 +8,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.servlet.configuration.EnableWebMvcSecurity;
 
@@ -18,7 +20,7 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
  */
 
 @Configuration
-@EnableWebSecurity(debug = false)
+@EnableWebSecurity(debug = true)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfig extends Auth0SecurityConfig {
@@ -27,12 +29,21 @@ public class SecurityConfig extends Auth0SecurityConfig {
     @Value("${spring.profiles.active}")
     private String env;
 
+    @Value("${auth.security.debug}")
+    private boolean securityDebug ;
+
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.debug(securityDebug);
+    }
 
     /**
      * Provides Auth0 API access
      */
     @Bean
     public Auth0Client auth0Client() {
+
         return new Auth0Client(clientId, issuer);
     }
 
@@ -49,7 +60,7 @@ public class SecurityConfig extends Auth0SecurityConfig {
         // most specific rules must come - order is important (see Spring Security docs)
 //        if(env.equals("production")){
         //TODO fix secured authorization
-            http.authorizeRequests().antMatchers(securedRoute).authenticated().antMatchers("/**").permitAll();
+//            http.authorizeRequests().antMatchers(securedRoute).authenticated().antMatchers("/**").permitAll();
 //        }
 
     }

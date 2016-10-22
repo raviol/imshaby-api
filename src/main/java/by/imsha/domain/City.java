@@ -1,5 +1,6 @@
 package by.imsha.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
@@ -40,6 +41,7 @@ public class City {
 
     public City() {
     }
+
 
     @Override
     public boolean equals(Object o) {
