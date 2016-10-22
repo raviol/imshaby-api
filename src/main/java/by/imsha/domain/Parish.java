@@ -68,14 +68,16 @@ public class Parish {
         return true;
     }
 
+
     @Override
     public int hashCode() {
-        int result = id.hashCode();
-        result = 31 * result + userId.hashCode();
-        result = 31 * result + name.hashCode();
-        result = 31 * result + gps.hashCode();
-        result = 31 * result + city.hashCode();
-        result = 31 * result + email.hashCode();
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (address != null ? address.hashCode() : 0);
+        result = 31 * result + (gps != null ? gps.hashCode() : 0);
+        result = 31 * result + (city != null ? city.hashCode() : 0);
+        result = 31 * result + (phone != null ? phone.hashCode() : 0);
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (website != null ? website.hashCode() : 0);
         return result;
     }
 

@@ -2,14 +2,18 @@ package by.imsha.api.rest;
 
 import by.imsha.domain.Parish;
 import by.imsha.exception.DataFormatException;
+import by.imsha.exception.ValidationError;
+import by.imsha.exception.ValidationErrorBuilder;
 import by.imsha.service.ParishService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -31,7 +35,7 @@ public class ParishController extends AbstractRestHandler {
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Parish createParish(@RequestBody Parish parish, HttpServletRequest request, HttpServletResponse response){
+    public Parish createParish(@Valid @RequestBody Parish parish, HttpServletRequest request, HttpServletResponse response){
         return parishService.createParish(parish);
     }
 
@@ -54,7 +58,7 @@ public class ParishController extends AbstractRestHandler {
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateParish(@PathVariable("parishId") String id, @RequestBody Parish parish,
+    public void updateParish(@PathVariable("parishId") String id,@Valid @RequestBody Parish parish,
                            HttpServletRequest request, HttpServletResponse response) {
         checkResourceFound(this.parishService.getParish(id));
         if (id != parish.getId()) throw new DataFormatException("ID doesn't match!");
@@ -100,5 +104,8 @@ public class ParishController extends AbstractRestHandler {
 //        parishService.search(filter);
         return parishService.search(filter, Integer.parseInt(page), Integer.parseInt(perPage), sorting);
     }
+
+
+
 
 }

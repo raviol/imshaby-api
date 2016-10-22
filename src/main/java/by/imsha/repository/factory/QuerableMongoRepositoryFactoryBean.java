@@ -24,7 +24,7 @@ public class QuerableMongoRepositoryFactoryBean<T extends Repository<S, ID>, S, 
 
     @Override
     protected RepositoryFactorySupport getFactoryInstance(MongoOperations operations) {
-        return new QuerableMongoRepositoryFactory<>(operations);
+        return new QuerableMongoRepositoryFactory<S, ID>(operations);
     }
 
     private static class QuerableMongoRepositoryFactory<S, ID extends Serializable> extends MongoRepositoryFactory{

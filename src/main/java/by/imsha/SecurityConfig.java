@@ -18,7 +18,7 @@ import org.springframework.security.config.annotation.web.servlet.configuration.
  */
 
 @Configuration
-@EnableWebSecurity(debug = true)
+@EnableWebSecurity(debug = false)
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 @Order(SecurityProperties.ACCESS_OVERRIDE_ORDER)
 public class SecurityConfig extends Auth0SecurityConfig {

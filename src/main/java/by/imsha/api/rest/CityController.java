@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 
 /*
  * Demonstrates how to set up RESTful API endpoints using Spring MVC
@@ -33,10 +34,11 @@ public class CityController extends AbstractRestHandler {
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Create a city resource.", notes = "Returns the URL of the new resource in the Location header.")
-    public void createCity(@RequestBody City city,
+    public City createCity( @Valid @RequestBody City city,
                                  HttpServletRequest request, HttpServletResponse response) {
+        log.info("adsasdasd");
         City createdCity = this.cityService.createCity(city);
-        response.setHeader("Location", request.getRequestURL().append("/").append(createdCity.getId()).toString());
+        return createdCity;
     }
 
     @RequestMapping(value = "",
@@ -77,7 +79,7 @@ public class CityController extends AbstractRestHandler {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Update a city resource.", notes = "You have to provide a valid city ID in the URL and in the payload. The ID attribute can not be updated.")
     public void updateCity(@ApiParam(value = "The ID of the existing city resource.", required = true)
-                                 @PathVariable("id") String id, @RequestBody City city,
+                                 @PathVariable("id") String id, @Valid @RequestBody City city,
                                  HttpServletRequest request, HttpServletResponse response) {
         checkResourceFound(this.cityService.retrieveCity(id));
         if (id != city.getId()) throw new DataFormatException("ID doesn't match!");

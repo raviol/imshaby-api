@@ -3,11 +3,14 @@ package by.imsha.api.rest;
 import by.imsha.domain.RestErrorInfo;
 import by.imsha.exception.DataFormatException;
 import by.imsha.exception.ResourceNotFoundException;
+import by.imsha.exception.ValidationError;
+import by.imsha.exception.ValidationErrorBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.ApplicationEventPublisherAware;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -47,6 +50,21 @@ public abstract class AbstractRestHandler implements ApplicationEventPublisherAw
 
         return new RestErrorInfo(ex, "Sorry I couldn't find it.");
     }
+
+/*
+
+    @ExceptionHandler (MethodArgumentNotValidException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    public ValidationError handleValidationException(MethodArgumentNotValidException exception) {
+        log.info("Validation error: " + exception);
+        return createValidationError(exception);
+    }
+*/
+
+    private ValidationError createValidationError(MethodArgumentNotValidException e) {
+        return ValidationErrorBuilder.fromBindingErrors(e.getBindingResult());
+    }
+
 
     @Override
     public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {

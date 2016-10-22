@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
@@ -33,7 +34,7 @@ public class MassController extends AbstractRestHandler {
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Mass createMass(@RequestBody Mass mass, HttpServletRequest request, HttpServletResponse response){
+    public Mass createMass(@Valid @RequestBody Mass mass, HttpServletRequest request, HttpServletResponse response){
         return massService.createMass(mass);
     }
 
@@ -56,7 +57,7 @@ public class MassController extends AbstractRestHandler {
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateMass(@PathVariable("massId") String id, @RequestBody Mass mass,
+    public void updateMass(@PathVariable("massId") String id,@Valid @RequestBody Mass mass,
                              HttpServletRequest request, HttpServletResponse response) {
         checkResourceFound(this.massService.getMass(id));
         if (id != mass.getId()) throw new DataFormatException("ID doesn't match!");

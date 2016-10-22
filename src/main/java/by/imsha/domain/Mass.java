@@ -72,16 +72,17 @@ public class Mass {
 
     @Override
     public int hashCode() {
-        int result = lang.hashCode();
+        int result = lang != null ? lang.hashCode() : 0;
         result = 31 * result + (int) (timestamp ^ (timestamp >>> 32));
         result = 31 * result + (int) (duration ^ (duration >>> 32));
-        result = 31 * result + parishId.hashCode();
+        result = 31 * result + (parishId != null ? parishId.hashCode() : 0);
         result = 31 * result + (time != null ? time.hashCode() : 0);
         result = 31 * result + (int) (start ^ (start >>> 32));
         result = 31 * result + (int) (end ^ (end >>> 32));
         result = 31 * result + (days != null ? Arrays.hashCode(days) : 0);
         return result;
     }
+
 
     public String getId() {
         return id;

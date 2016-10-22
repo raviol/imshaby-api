@@ -2,6 +2,8 @@ package by.imsha.domain;
 
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.NotNull;
+
 /**
  *
  * Represents city class
@@ -12,6 +14,7 @@ public class City {
     @Id
     private String id;
 
+    @NotNull
     private String name;
 
 
@@ -52,6 +55,6 @@ public class City {
 
     @Override
     public int hashCode() {
-        return name.hashCode();
+        return name != null ? name.hashCode() : 0;
     }
 }
