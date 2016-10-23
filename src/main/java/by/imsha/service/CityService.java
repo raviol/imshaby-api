@@ -4,6 +4,7 @@ package by.imsha.service;
 import by.imsha.domain.City;
 import by.imsha.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.metrics.CounterService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,6 +18,12 @@ public class CityService {
 
     private static final Logger log = LoggerFactory.getLogger(CityService.class);
 
+    @Value("${imsha.city.name}")
+    private String defaultCityName;
+
+    public String getDefaultCityName() {
+        return defaultCityName;
+    }
 
     @Autowired
     private CityRepository cityRepository;
@@ -27,6 +34,10 @@ public class CityService {
 
     public City createCity(City city) {
         return cityRepository.save(city);
+    }
+
+    public City defaultCity(){
+        return cityRepository.findByName(getDefaultCityName());
     }
 
     public void removeCity(String id) {

@@ -9,13 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 
-//@SpringBootApplication
+/*
+@SpringBootApplication
 @ComponentScan(basePackages = {"by.imsha", "com.auth"})
 
 @EnableAutoConfiguration(   )  // Sprint Boot Auto Configuration
@@ -26,7 +30,7 @@ import org.springframework.data.mongodb.repository.config.EnableMongoRepositorie
 @PropertySources({
         @PropertySource("classpath:application.properties"),
         @PropertySource("classpath:auth0.properties")
-})
+})*/
 public class SampleApplicationRunner implements CommandLineRunner {
 
     @Autowired
@@ -40,11 +44,14 @@ public class SampleApplicationRunner implements CommandLineRunner {
 
         // save a couple of customers
         Mass mass = new Mass();
-        mass.setDays(new short[]{1,2,3,4});
-        mass.setDuration(60*120);
+        mass.setDays(new int[]{1,2,3,4});
+        mass.setDuration(60 * 60);
         mass.setLangCode("BY");
+        mass.setCityId("580bb971f9efb566767eee77");
         mass.setParishId("574360fcccbd5297c86047fd");
-//        mass.setTime("11:30");
+        mass.setTime("12:12");
+//        mass.setSingleEndTime(LocalDateTime.now());
+
         this.massRepo.save(mass);
   }
 

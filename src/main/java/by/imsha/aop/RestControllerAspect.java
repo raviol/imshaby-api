@@ -1,4 +1,4 @@
-package by.imsha.utils;
+package by.imsha.aop;
 
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;

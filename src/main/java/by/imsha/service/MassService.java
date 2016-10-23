@@ -50,6 +50,10 @@ public class MassService {
         return massRepository.findByParishId(parishId);
     }
 
+    public List<Mass> getMassByCity(String cityId){
+        return massRepository.findByCityIdAndDeleted(cityId, false);
+    }
+
     public Mass getMass(String id){
         return massRepository.findOne(id);
     }

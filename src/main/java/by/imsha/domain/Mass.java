@@ -2,6 +2,10 @@ package by.imsha.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import org.jsondoc.core.annotation.ApiObject;
 import org.jsondoc.core.annotation.ApiObjectField;
 import org.springframework.data.annotation.Id;
@@ -19,6 +23,11 @@ public class Mass {
     @Id
     private String id;
 
+    @ApiObjectField(description = "City ID.", required = true)
+    @NotNull
+    private String cityId;
+
+
     @ApiObjectField(description = "Language code of provided mass. Available codes are presented in ISO 639-2 Language Code List.", required = true)
     @NotNull
     private String langCode;
@@ -27,10 +36,13 @@ public class Mass {
     private long duration = 3600;
 
     @ApiObjectField(description = "Time of regular mass, that is defined throw time and days.", required = false)
-    private LocalTime time;
+//    @JsonFormat(pattern = "KK:mm")
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    private String time;
 
-    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 0 to 6:  Sunday = 0, Monday = 1 .. Saturday = 6", required = false)
-    private short[] days;
+    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
+    private int[] days;
 
     @ApiObjectField(description =  "Parish ID for mass", required = true)
     @NotNull
@@ -44,17 +56,33 @@ public class Mass {
 
 
     @ApiObjectField(description = "Start time for non regular mass, that occurs and is defined only once", required = false)
+//    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
+//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     private LocalDateTime  singleStartTime;
 
 
     @ApiObjectField(description = "End time for non regular mass, that occurs and is defined only once", required = false)
+//    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
+//    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private LocalDateTime singleEndTime;
 
     public Mass() {
     }
 
-    public Mass(String langCode, long duration, String parishId, LocalTime time, LocalDateTime start, LocalDateTime end, short[] days) {
+    public String getCityId() {
+        return cityId;
+    }
+
+    public void setCityId(String cityId) {
+        this.cityId = cityId;
+    }
+
+
+
+    public Mass(String langCode,String cityId, long duration, String parishId, String time, LocalDateTime start, LocalDateTime end, int[] days) {
         this.langCode = langCode;
+        this.cityId = cityId;
         this.duration = duration;
         this.parishId = parishId;
         this.time = time;
@@ -62,6 +90,7 @@ public class Mass {
         this.singleEndTime = end;
         this.days = days;
     }
+
 
     @Override
     public boolean equals(Object o) {
@@ -143,11 +172,11 @@ public class Mass {
         this.notes = notes;
     }
 
-    public LocalTime getTime() {
+    public String getTime() {
         return time;
     }
 
-    public void setTime(LocalTime time) {
+    public void setTime(String time) {
         this.time = time;
     }
 
@@ -167,11 +196,11 @@ public class Mass {
         this.singleEndTime = singleEndTime;
     }
 
-    public short[] getDays() {
+    public int[] getDays() {
         return days;
     }
 
-    public void setDays(short[] days) {
+    public void setDays(int[] days) {
         this.days = days;
     }
 

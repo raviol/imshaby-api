@@ -1,6 +1,6 @@
 package by.imsha.domain;
 
-import by.imsha.utils.CoordinateManager;
+import by.imsha.utils.CoordinateTools;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.text.DecimalFormat;
@@ -27,11 +27,11 @@ public class Coordinate implements Comparable<Coordinate>{
      */
     public Coordinate(float latitude, float longitude) {
 
-        if(CoordinateManager.isValidLatitude(latitude) == true && CoordinateManager.isValidLongitude(longitude) == true) {
+        if(CoordinateTools.isValidLatitude(latitude) == true && CoordinateTools.isValidLongitude(longitude) == true) {
             this.latitude = latitude;
             this.longitude = longitude;
         } else {
-            throw new IllegalArgumentException("The parameters did not pass validation as defined by the CoordinateManager class");
+            throw new IllegalArgumentException("The parameters did not pass validation as defined by the CoordinateTools class");
         }
 
     }
@@ -51,18 +51,18 @@ public class Coordinate implements Comparable<Coordinate>{
     }
 
     public void setLatitude(float latitude) {
-        if(CoordinateManager.isValidLatitude(latitude) == true) {
+        if(CoordinateTools.isValidLatitude(latitude) == true) {
             this.latitude = latitude;
         } else {
-            throw new IllegalArgumentException("The parameter did not pass validation as defined by the CoordinateManager class");
+            throw new IllegalArgumentException("The parameter did not pass validation as defined by the CoordinateTools class");
         }
     }
 
     public void setLongitude(float longitude) {
-        if(CoordinateManager.isValidLongitude(longitude) == true) {
+        if(CoordinateTools.isValidLongitude(longitude) == true) {
             this.longitude = longitude;
         } else {
-            throw new IllegalArgumentException("The parameter did not pass validation as defined by the CoordinateManager class");
+            throw new IllegalArgumentException("The parameter did not pass validation as defined by the CoordinateTools class");
         }
     }
 

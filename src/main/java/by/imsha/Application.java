@@ -4,7 +4,6 @@ package by.imsha;
 import by.imsha.repository.factory.QuerableMongoRepositoryFactoryBean;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.mangofactory.swagger.plugin.EnableSwagger;
 import org.jsondoc.spring.boot.starter.EnableJSONDoc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +28,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
         repositoryFactoryBeanClass = QuerableMongoRepositoryFactoryBean.class
 )
 @EnableJSONDoc
-@EnableSwagger // auto generation of API docs
 @PropertySources({
         @PropertySource("classpath:application.properties"),
         @PropertySource("classpath:auth0.properties")

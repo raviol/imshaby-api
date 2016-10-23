@@ -2,7 +2,7 @@ package by.imsha.utils;
 
 import by.imsha.domain.Coordinate;
 
-public class CoordinateManager {
+public class CoordinateTools {
 
     // declare public constants
 
