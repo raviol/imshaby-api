@@ -5,11 +5,6 @@ import by.imsha.exception.DataFormatException;
 import by.imsha.exception.ValidationError;
 import by.imsha.exception.ValidationErrorBuilder;
 import by.imsha.service.ParishService;
-import org.jsondoc.core.annotation.Api;
-import org.jsondoc.core.annotation.ApiAuthNone;
-import org.jsondoc.core.annotation.ApiVersion;
-import org.jsondoc.core.pojo.ApiStage;
-import org.jsondoc.core.pojo.ApiVisibility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
@@ -28,9 +23,9 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  * Parish services
  */
 
-@Api(name = "Parish services", description = "Methods for managing parishes", visibility = ApiVisibility.PUBLIC, stage = ApiStage.RC)
-@ApiVersion(since = "1.0")
-@ApiAuthNone
+//@Api(name = "Parish services", description = "Methods for managing parishes", visibility = ApiVisibility.PUBLIC, stage = ApiStage.RC)
+//@ApiVersion(since = "1.0")
+//@ApiAuthNone
 @RestController
 @RequestMapping(value = "/api/parish")
 public class ParishController extends AbstractRestHandler {

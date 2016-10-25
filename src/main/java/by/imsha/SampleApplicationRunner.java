@@ -4,7 +4,6 @@ import by.imsha.domain.Mass;
 import by.imsha.repository.CityRepository;
 import by.imsha.repository.MassRepository;
 import by.imsha.repository.factory.QuerableMongoRepositoryFactoryBean;
-import com.mangofactory.swagger.plugin.EnableSwagger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;

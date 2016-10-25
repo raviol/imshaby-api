@@ -1,73 +1,65 @@
 package by.imsha.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import org.jsondoc.core.annotation.ApiObject;
-import org.jsondoc.core.annotation.ApiObjectField;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
 
 /**
  */
-@ApiObject(show = true, name = "Mass", description = "Mass object json structure.")
 public class Mass {
 
     @Id
     private String id;
 
-    @ApiObjectField(description = "City ID.", required = true)
+//    @ApiObjectField(description = "City ID.", required = true)
     @NotNull
     private String cityId;
 
 
-    @ApiObjectField(description = "Language code of provided mass. Available codes are presented in ISO 639-2 Language Code List.", required = true)
+//    @ApiObjectField(description = "Language code of provided mass. Available codes are presented in ISO 639-2 Language Code List.", required = true)
     @NotNull
     private String langCode;
 
-    @ApiObjectField(description = "Duration of mass in ms, default value = 3600 (1 hour)",  required = false)
+//    @ApiObjectField(description = "Duration of mass in ms, default value = 3600 (1 hour)",  required = false)
+    @NotNull
     private long duration = 3600;
 
-    @ApiObjectField(description = "Time of regular mass, that is defined throw time and days.", required = false)
+//    @ApiObjectField(description = "Time of regular mass, that is defined throw time and days.", required = false)
 //    @JsonFormat(pattern = "KK:mm")
 //    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
 //    @JsonSerialize(using = LocalDateTimeSerializer.class)
     private String time;
 
-    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
+//    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
     private int[] days;
 
-    @ApiObjectField(description =  "Parish ID for mass", required = true)
+//    @ApiObjectField(description =  "Parish ID for mass", required = true)
     @NotNull
     private String parishId;
 
-    @ApiObjectField(description = "Flag defines whether mass is deleted by merchant-user", required = false)
+//    @ApiObjectField(description = "Flag defines whether mass is deleted by merchant-user", required = false)
     private boolean deleted;
 
-    @ApiObjectField(description = "Notes for mass created", required = false)
+//    @ApiObjectField(description = "Notes for mass created", required = false)
     private String notes;
 
 
-    @ApiObjectField(description = "Start time for non regular mass, that occurs and is defined only once", required = false)
-//    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
-//    @JsonSerialize(using = LocalDateTimeSerializer.class)
-//    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDateTime  singleStartTime;
+//    @ApiObjectField(description = "Start time for non regular mass, that occurs and is defined only once", required = false)
+    private long singleStartTimestamp;
 
 
-    @ApiObjectField(description = "End time for non regular mass, that occurs and is defined only once", required = false)
-//    @JsonFormat(pattern = "dd-MM-yyyy hh:mm")
-//    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    private LocalDateTime singleEndTime;
 
     public Mass() {
+    }
+
+     @AssertTrue(message="Only one of fields have to be populated: time or singleStartTimestamp")
+    private boolean isValid() {
+        boolean timeIsNotNull = StringUtils.isNotBlank(this.time) && singleStartTimestamp == 0;
+        boolean singleTimestampIsNotNull = singleStartTimestamp != 0 && StringUtils.isBlank(this.time);
+        return timeIsNotNull || singleTimestampIsNotNull;
     }
 
     public String getCityId() {
@@ -80,14 +72,13 @@ public class Mass {
 
 
 
-    public Mass(String langCode,String cityId, long duration, String parishId, String time, LocalDateTime start, LocalDateTime end, int[] days) {
+    public Mass(String langCode,String cityId, long duration, String parishId, String time, long start, int[] days) {
         this.langCode = langCode;
         this.cityId = cityId;
         this.duration = duration;
         this.parishId = parishId;
         this.time = time;
-        this.singleStartTime = start;
-        this.singleEndTime = end;
+        this.singleStartTimestamp = start;
         this.days = days;
     }
 
@@ -100,8 +91,7 @@ public class Mass {
         Mass mass = (Mass) o;
 
         if (duration != mass.duration) return false;
-        if (singleEndTime != mass.singleEndTime) return false;
-        if (singleStartTime != mass.singleStartTime) return false;
+        if (singleStartTimestamp != mass.singleStartTimestamp) return false;
         if (!Arrays.equals(days, mass.days)) return false;
         if (!langCode.equals(mass.langCode)) return false;
         if (!parishId.equals(mass.parishId)) return false;
@@ -118,8 +108,7 @@ public class Mass {
         result = 31 * result + (time != null ? time.hashCode() : 0);
         result = 31 * result + (days != null ? Arrays.hashCode(days) : 0);
         result = 31 * result + (parishId != null ? parishId.hashCode() : 0);
-        result = 31 * result + (singleStartTime != null ? singleStartTime.hashCode() : 0);
-        result = 31 * result + (singleEndTime != null ? singleEndTime.hashCode() : 0);
+        result = 31 * result + (int)(singleStartTimestamp  ^ (singleStartTimestamp >>> 32));
         return result;
     }
 
@@ -180,20 +169,12 @@ public class Mass {
         this.time = time;
     }
 
-    public LocalDateTime getSingleStartTime() {
-        return singleStartTime;
+    public long getSingleStartTimestamp() {
+        return singleStartTimestamp;
     }
 
-    public void setSingleStartTime(LocalDateTime singleStartTime) {
-        this.singleStartTime = singleStartTime;
-    }
-
-    public LocalDateTime getSingleEndTime() {
-        return singleEndTime;
-    }
-
-    public void setSingleEndTime(LocalDateTime singleEndTime) {
-        this.singleEndTime = singleEndTime;
+    public void setSingleStartTimestamp(long singleStartTimestamp) {
+        this.singleStartTimestamp = singleStartTimestamp;
     }
 
     public int[] getDays() {

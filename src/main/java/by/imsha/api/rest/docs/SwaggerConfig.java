@@ -1,45 +1,43 @@
 package by.imsha.api.rest.docs;
 
-import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
-import com.mangofactory.swagger.plugin.EnableSwagger;
-import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
-import com.wordnik.swagger.model.ApiInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 
 @Configuration
-@EnableSwagger
+@EnableSwagger2
 @ComponentScan("by.imsha.api.rest")
 public class SwaggerConfig {
 
     public static final String DEFAULT_INCLUDE_PATTERNS = "/api/.*";
-
-    private SpringSwaggerConfig springSwaggerConfig;
-
-    @Autowired
-    public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {
-        this.springSwaggerConfig = springSwaggerConfig;
-    }
-
-    @Bean 
-    public SwaggerSpringMvcPlugin customImplementation() {
-        return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-                .apiInfo(apiInfo())
-                .includePatterns(DEFAULT_INCLUDE_PATTERNS);
+    @Bean
+    public Docket swaggerSettings() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()
+                .apis(RequestHandlerSelectors.basePackage("by.imsha.api.rest"))
+                .paths(PathSelectors.ant("/api*"))
+                .build()
+                .apiInfo(apiInfo());
     }
 
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo(
-                "Spring Boot Sample REST APIs",
-                "The APIs here demonstrate creating a 'production-ready' service built with Spring Boot and other helpful libraries",
-                "http://opensource.org/licenses/MIT",
+                "Imsha.by REST API",
+                "Rest api for managing base entities in system.",
+                "1.0",
+                "Terms of service",
                 "andrei.misan@gmail.com",
-                "MIT",
-                "http://opensource.org/licenses/MIT"
-        );
+                "License of API",
+                "API license URL");
         return apiInfo;
+
     }
 }

@@ -2,8 +2,6 @@ package by.imsha.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
-import org.jsondoc.core.annotation.ApiObject;
-import org.jsondoc.core.annotation.ApiObjectField;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
@@ -12,24 +10,24 @@ import javax.validation.constraints.NotNull;
  *
  * Represent Parish class
  */
-@ApiObject(show = true, name = "Parish", description = "Parish object json structure.")
+//@ApiObject(show = true, name = "Parish", description = "Parish object json structure.")
 public class Parish {
 
     @Id
     private String id;
 
-    @ApiObjectField(description = "Auth0 system user identificator. It is provided only after futhentification in auth0.com with current login API.", required = true)
+//    @ApiObjectField(description = "Auth0 system user identificator. It is provided only after futhentification in auth0.com with current login API.", required = true)
     @NotNull
     private String userId;
 
-    @ApiObjectField(description = "Name of parish.", required = true)
+//    @ApiObjectField(description = "Name of parish.", required = true)
     @NotNull
     private String name;
 
-    @ApiObjectField(description = "Address string of parish (only street and house number).", required = false)
+//    @ApiObjectField(description = "Address string of parish (only street and house number).", required = false)
     private String address;
 
-    @ApiObjectField(description = "Coordinates of parish in format ##.###### for longitude/latitude", required = true)
+//    @ApiObjectField(description = "Coordinates of parish in format ##.###### for longitude/latitude", required = true)
     @NotNull
     private Coordinate gps;
 
@@ -44,23 +42,23 @@ public class Parish {
         this.email = email;
     }
 
-    @ApiObjectField(description = "City ID of parish.", required = true)
+//    @ApiObjectField(description = "City ID of parish.", required = true)
     @NotNull
     private String cityId;
 
-    @ApiObjectField(description = "Official phone provided by parish; phone available for public audience.", required = false)
+//    @ApiObjectField(description = "Official phone provided by parish; phone available for public audience.", required = false)
     private String phone;
 
-    @ApiObjectField(description = "Not available for public audience; used for internal purpose.", required = true)
+//    @ApiObjectField(description = "Not available for public audience; used for internal purpose.", required = true)
     @NotNull
     private String supportPhone;
 
-    @ApiObjectField(description = "Parish email.", required = true)
+//    @ApiObjectField(description = "Parish email.", required = true)
     @Email
     @NotNull
     private String email;
 
-    @ApiObjectField(description = "Parish web-site link.", required = false)
+//    @ApiObjectField(description = "Parish web-site link.", required = false)
     private String website;
 
     @Override

@@ -10,13 +10,15 @@ import by.imsha.exception.ResourceNotFoundException;
 import by.imsha.exception.RestErrorInfo;
 import by.imsha.service.CityService;
 import by.imsha.service.MassService;
-import org.jsondoc.core.annotation.*;
-import org.jsondoc.core.pojo.ApiStage;
-import org.jsondoc.core.pojo.ApiVisibility;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,9 +37,7 @@ import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
  * @author Alena Misan
  */
 
-@Api(name = "Mass services", description = "Methods for managing masses", visibility = ApiVisibility.PUBLIC, stage = ApiStage.RC)
-@ApiVersion(since = "1.0")
-@ApiAuthNone
+@Api(value = "Mass services", description = "Methods for managing masses")
 @RestController
 @RequestMapping(value = "/api/mass")
 public class MassController extends AbstractRestHandler {
@@ -52,26 +52,28 @@ public class MassController extends AbstractRestHandler {
     private CityService cityService;
 
 
-    @ApiMethod(id = DocumentationConstants.MASS_CREATE)
+    @ApiOperation(value = "Create mass", response = Mass.class)
     @RequestMapping(value = "",
             method = RequestMethod.POST,
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.CREATED)
-    public @ApiResponseObject Mass createMass(@ApiBodyObject @Valid @RequestBody Mass mass, HttpServletRequest request, HttpServletResponse response){
-        return massService.createMass(mass);
+    public ResponseEntity<Mass> createMass(@Valid @RequestBody Mass mass, HttpServletRequest request, HttpServletResponse response){
+        return ResponseEntity.ok().body(massService.createMass(mass));
     }
 
-    @ApiMethod(id = DocumentationConstants.MASS_FIND_ONE)
-    @ApiErrors(apierrors = {
-            @ApiError(code = "404", description = "When the mass with the given id is not found")
-    })
+    @ApiOperation(value = "Get mass details by ID")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Successful retrieval of mass detail", response = Mass.class),
+            @ApiResponse(code = 404, message = "When the mass with the given id is not found"),
+            @ApiResponse(code = 500, message = "Internal server error")}
+    )
     @RequestMapping(value = "/{massId}",
             method = RequestMethod.GET,
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Resource<Mass> retrieveMass(@ApiPathParam(description = "The ID of mass to retrieve") @PathVariable("massId") String id,
+    public Resource<Mass> retrieveMass(@PathVariable("massId") String id,
                                            HttpServletRequest request, HttpServletResponse response){
         Mass mass = massService.getMass(id);
         checkResourceFound(mass);
@@ -80,36 +82,34 @@ public class MassController extends AbstractRestHandler {
         return massResource;
     }
 
-    @ApiMethod(id = DocumentationConstants.MASS_UPDATE)
+    @ApiOperation(value = "Update mass with data provided")
     @RequestMapping(value = "/{massId}",
             method = RequestMethod.PUT,
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateMass(@ApiPathParam(description = "massId of Mass object to be update") @PathVariable("massId") String id,@Valid @RequestBody Mass mass,
+    public void updateMass(@PathVariable("massId") String id,@Valid @RequestBody Mass mass,
                              HttpServletRequest request, HttpServletResponse response) {
         Mass massForUpdate = this.massService.getMass(id);
         checkResourceFound(massForUpdate);
+        // TODO check implementation??
         mass.setId(id);
         this.massService.updateMass(mass);
     }
 
-    @ApiMethod(id=DocumentationConstants.MASS_DELETE)
-    @ApiErrors(apierrors = {
-            @ApiError(code = "404", description = "When the mass with the given id is not found")
-    })
+
     @RequestMapping(value = "/{massId}",
             method = RequestMethod.DELETE,
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeMass(@ApiPathParam(description = "massId of Mass object to be deleted") @PathVariable("massId") String id, HttpServletRequest request,
+    public void removeMass(@PathVariable("massId") String id, HttpServletRequest request,
                              HttpServletResponse response) {
         checkResourceFound(this.massService.getMass(id));
         this.massService.removeMass(id);
     }
 
 
-    @RequestMapping(value = "/parish/{parishId}",
+  /*  @RequestMapping(value = "/parish/{parishId}",
             method = RequestMethod.GET,
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.OK)
@@ -121,7 +121,7 @@ public class MassController extends AbstractRestHandler {
         // TODO add link to parish, not to self resource
         massResource.add(linkTo(methodOn(MassController.class).retrieveMassByParish(parishId,request, response)).withSelfRel());
         return massResource;
-    }
+    }*/
 
     @RequestMapping(value = "/week",
             method = RequestMethod.GET,

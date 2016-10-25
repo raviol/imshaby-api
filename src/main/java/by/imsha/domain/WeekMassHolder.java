@@ -41,13 +41,13 @@ public class WeekMassHolder {
     }
 
     public WeekMassHolder build(List<Mass> masses){
-        // TODO calculate sunday for date
-        LocalDate startDate = getCurrentDate().minusDays(getCurrentDate().getDayOfWeek().getValue() - 1);
 
+        LocalDate startDate = getCurrentDate().minusDays(getCurrentDate().getDayOfWeek().getValue() - 1);
         LocalDate nextWeekSunday = startDate.plusDays(7);
         for (Mass mass : masses) {
+            long singleStartTimestamp = mass.getSingleStartTimestamp();
+            LocalDateTime singleStartTime =     LocalDateTime.ofInstant(Instant.ofEpochMilli(singleStartTimestamp), ZoneId.systemDefault());
 
-            LocalDateTime singleStartTime = mass.getSingleStartTime();
             if(singleStartTime != null){
                  if(mass.getTime() != null){
                      log.error(String.format("Mass with ID: %s is configured incorrectly - time and singleStartTime cannot be not null at the same time!", mass.getId()));
@@ -67,9 +67,7 @@ public class WeekMassHolder {
                 for (int day : days) {
                     populateContainers(mass, DayOfWeek.of(day), LocalTime.parse(mass.getTime()));
                 }
-
             }
-
         }
         return this;
     }

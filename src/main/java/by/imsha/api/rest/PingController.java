@@ -2,8 +2,6 @@ package by.imsha.api.rest;
 
 import by.imsha.domain.City;
 import by.imsha.domain.Ping;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;

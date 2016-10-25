@@ -4,13 +4,9 @@ import by.imsha.api.rest.AbstractRestHandler;
 import by.imsha.domain.City;
 import by.imsha.exception.DataFormatException;
 import by.imsha.service.CityService;
-import com.wordnik.swagger.annotations.Api;
-import com.wordnik.swagger.annotations.ApiOperation;
-import com.wordnik.swagger.annotations.ApiParam;
-import org.jsondoc.core.annotation.ApiAuthNone;
-import org.jsondoc.core.annotation.ApiVersion;
-import org.jsondoc.core.pojo.ApiStage;
-import org.jsondoc.core.pojo.ApiVisibility;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -24,12 +20,9 @@ import javax.validation.Valid;
  * Demonstrates how to set up RESTful API endpoints using Spring MVC
  */
 
-@org.jsondoc.core.annotation.Api(name = "City services", description = "Methods for managing cities", visibility = ApiVisibility.PUBLIC, stage = ApiStage.RC)
-@ApiVersion(since = "1.0")
-@ApiAuthNone
+@Api(value = "cities", description = "ImshaBy API")
 @RestController
 @RequestMapping(value = "/api/cities")
-@Api(value = "cities", description = "ImshaBy API")
 public class CityController extends AbstractRestHandler {
 
     @Autowired
