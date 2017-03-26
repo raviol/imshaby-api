@@ -19,7 +19,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LocalDateSerializer extends JsonSerializer<LocalDate> {
 
-    private String dateFormat = "dd-MM-yyyy";
+    private String dateFormat = "MM/dd/yyyy";
 
     @Override
     public void serialize(LocalDate date, JsonGenerator gen, SerializerProvider provider)
