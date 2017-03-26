@@ -2,6 +2,8 @@ package by.imsha.service;
 
 
 import by.imsha.domain.Parish;
+import by.imsha.domain.dto.ParishInfo;
+import by.imsha.domain.dto.mapper.ParishInfoMapper;
 import by.imsha.repository.ParishRepository;
 import by.imsha.utils.ServiceUtils;
 import com.github.rutledgepaulv.qbuilders.builders.GeneralQueryBuilder;
@@ -21,11 +23,26 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import static by.imsha.utils.Constants.*;
 
 @Service
 public class ParishService {
+
+    private static ParishService INSTANCE;
+
+    @PostConstruct
+    public void initInstance(){
+        INSTANCE = this;
+    }
+
+    public static ParishInfo extractParishInfo(String parishId){
+        Parish parish = INSTANCE.getParish(parishId);
+        return ParishInfoMapper.MAPPER.toParishInfo(parish);
+    };
+
+
     private static Logger logger = LoggerFactory.getLogger(ParishService.class);
 
     private QueryConversionPipeline pipeline = QueryConversionPipeline.defaultPipeline();

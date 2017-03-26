@@ -1,13 +1,9 @@
 package by.imsha.api.rest;
 
-import by.imsha.api.rest.docs.DocumentationConstants;
 import by.imsha.domain.City;
 import by.imsha.domain.Mass;
-import by.imsha.domain.Mass;
-import by.imsha.domain.WeekMassHolder;
-import by.imsha.exception.DataFormatException;
+import by.imsha.domain.dto.MassSchedule;
 import by.imsha.exception.ResourceNotFoundException;
-import by.imsha.exception.RestErrorInfo;
 import by.imsha.service.CityService;
 import by.imsha.service.MassService;
 import io.swagger.annotations.Api;
@@ -24,7 +20,6 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-import java.time.Clock;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
@@ -97,7 +92,6 @@ public class MassController extends AbstractRestHandler {
         this.massService.updateMass(mass);
     }
 
-
     @RequestMapping(value = "/{massId}",
             method = RequestMethod.DELETE,
             produces = {"application/json", "application/xml"})
@@ -109,26 +103,12 @@ public class MassController extends AbstractRestHandler {
     }
 
 
-  /*  @RequestMapping(value = "/parish/{parishId}",
-            method = RequestMethod.GET,
-            produces = {"application/json", "application/xml"})
-    @ResponseStatus(HttpStatus.OK)
-    @ResponseBody
-    public Resource<Mass> retrieveMassByParish(@PathVariable("parishId") String parishId, HttpServletRequest request, HttpServletResponse response){
-        Mass massByUser = this.massService.getMassByParish(parishId);
-        checkResourceFound(massByUser);
-        Resource<Mass> massResource = new Resource<Mass>(massByUser);
-        // TODO add link to parish, not to self resource
-        massResource.add(linkTo(methodOn(MassController.class).retrieveMassByParish(parishId,request, response)).withSelfRel());
-        return massResource;
-    }*/
-
     @RequestMapping(value = "/week",
             method = RequestMethod.GET,
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Resource<WeekMassHolder> retrieveMassesByCity(@CookieValue(value = "cityId", required = false) String cityId,@RequestParam(value = "date", required = false) String day, HttpServletRequest request, HttpServletResponse response){
+    public Resource<MassSchedule> retrieveMassesByCity(@CookieValue(value = "cityId", required = false) String cityId,@RequestParam(value = "date", required = false) String day, HttpServletRequest request, HttpServletResponse response){
         if(cityId == null){
             City defaultCity = cityService.defaultCity();
             if(defaultCity == null){
@@ -152,17 +132,15 @@ public class MassController extends AbstractRestHandler {
             date = LocalDate.now();
         }
 
-        WeekMassHolder massHolder = new WeekMassHolder(date);
+        MassSchedule massHolder = new MassSchedule(date);
 
-        massHolder.build(masses);
+        massHolder.build(masses).buildSchedule();
 
-        Resource<WeekMassHolder> massResource = new Resource<WeekMassHolder>(massHolder);
+        Resource<MassSchedule> massResource = new Resource<MassSchedule>(massHolder);
         // TODO add links
 //        massResource.add(linkTo(methodOn(MassController.class).retrieveMassByParish(parishId,request, response)).withSelfRel());
         return massResource;
     }
-
-
 
 
 

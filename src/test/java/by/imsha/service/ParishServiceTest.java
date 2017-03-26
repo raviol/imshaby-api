@@ -1,7 +1,6 @@
 package by.imsha.service;
 
 import by.imsha.Application;
-import by.imsha.SampleApplicationRunner;
 import by.imsha.domain.City;
 import by.imsha.domain.Coordinate;
 import by.imsha.domain.Parish;

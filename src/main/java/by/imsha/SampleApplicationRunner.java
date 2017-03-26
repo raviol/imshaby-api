@@ -1,6 +1,8 @@
 package by.imsha;
 
 import by.imsha.domain.Mass;
+import by.imsha.domain.dto.MassInfo;
+import by.imsha.domain.dto.mapper.MassInfoMapper;
 import by.imsha.repository.CityRepository;
 import by.imsha.repository.MassRepository;
 import by.imsha.repository.factory.QuerableMongoRepositoryFactoryBean;
@@ -25,7 +27,6 @@ import java.time.LocalTime;
 @EnableMongoRepositories(
         repositoryFactoryBeanClass = QuerableMongoRepositoryFactoryBean.class
 )
-@EnableSwagger // auto generation of API docs
 @PropertySources({
         @PropertySource("classpath:application.properties"),
         @PropertySource("classpath:auth0.properties")
@@ -43,19 +44,24 @@ public class SampleApplicationRunner implements CommandLineRunner {
 
         // save a couple of customers
         Mass mass = new Mass();
-        mass.setDays(new int[]{1,2,3,4});
+        mass.setDays(new int[]{1,3,4});
         mass.setDuration(60 * 60);
         mass.setLangCode("BY");
         mass.setCityId("580bb971f9efb566767eee77");
         mass.setParishId("574360fcccbd5297c86047fd");
-        mass.setTime("12:12");
+        mass.setTime("11:10");
 //        mass.setSingleEndTime(LocalDateTime.now());
 
         this.massRepo.save(mass);
+
+        MassInfo massInfo = MassInfoMapper.MAPPER.toMassInfo(mass);
+        System.out.println("!!!!!!!!!!mass = " + mass);
+        System.out.println("++++++massInfo = " + massInfo);
+
   }
 
-    public static void main(String[] args) throws Exception {
+   /* public static void main(String[] args) throws Exception {
         SpringApplication.run(SampleApplicationRunner.class, args);
-    }
+    }*/
 
 }

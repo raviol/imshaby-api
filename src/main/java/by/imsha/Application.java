@@ -3,7 +3,9 @@ package by.imsha;
 
 import by.imsha.repository.factory.QuerableMongoRepositoryFactoryBean;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
@@ -50,9 +52,33 @@ public class Application extends SpringBootServletInitializer {
         MappingJackson2HttpMessageConverter jsonConverter = new MappingJackson2HttpMessageConverter();
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(SerializationFeature.FAIL_ON_EMPTY_BEANS, false);
+
+//        objectMapper.configure(MapperFeature.DEFAULT_VIEW_INCLUSION, true);
         jsonConverter.setObjectMapper(objectMapper);
         return jsonConverter;
     }
+
+    /**
+     * Shared JAXB marshaller/unmarshaller instance
+     * @return The marshaller/unmarshaller instance
+     */
+/*    @Bean
+    public Jaxb2Marshaller marshaller() throws Exception
+    {
+        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
+        marshaller.setPackagesToScan("by.imsha.domain");
+        return marshaller;
+    }
+
+    @Bean
+    public WebServiceTemplate webServiceTemplate(final Jaxb2Marshaller marshaller)
+    {
+        WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
+        webServiceTemplate.setMarshaller(marshaller);
+        webServiceTemplate.setUnmarshaller(marshaller);
+        return webServiceTemplate;
+    }*/
 
 }
 

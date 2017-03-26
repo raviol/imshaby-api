@@ -1,5 +1,6 @@
 package by.imsha.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
@@ -14,7 +15,7 @@ public class Mass {
     @Id
     private String id;
 
-//    @ApiObjectField(description = "City ID.", required = true)
+    //    @ApiObjectField(description = "City ID.", required = true)
     @NotNull
     private String cityId;
 
@@ -31,9 +32,11 @@ public class Mass {
 //    @JsonFormat(pattern = "KK:mm")
 //    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
 //    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonIgnore
     private String time;
 
 //    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
+    @JsonIgnore
     private int[] days;
 
 //    @ApiObjectField(description =  "Parish ID for mass", required = true)
@@ -41,6 +44,7 @@ public class Mass {
     private String parishId;
 
 //    @ApiObjectField(description = "Flag defines whether mass is deleted by merchant-user", required = false)
+    @JsonIgnore
     private boolean deleted;
 
 //    @ApiObjectField(description = "Notes for mass created", required = false)
@@ -55,7 +59,7 @@ public class Mass {
     public Mass() {
     }
 
-     @AssertTrue(message="Only one of fields have to be populated: time or singleStartTimestamp")
+    @AssertTrue(message="Only one of fields have to be populated: time or singleStartTimestamp")
     private boolean isValid() {
         boolean timeIsNotNull = StringUtils.isNotBlank(this.time) && singleStartTimestamp == 0;
         boolean singleTimestampIsNotNull = singleStartTimestamp != 0 && StringUtils.isBlank(this.time);
