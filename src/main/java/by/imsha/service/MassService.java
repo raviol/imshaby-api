@@ -51,6 +51,7 @@ public class MassService {
     }
 
     public List<Mass> getMassByCity(String cityId){
+//        TODO check index for cityID and deleted.
         return massRepository.findByCityIdAndDeleted(cityId, false);
     }
 

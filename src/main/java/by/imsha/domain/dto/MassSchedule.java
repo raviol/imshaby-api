@@ -58,9 +58,18 @@ public class MassSchedule implements Serializable {
         return weekMasses;
     }
 
+    /**
+     * Build schedule based on week-day, filters masses that is configured not in week from provided startWeekDay
+     *
+     * */
     public MassSchedule build(List<Mass> masses) {
-        LocalDate startDate = LocalDate.of(getStartWeekDate().getYear(), getStartWeekDate().getMonth(), getStartWeekDate().getDayOfMonth()).minusDays(getStartWeekDate().getDayOfWeek().getValue() - 1);
-        LocalDate nextWeekSunday = LocalDate.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth()).plusDays(7);
+        LocalDate startDate = getStartWeekDate();
+        LocalDate endDate = LocalDate.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth()).plusDays(7);
+        build(masses, startDate, endDate);
+        return this;
+    }
+
+    private void build(List<Mass> masses, LocalDate startDate, LocalDate endDate) {
         for (Mass mass : masses) {
             long singleStartTimestamp = mass.getSingleStartTimestamp();
             // TODO get ZONE from parish : to support
@@ -73,7 +82,7 @@ public class MassSchedule implements Serializable {
                 }
                 LocalDate singleStartDate = singleStartTime.toLocalDate();
 
-                if (singleStartDate.isAfter(LocalDate.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth()).minusDays(1)) && singleStartDate.isBefore(nextWeekSunday)) {
+                if (singleStartDate.isAfter(LocalDate.of(startDate.getYear(), startDate.getMonth(), startDate.getDayOfMonth()).minusDays(1)) && singleStartDate.isBefore(endDate)) {
                     populateContainers(mass, singleStartTime.getDayOfWeek(), singleStartTime.toLocalTime());
                 }
             } else {
@@ -87,7 +96,6 @@ public class MassSchedule implements Serializable {
                 }
             }
         }
-        return this;
     }
 
     private void populateContainers(Mass mass, DayOfWeek dayOfWeek, LocalTime time) {
@@ -101,15 +109,23 @@ public class MassSchedule implements Serializable {
     }
 
     private void addToMassesByDay(Mass mass, DayOfWeek dayOfWeek, LocalTime time) {
-        log.info(dayOfWeek.toString());
+
         massesByDay.computeIfAbsent(dayOfWeek, v -> new HashMap<LocalTime, List<MassInfo>>()).
                 computeIfAbsent(time, v -> new ArrayList<MassInfo>()).add(MassInfoMapper.MAPPER.toMassInfo(mass));
     }
-
+    /**
+     * Build schedule for week from provided startWeekDate;
+     *
+     * */
     public MassSchedule buildSchedule() {
-        LocalDate startDate = LocalDate.of(getStartWeekDate().getYear(), getStartWeekDate().getMonth(), getStartWeekDate().getDayOfMonth()).minusDays(getStartWeekDate().getDayOfWeek().getValue() - 1)
-                .minusDays(getStartWeekDate().getDayOfWeek().getValue() - 1);
+//        LocalDate startDate = LocalDate.of(getStartWeekDate().getYear(), getStartWeekDate().getMonth(), getStartWeekDate().getDayOfMonth()).minusDays(getStartWeekDate().getDayOfWeek().getValue() - 1)
+//                .minusDays(getStartWeekDate().getDayOfWeek().getValue() - 1);
 
+        buildSchedule(getStartWeekDate());
+        return this;
+    }
+
+    private void buildSchedule(LocalDate startDate) {
         int counter = 0;
         while (counter < 7) {
             MassDay massDay = null;
@@ -130,7 +146,6 @@ public class MassSchedule implements Serializable {
             startDate = startDate.plusDays(1);
             counter++;
         }
-        return this;
     }
 
 

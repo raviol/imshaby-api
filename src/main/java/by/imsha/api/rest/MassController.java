@@ -117,7 +117,7 @@ public class MassController extends AbstractRestHandler {
             cityId = defaultCity.getId();
         }
 
-        List<Mass> masses = this.massService.getMassByCity(cityId);
+        List<Mass> masses = this.massService.getMassByCity(cityId); // TODO filter by date as well
 
         LocalDate date = null;
         if(day != null){
