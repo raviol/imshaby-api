@@ -33,10 +33,9 @@ public class CityController extends AbstractRestHandler {
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.CREATED)
-    @ApiOperation(value = "Create a city resource.", notes = "Returns the URL of the new resource in the Location header.")
+    @ApiOperation(value = "Create a city resource", notes = "Returns the URL of the new resource in the Location header.")
     public City createCity( @Valid @RequestBody City city,
                                  HttpServletRequest request, HttpServletResponse response) {
-        log.info("adsasdasd");
         City createdCity = this.cityService.createCity(city);
         return createdCity;
     }
