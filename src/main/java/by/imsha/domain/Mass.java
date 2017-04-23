@@ -32,11 +32,10 @@ public class Mass {
 //    @JsonFormat(pattern = "KK:mm")
 //    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
 //    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonIgnore
+
     private String time;
 
 //    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
-    @JsonIgnore
     private int[] days;
 
 //    @ApiObjectField(description =  "Parish ID for mass", required = true)
@@ -44,7 +43,6 @@ public class Mass {
     private String parishId;
 
 //    @ApiObjectField(description = "Flag defines whether mass is deleted by merchant-user", required = false)
-    @JsonIgnore
     private boolean deleted;
 
 //    @ApiObjectField(description = "Notes for mass created", required = false)
