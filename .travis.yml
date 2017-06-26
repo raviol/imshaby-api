@@ -3,7 +3,7 @@ jdk:
   - oraclejdk8
 
 script:
-  - mvn -s settings.xml clean install
+  - travis_wait mvn -s settings.xml clean install
 
 install: true
 
