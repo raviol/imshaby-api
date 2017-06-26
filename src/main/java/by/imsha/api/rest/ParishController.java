@@ -1,6 +1,7 @@
 package by.imsha.api.rest;
 
 import by.imsha.domain.Parish;
+import by.imsha.domain.dto.UpdateEntityInfo;
 import by.imsha.exception.DataFormatException;
 import by.imsha.exception.ValidationError;
 import by.imsha.exception.ValidationErrorBuilder;
@@ -60,22 +61,23 @@ public class ParishController extends AbstractRestHandler {
             method = RequestMethod.PUT,
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateParish(@PathVariable("parishId") String id,@Valid @RequestBody Parish parish,
+    @ResponseStatus(HttpStatus.OK)
+    public Parish updateParish(@PathVariable("parishId") String id,@Valid @RequestBody Parish parish,
                            HttpServletRequest request, HttpServletResponse response) {
         checkResourceFound(this.parishService.getParish(id));
         parish.setId(id);
-        this.parishService.updateParish(parish);
+        return this.parishService.updateParish(parish);
     }
 
     @RequestMapping(value = "/{parishId}",
             method = RequestMethod.DELETE,
             produces = {"application/json", "application/xml"})
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeParish(@PathVariable("parishId") String id, HttpServletRequest request,
-                             HttpServletResponse response) {
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateEntityInfo removeParish(@PathVariable("parishId") String id, HttpServletRequest request,
+                                         HttpServletResponse response) {
         checkResourceFound(this.parishService.getParish(id));
         this.parishService.removeParish(id);
+        return new UpdateEntityInfo(id, UpdateEntityInfo.STATUS.DELETED);
     }
 
 

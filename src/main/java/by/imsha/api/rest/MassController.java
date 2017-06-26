@@ -3,6 +3,7 @@ package by.imsha.api.rest;
 import by.imsha.domain.City;
 import by.imsha.domain.Mass;
 import by.imsha.domain.dto.MassSchedule;
+import by.imsha.domain.dto.UpdateEntityInfo;
 import by.imsha.exception.ResourceNotFoundException;
 import by.imsha.service.CityService;
 import by.imsha.service.MassService;
@@ -82,24 +83,27 @@ public class MassController extends AbstractRestHandler {
             method = RequestMethod.PUT,
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateMass(@PathVariable("massId") String id,@Valid @RequestBody Mass mass,
+    @ResponseStatus(HttpStatus.OK)
+    public Resource<Mass> updateMass(@PathVariable("massId") String id,@Valid @RequestBody Mass mass,
                              HttpServletRequest request, HttpServletResponse response) {
         Mass massForUpdate = this.massService.getMass(id);
         checkResourceFound(massForUpdate);
         // TODO check implementation??
         mass.setId(id);
-        this.massService.updateMass(mass);
+        Resource<Mass> massResource = new Resource<Mass>(this.massService.updateMass(mass));
+        massResource.add(linkTo(methodOn(MassController.class).updateMass(id,mass,request, response)).withSelfRel());
+        return massResource;
     }
 
     @RequestMapping(value = "/{massId}",
             method = RequestMethod.DELETE,
             produces = {"application/json", "application/xml"})
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeMass(@PathVariable("massId") String id, HttpServletRequest request,
-                             HttpServletResponse response) {
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateEntityInfo removeMass(@PathVariable("massId") String id, HttpServletRequest request,
+                                       HttpServletResponse response) {
         checkResourceFound(this.massService.getMass(id));
         this.massService.removeMass(id);
+        return new UpdateEntityInfo(id, UpdateEntityInfo.STATUS.DELETED);
     }
 
 

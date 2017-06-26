@@ -3,6 +3,8 @@ package by.imsha.api.rest;
 import by.imsha.api.rest.AbstractRestHandler;
 import by.imsha.domain.City;
 import by.imsha.domain.dto.CityInfo;
+import by.imsha.domain.dto.UpdateEntityInfo;
+import by.imsha.domain.dto.mapper.CityMapper;
 import by.imsha.exception.DataFormatException;
 import by.imsha.service.CityService;
 import io.swagger.annotations.Api;
@@ -81,26 +83,27 @@ public class CityController extends AbstractRestHandler {
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiOperation(value = "Update a city resource.", notes = "You have to provide a valid city ID in the URL and in the payload. The ID attribute can not be updated.")
-    public City updateCity(@ApiParam(value = "The ID of the existing city resource.", required = true)
-                                 @PathVariable("id") String id, @Valid @RequestBody City city,
+    @ApiOperation(value = "Update a cityDTO resource.", notes = "You have to provide a valid cityDTO ID in the URL and in the payload. The ID attribute can not be updated.")
+    public City updateCity(@ApiParam(value = "The ID of the existing cityDTO resource.", required = true)
+                                 @PathVariable("id") String id, @Valid @RequestBody CityInfo cityDTO,
                                  HttpServletRequest request, HttpServletResponse response) {
         City resource = this.cityService.retrieveCity(id);
         checkResourceFound(resource);
-        city.setId(id) ;
-      return this.cityService.updateCity(city);
+        CityMapper.MAPPER.updateCityFromDTO(cityDTO, resource);
+      return this.cityService.updateCity(resource);
     }
 
     //todo: @ApiImplicitParams, @ApiResponses
     @RequestMapping(value = "/{id}",
             method = RequestMethod.DELETE,
             produces = {"application/json", "application/xml"})
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Delete a city resource.", notes = "You have to provide a valid city ID in the URL. Once deleted the resource can not be recovered.")
-    public void deleteCity(@ApiParam(value = "The ID of the existing city resource.", required = true)
+    public UpdateEntityInfo deleteCity(@ApiParam(value = "The ID of the existing city resource.", required = true)
                                  @PathVariable("id") String id, HttpServletRequest request,
-                                 HttpServletResponse response) {
+                                       HttpServletResponse response) {
         checkResourceFound(this.cityService.retrieveCity(id));
         this.cityService.removeCity(id);
+        return new UpdateEntityInfo(id, UpdateEntityInfo.STATUS.DELETED);
     }
 }
