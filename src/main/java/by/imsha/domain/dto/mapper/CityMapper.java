@@ -11,7 +11,7 @@ import org.mapstruct.factory.Mappers;
 /**
  * @author Alena Misan
  */
-@Mapper (uses = CityMapper.class)
+@Mapper
 public interface CityMapper {
     CityMapper MAPPER = Mappers.getMapper(CityMapper.class);
 
