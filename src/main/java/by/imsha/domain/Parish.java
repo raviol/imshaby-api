@@ -28,7 +28,7 @@ public class Parish {
     private String address;
 
 //    @ApiObjectField(description = "Coordinates of parish in format ##.###### for longitude/latitude", required = true)
-    @NotNull
+//    @NotNull
     private Coordinate gps;
 
     public Parish(){}
