@@ -2,14 +2,19 @@ package by.imsha.api.rest;
 
 import by.imsha.api.rest.AbstractRestHandler;
 import by.imsha.domain.City;
+import by.imsha.domain.dto.CityInfo;
 import by.imsha.exception.DataFormatException;
 import by.imsha.service.CityService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.Validator;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -34,9 +39,9 @@ public class CityController extends AbstractRestHandler {
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.CREATED)
     @ApiOperation(value = "Create a city resource", notes = "Returns the URL of the new resource in the Location header.")
-    public City createCity( @Valid @RequestBody City city,
+    public City createCity( @Valid @RequestBody CityInfo city,
                                  HttpServletRequest request, HttpServletResponse response) {
-        City createdCity = this.cityService.createCity(city);
+        City createdCity = this.cityService.createCity(new City(city.getName()));
         return createdCity;
     }
 
