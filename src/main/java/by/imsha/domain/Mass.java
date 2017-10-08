@@ -25,7 +25,7 @@ public class Mass {
     private String langCode;
 
 //    @ApiObjectField(description = "Duration of mass in ms, default value = 3600 (1 hour)",  required = false)
-    @NotNull
+//    @NotNull
     private long duration = 3600;
 
 //    @ApiObjectField(description = "Time of regular mass, that is defined throw time and days.", required = false)

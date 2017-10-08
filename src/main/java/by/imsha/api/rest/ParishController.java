@@ -62,11 +62,12 @@ public class ParishController extends AbstractRestHandler {
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.OK)
-    public Parish updateParish(@PathVariable("parishId") String id,@Valid @RequestBody Parish parish,
+    public UpdateEntityInfo updateParish(@PathVariable("parishId") String id,@Valid @RequestBody Parish parish,
                            HttpServletRequest request, HttpServletResponse response) {
         checkResourceFound(this.parishService.getParish(id));
         parish.setId(id);
-        return this.parishService.updateParish(parish);
+        Parish updatedParish = this.parishService.updateParish(parish);
+        return new UpdateEntityInfo(updatedParish.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
 
     @RequestMapping(value = "/{parishId}",

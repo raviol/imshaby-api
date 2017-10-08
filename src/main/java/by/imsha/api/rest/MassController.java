@@ -90,7 +90,8 @@ public class MassController extends AbstractRestHandler {
         checkResourceFound(massForUpdate);
         // TODO check implementation??
         mass.setId(id);
-        Resource<Mass> massResource = new Resource<Mass>(this.massService.updateMass(mass));
+        Mass updatedMass = this.massService.updateMass(mass);
+        Resource<Mass> massResource = new Resource<Mass>(updatedMass);
         massResource.add(linkTo(methodOn(MassController.class).updateMass(id,mass,request, response)).withSelfRel());
         return massResource;
     }

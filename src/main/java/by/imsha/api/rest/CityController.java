@@ -84,13 +84,14 @@ public class CityController extends AbstractRestHandler {
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiOperation(value = "Update a cityDTO resource.", notes = "You have to provide a valid cityDTO ID in the URL and in the payload. The ID attribute can not be updated.")
-    public City updateCity(@ApiParam(value = "The ID of the existing cityDTO resource.", required = true)
+    public UpdateEntityInfo updateCity(@ApiParam(value = "The ID of the existing cityDTO resource.", required = true)
                                  @PathVariable("id") String id, @Valid @RequestBody CityInfo cityDTO,
                                  HttpServletRequest request, HttpServletResponse response) {
         City resource = this.cityService.retrieveCity(id);
         checkResourceFound(resource);
         CityMapper.MAPPER.updateCityFromDTO(cityDTO, resource);
-      return this.cityService.updateCity(resource);
+        City updatedSity = this.cityService.updateCity(resource);
+      return new UpdateEntityInfo(updatedSity.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
 
     //todo: @ApiImplicitParams, @ApiResponses

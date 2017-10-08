@@ -17,7 +17,7 @@ public class Parish {
     private String id;
 
 //    @ApiObjectField(description = "Auth0 system user identificator. It is provided only after futhentification in auth0.com with current login API.", required = true)
-    @NotNull
+//    @NotNull
     private String userId;
 
 //    @ApiObjectField(description = "Name of parish.", required = true)
