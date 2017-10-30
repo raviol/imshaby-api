@@ -2,10 +2,12 @@ package by.imsha.domain.dto;
 
 import org.springframework.data.annotation.Transient;
 
+import java.io.Serializable;
+
 /**
  * @author Alena Misan
  */
-public class UpdateEntityInfo {
+public class UpdateEntityInfo implements Serializable {
     public enum STATUS {
         UPDATED, DELETED
     }

@@ -82,7 +82,7 @@ public class CityController extends AbstractRestHandler {
             method = RequestMethod.PUT,
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     @ApiOperation(value = "Update a cityDTO resource.", notes = "You have to provide a valid cityDTO ID in the URL and in the payload. The ID attribute can not be updated.")
     public UpdateEntityInfo updateCity(@ApiParam(value = "The ID of the existing cityDTO resource.", required = true)
                                  @PathVariable("id") String id, @Valid @RequestBody CityInfo cityDTO,
