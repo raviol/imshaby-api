@@ -1,6 +1,7 @@
 package by.imsha.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.annotation.Id;
 
@@ -63,6 +64,16 @@ public class Mass {
         boolean singleTimestampIsNotNull = singleStartTimestamp != 0 && StringUtils.isBlank(this.time);
         return timeIsNotNull || singleTimestampIsNotNull;
     }
+
+    @AssertTrue(message="Please specify days for scheduled mass (you already specified field 'time').")
+    private boolean isValidScheduledMass() {
+        boolean validScheduledMass = true;
+        if(StringUtils.isNotBlank(this.time)){
+            validScheduledMass = ArrayUtils.isNotEmpty(this.days);
+        }
+        return validScheduledMass;
+    }
+
 
     public String getCityId() {
         return cityId;
