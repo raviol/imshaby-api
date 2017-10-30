@@ -114,7 +114,7 @@ public class ParishService {
 
 
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Parish updateParish(Parish parish){
         return parishRepository.save(parish);
     }

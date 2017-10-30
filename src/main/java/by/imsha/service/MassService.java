@@ -110,7 +110,7 @@ public class MassService {
     }
 
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Mass updateMass(Mass mass){
         return massRepository.save(mass);
     }
