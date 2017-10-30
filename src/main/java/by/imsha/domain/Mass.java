@@ -3,6 +3,7 @@ package by.imsha.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.AssertTrue;
@@ -18,11 +19,13 @@ public class Mass {
 
     //    @ApiObjectField(description = "City ID.", required = true)
     @NotNull
+    @NotEmpty
     private String cityId;
 
 
 //    @ApiObjectField(description = "Language code of provided mass. Available codes are presented in ISO 639-2 Language Code List.", required = true)
     @NotNull
+    @NotEmpty
     private String langCode;
 
 //    @ApiObjectField(description = "Duration of mass in ms, default value = 3600 (1 hour)",  required = false)
@@ -41,6 +44,7 @@ public class Mass {
 
 //    @ApiObjectField(description =  "Parish ID for mass", required = true)
     @NotNull
+    @NotEmpty
     private String parishId;
 
 //    @ApiObjectField(description = "Flag defines whether mass is deleted by merchant-user", required = false)

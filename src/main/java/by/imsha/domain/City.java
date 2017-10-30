@@ -1,6 +1,7 @@
 package by.imsha.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
@@ -16,6 +17,7 @@ public class City {
     private String id;
 
     @NotNull
+    @NotEmpty
     private String name;
 
 

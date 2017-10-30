@@ -1,6 +1,7 @@
 package by.imsha.domain.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
 
@@ -9,6 +10,7 @@ import javax.validation.constraints.NotNull;
  */
 public class CityInfo {
     @NotNull
+    @NotEmpty
     private String name;
 
     public String getName() {

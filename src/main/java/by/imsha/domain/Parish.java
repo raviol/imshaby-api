@@ -2,6 +2,7 @@ package by.imsha.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 
 import javax.validation.constraints.NotNull;
@@ -22,6 +23,7 @@ public class Parish {
 
 //    @ApiObjectField(description = "Name of parish.", required = true)
     @NotNull
+    @NotEmpty
     private String name;
 
 //    @ApiObjectField(description = "Address string of parish (only street and house number).", required = false)
@@ -44,6 +46,7 @@ public class Parish {
 
 //    @ApiObjectField(description = "City ID of parish.", required = true)
     @NotNull
+    @NotEmpty
     private String cityId;
 
 //    @ApiObjectField(description = "Official phone provided by parish; phone available for public audience.", required = false)
@@ -51,6 +54,7 @@ public class Parish {
 
 //    @ApiObjectField(description = "Not available for public audience; used for internal purpose.", required = true)
     @NotNull
+    @NotEmpty
     private String supportPhone;
 
 //    @ApiObjectField(description = "Parish email.", required = true)
