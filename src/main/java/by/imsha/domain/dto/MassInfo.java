@@ -1,5 +1,8 @@
 package by.imsha.domain.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -11,6 +14,8 @@ public class MassInfo implements Serializable{
     private ParishInfo parish;
     private int duration;
     private String info;
+
+    @JsonSerialize(using=LocalDateTimeSerializer.class)
     private LocalDateTime lastModifiedDate;
 
     @Override

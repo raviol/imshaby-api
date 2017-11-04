@@ -178,7 +178,7 @@ paths:
       tags:
         - mass-services
         - Mass
-      description: "Example: /api/parish?filter=langCode==\"BY\"\r\n\r\nFilter can be built based on any Parish's field; More examples on syntax please refer to Introduction section of documention."
+      description: "Example: /api/parish?filter=langCode==\"BY\"\r\n\r\nFilter can be built based on any Parish's field; More examples on syntax please refer to Introduction section of documention.\r\n\r\nContent-Type=application/json - should be specified in headers"
       consumes:
         - application/xml
       produces:
@@ -188,6 +188,9 @@ paths:
           in: query
           description: filter
           required: true
+          type: string
+        - name: Content-Type
+          in: header
           type: string
         - $ref: '#/parameters/trait:pageSort:offset'
         - $ref: '#/parameters/trait:pageSort:sort'
@@ -423,6 +426,9 @@ paths:
                                   type:
                                     - 'null'
                                     - string
+                                lastModifiedDate:
+                                  type: string
+                                  format: date-time
                           active:
                             type: boolean
               massesByDay:
@@ -2166,6 +2172,8 @@ paths:
         /api/parish?filter=website=="loshyca.by"
 
         Filter can be built based on any Parish's field; More examples on syntax please refer to Introduction section of documention.
+
+        Content-Type=application/json - should be specified in headers
       consumes:
         - application/xml
       produces:
@@ -2190,6 +2198,9 @@ paths:
           in: query
           description: sorting
           required: false
+          type: string
+        - name: Content-Type
+          in: header
           type: string
       responses:
         '200':
@@ -2752,6 +2763,10 @@ definitions:
         type: integer
       time:
         type: string
+        pattern: '^[0-2][0-3]:[0-5][0-9]$'
+      lastModifiedDate:
+        type: string
+        format: date-time
     required:
       - cityId
       - days

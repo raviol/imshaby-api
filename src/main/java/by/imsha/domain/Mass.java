@@ -1,21 +1,18 @@
 package by.imsha.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import by.imsha.api.rest.serializers.CustomLocalDateTimeSerializer;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.Arrays;
-import java.util.Calendar;
 
 /**
  */
@@ -67,6 +64,7 @@ public class Mass {
     private long singleStartTimestamp;
 
     @LastModifiedDate
+    @JsonSerialize(using= CustomLocalDateTimeSerializer.class)
     private LocalDateTime lastModifiedDate;
 
 
