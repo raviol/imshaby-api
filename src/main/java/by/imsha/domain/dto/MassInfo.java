@@ -1,6 +1,7 @@
 package by.imsha.domain.dto;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * @author Alena Misan
@@ -10,6 +11,7 @@ public class MassInfo implements Serializable{
     private ParishInfo parish;
     private int duration;
     private String info;
+    private LocalDateTime lastModifiedDate;
 
     @Override
     public boolean equals(Object o) {
@@ -40,6 +42,7 @@ public class MassInfo implements Serializable{
                 ", parish=" + parish +
                 ", duration=" + duration +
                 ", info='" + info + '\'' +
+                ", lastModifiedDate=" + lastModifiedDate +
                 '}';
     }
 
@@ -73,5 +76,13 @@ public class MassInfo implements Serializable{
 
     public void setInfo(String info) {
         this.info = info;
+    }
+
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
     }
 }

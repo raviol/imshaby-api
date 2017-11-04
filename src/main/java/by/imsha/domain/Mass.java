@@ -5,10 +5,17 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.Arrays;
+import java.util.Calendar;
 
 /**
  */
@@ -37,7 +44,9 @@ public class Mass {
 //    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
 //    @JsonSerialize(using = LocalDateTimeSerializer.class)
 
+    @Pattern(regexp = "^[0-2][0-3]:[0-5][0-9]$")
     private String time;
+
 
 //    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
     private int[] days;
@@ -48,7 +57,7 @@ public class Mass {
     private String parishId;
 
 //    @ApiObjectField(description = "Flag defines whether mass is deleted by merchant-user", required = false)
-    private boolean deleted;
+    private boolean deleted = false;
 
 //    @ApiObjectField(description = "Notes for mass created", required = false)
     private String notes;
@@ -56,6 +65,9 @@ public class Mass {
 
 //    @ApiObjectField(description = "Start time for non regular mass, that occurs and is defined only once", required = false)
     private long singleStartTimestamp;
+
+    @LastModifiedDate
+    private LocalDateTime lastModifiedDate;
 
 
 
@@ -202,5 +214,11 @@ public class Mass {
         this.days = days;
     }
 
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
 
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
 }

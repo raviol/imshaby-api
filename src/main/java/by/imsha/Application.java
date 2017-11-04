@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
+import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 
@@ -28,6 +29,7 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 @EnableMongoRepositories(
         repositoryFactoryBeanClass = QuerableMongoRepositoryFactoryBean.class
 )
+@EnableMongoAuditing
 @PropertySources({
         @PropertySource("classpath:application.properties"),
         @PropertySource("classpath:auth0.properties")
