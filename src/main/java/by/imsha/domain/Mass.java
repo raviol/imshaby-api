@@ -41,7 +41,7 @@ public class Mass {
 //    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
 //    @JsonSerialize(using = LocalDateTimeSerializer.class)
 
-    @Pattern(regexp = "^[0-2][0-3]:[0-5][0-9]$")
+    @Pattern(regexp = "^[0-2][0-9]:[0-5][0-9]$")
     private String time;
 
 
