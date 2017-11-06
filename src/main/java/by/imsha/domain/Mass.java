@@ -80,10 +80,19 @@ public class Mass {
     }
 
     @AssertTrue(message="Please specify days for scheduled mass (you already specified field 'time').")
-    private boolean isValidScheduledMass() {
+    private boolean isValidScheduledMassEmptyDays() {
         boolean validScheduledMass = true;
         if(StringUtils.isNotBlank(this.time)){
             validScheduledMass = ArrayUtils.isNotEmpty(this.days);
+        }
+        return validScheduledMass;
+    }
+
+    @AssertTrue(message="Please specify 'time' for scheduled mass (you already specified field 'days').")
+    private boolean isValidScheduledMAssEmptyDays(){
+        boolean      validScheduledMass = true;
+        if(ArrayUtils.isNotEmpty(this.days)){
+            validScheduledMass = StringUtils.isNotBlank(this.time);
         }
         return validScheduledMass;
     }
