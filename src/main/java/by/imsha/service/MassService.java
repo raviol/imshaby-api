@@ -17,7 +17,9 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
+import org.springframework.util.CollectionUtils;
 
+import java.util.Collections;
 import java.util.List;
 
 import static by.imsha.utils.Constants.LIMIT;
@@ -52,7 +54,13 @@ public class MassService {
 
     public List<Mass> getMassByCity(String cityId){
 //        TODO check index for cityID and deleted.
-        return massRepository.findByCityIdAndDeleted(cityId, false);
+        List<Mass> masses = massRepository.findByCityIdAndDeleted(cityId, false);
+        if(CollectionUtils.isEmpty(masses)){
+            if(logger.isWarnEnabled()){
+                logger.warn(String.format("No masses found with city id = %s, and deleted = %s", cityId, Boolean.FALSE));
+            }
+        }
+        return masses;
     }
 
     public Mass getMass(String id){

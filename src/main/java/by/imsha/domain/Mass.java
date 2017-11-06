@@ -139,6 +139,23 @@ public class Mass {
         return result;
     }
 
+    @Override
+    public String toString() {
+        return "Mass{" +
+                "id='" + id + '\'' +
+                ", cityId='" + cityId + '\'' +
+                ", langCode='" + langCode + '\'' +
+                ", duration=" + duration +
+                ", time='" + time + '\'' +
+                ", days=" + Arrays.toString(days) +
+                ", parishId='" + parishId + '\'' +
+                ", deleted=" + deleted +
+                ", notes='" + notes + '\'' +
+                ", singleStartTimestamp=" + singleStartTimestamp +
+                ", lastModifiedDate=" + lastModifiedDate +
+                '}';
+    }
+
     public String getId() {
         return id;
     }

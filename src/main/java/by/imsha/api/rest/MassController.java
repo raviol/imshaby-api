@@ -115,11 +115,17 @@ public class MassController extends AbstractRestHandler {
     @ResponseBody
     public Resource<MassSchedule> retrieveMassesByCity(@CookieValue(value = "cityId", required = false) String cityId,@RequestParam(value = "date", required = false) String day, HttpServletRequest request, HttpServletResponse response){
         if(cityId == null){
+            if(log.isWarnEnabled()){
+                log.warn("Looking for default city..");
+            }
             City defaultCity = cityService.defaultCity();
             if(defaultCity == null){
                 throw new ResourceNotFoundException(String.format("No default city (name = %s) founded", cityService.getDefaultCityName()));
             }
             cityId = defaultCity.getId();
+            if(log.isWarnEnabled()){
+                log.warn(String.format("Default city with id = %s is found.", cityId));
+            }
         }
 
         List<Mass> masses = this.massService.getMassByCity(cityId); // TODO filter by date as well
@@ -141,6 +147,9 @@ public class MassController extends AbstractRestHandler {
 
         massHolder.build(masses).buildSchedule();
 
+        if(log.isDebugEnabled()){
+            log.debug(String.format("%s masses found: %s. Scheduler is built.", masses.size(), masses));
+        }
         Resource<MassSchedule> massResource = new Resource<MassSchedule>(massHolder);
         // TODO add links
 //        massResource.add(linkTo(methodOn(MassController.class).retrieveMassByParish(parishId,request, response)).withSelfRel());
