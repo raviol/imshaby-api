@@ -2,6 +2,8 @@ package by.imsha.utils;
 
 import org.apache.commons.lang3.StringUtils;
 
+import java.time.*;
+
 /**
  * @author Alena Misan
  */
@@ -22,6 +24,11 @@ public class ServiceUtils {
         }
         return values;
 
+    }
+
+
+    public static LocalDateTime timestampToLocalDate(long timestamp, ZoneId zoneId){
+        return ZonedDateTime.ofInstant ( Instant.ofEpochSecond ( timestamp ) , zoneId ).toLocalDateTime();
     }
 
 

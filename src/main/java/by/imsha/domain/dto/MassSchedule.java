@@ -3,6 +3,7 @@ package by.imsha.domain.dto;
 import by.imsha.api.rest.serializers.LocalDateSerializer;
 import by.imsha.domain.Mass;
 import by.imsha.domain.dto.mapper.MassInfoMapper;
+import by.imsha.utils.ServiceUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.slf4j.Logger;
@@ -73,7 +74,7 @@ public class MassSchedule implements Serializable {
         for (Mass mass : masses) {
             long singleStartTimestamp = mass.getSingleStartTimestamp();
             // TODO get ZONE from parish : to support
-            LocalDateTime singleStartTime = singleStartTimestamp > 0 ? LocalDateTime.ofInstant(Instant.ofEpochMilli(singleStartTimestamp), ZoneId.systemDefault()) : null;
+            LocalDateTime singleStartTime = singleStartTimestamp > 0 ? ServiceUtils.timestampToLocalDate(singleStartTimestamp, ZoneId.of("Europe/Minsk")) : null;
 
             if (singleStartTime != null) {
                 if (mass.getTime() != null) {
