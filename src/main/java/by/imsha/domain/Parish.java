@@ -17,6 +17,8 @@ public class Parish {
     @Id
     private String id;
 
+    private String imgPath;
+
 //    @ApiObjectField(description = "Auth0 system user identificator. It is provided only after futhentification in auth0.com with current login API.", required = true)
 //    @NotNull
     private String userId;
@@ -76,6 +78,7 @@ public class Parish {
         if (!email.equals(parish.email)) return false;
         if (!gps.equals(parish.gps)) return false;
         if (!id.equals(parish.id)) return false;
+        if (imgPath != null ? !imgPath.equals(parish.imgPath) : parish.imgPath != null) return false;
         if (!name.equals(parish.name)) return false;
         if (!userId.equals(parish.userId)) return false;
 
@@ -91,6 +94,7 @@ public class Parish {
         result = 31 * result + (cityId != null ? cityId.hashCode() : 0);
         result = 31 * result + (phone != null ? phone.hashCode() : 0);
         result = 31 * result + (email != null ? email.hashCode() : 0);
+        result = 31 * result + (imgPath != null ? imgPath.hashCode() : 0);
         result = 31 * result + (website != null ? website.hashCode() : 0);
         return result;
     }
@@ -176,4 +180,11 @@ public class Parish {
         this.website = website;
     }
 
+    public String getImgPath() {
+        return imgPath;
+    }
+
+    public void setImgPath(String imgPath) {
+        this.imgPath = imgPath;
+    }
 }
