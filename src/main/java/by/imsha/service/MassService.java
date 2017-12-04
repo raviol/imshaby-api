@@ -123,7 +123,7 @@ public class MassService {
         return massRepository.save(mass);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void removeMass(String id){
         massRepository.delete(id);
     }

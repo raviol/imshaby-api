@@ -119,7 +119,8 @@ public class ParishService {
         return parishRepository.save(parish);
     }
 
-    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    //TODO enable for production env
+//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public void removeParish(String id){
         parishRepository.delete(id);
     }
