@@ -14,10 +14,13 @@ import org.springframework.stereotype.Component;
 @Component
 public class RestControllerAspect {
 
+    protected final Logger log = LoggerFactory.getLogger(this.getClass());
+
     @Before("execution(public * by.imsha.api.rest.*Controller.*(..))")
     public void logBeforeRestCall(JoinPoint pjp) throws Throwable {
-        //TODO implement correct logging
-        System.out.println(":::::AOP Before REST call:::::" + pjp);
+        if(log.isDebugEnabled()){
+            log.debug("AOP before call:" + pjp);
+        }
     }
 }
 
