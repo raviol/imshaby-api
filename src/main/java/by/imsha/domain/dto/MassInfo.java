@@ -1,10 +1,12 @@
 package by.imsha.domain.dto;
 
+import by.imsha.api.rest.serializers.CustomLocalDateTimeSerializer;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 
 /**
  * @author Alena Misan
@@ -15,8 +17,8 @@ public class MassInfo implements Serializable{
     private int duration;
     private String info;
 
-    @JsonSerialize(using=LocalDateTimeSerializer.class)
-    private LocalDateTime lastModifiedDate;
+    @JsonSerialize(using= CustomLocalDateTimeSerializer.class)
+    private ZonedDateTime lastModifiedDate;
 
     @Override
     public boolean equals(Object o) {
@@ -83,11 +85,11 @@ public class MassInfo implements Serializable{
         this.info = info;
     }
 
-    public LocalDateTime getLastModifiedDate() {
+    public ZonedDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 }
