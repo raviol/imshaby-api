@@ -20,16 +20,20 @@ import java.time.format.DateTimeFormatter;
  * @author Andrei Misan
  */
 @Component
-public class CustomLocalDateTimeSerializer extends JsonSerializer<LocalDateTime> {
+public class CustomLocalDateTimeSerializer extends JsonSerializer<ZonedDateTime> {
 
     private String dateTimeFormat = "dd-MM-yyyy HH:mm:ss";
 
     @Override
-    public void serialize(LocalDateTime date, JsonGenerator gen, SerializerProvider provider)
+    public void serialize(ZonedDateTime date, JsonGenerator gen, SerializerProvider provider)
             throws IOException{
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
-        String timeString = ZonedDateTime.of(date, ZoneId.of("Europe/Minsk")).format(formatter);
+        String timeString = timeStringInTimezone(date, dateTimeFormat, ZoneId.of("Europe/Minsk"));
 //        gen.writeString(date.format(formatter));
         gen.writeString(timeString);
+    }
+
+    protected String timeStringInTimezone(ZonedDateTime date, String dateTimeFormat, ZoneId zoneId) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateTimeFormat);
+        return date.withZoneSameInstant(zoneId).format(formatter);
     }
 }

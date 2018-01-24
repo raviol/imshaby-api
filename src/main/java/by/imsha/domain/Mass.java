@@ -12,6 +12,7 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import java.util.Arrays;
 
 /**
@@ -65,7 +66,7 @@ public class Mass {
 
     @LastModifiedDate
     @JsonSerialize(using= CustomLocalDateTimeSerializer.class)
-    private LocalDateTime lastModifiedDate;
+    private ZonedDateTime lastModifiedDate;
 
 
 
@@ -238,11 +239,11 @@ public class Mass {
         this.days = days;
     }
 
-    public LocalDateTime getLastModifiedDate() {
+    public ZonedDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 }
