@@ -30,12 +30,14 @@ public class CustomLocalDateTimeSerializerTest {
 
     @Test
     public void shouldTransformLondonTime_212505_To_MinskTime_002505(){
-        String timeString = "25-01-2018 00:25:05";
-        ZonedDateTime now = LocalDateTime.parse(timeString, dateTimeFormatter).atZone(ZoneId.of("Europe/Minsk"));
-        ZonedDateTime nowLondon = now.withZoneSameInstant(ZoneId.of("Europe/London"));
-        System.out.println("nowLondon = " + nowLondon);
-        String minskTimeString = customTimeSerializer.timeStringInTimezone(nowLondon, pattern, ZoneId.of("Europe/Minsk"));
-        assertThat(minskTimeString, is(equalTo(timeString)));
+        String minskTimeString = "25-01-2018 00:25:05";
+        String londonTimeString = "24-01-2018 21:25:05";
+
+        LocalDateTime londonLocalDateTime = LocalDateTime.parse(londonTimeString, dateTimeFormatter);
+
+        ZonedDateTime minskTime = customTimeSerializer.localDateTimeToZoneDateTime(londonLocalDateTime, ZoneId.of("Europe/London"), ZoneId.of("Europe/Minsk"));
+//        System.out.println("minskTime = " + minskTime);
+        assertThat(ZoneId.of("Europe/Minsk"), is(equalTo(minskTime.getZone())));
     }
 
 }

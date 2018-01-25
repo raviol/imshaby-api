@@ -18,7 +18,7 @@ public class MassInfo implements Serializable{
     private String info;
 
     @JsonSerialize(using= CustomLocalDateTimeSerializer.class)
-    private ZonedDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
     @Override
     public boolean equals(Object o) {
@@ -85,11 +85,11 @@ public class MassInfo implements Serializable{
         this.info = info;
     }
 
-    public ZonedDateTime getLastModifiedDate() {
+    public LocalDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 }

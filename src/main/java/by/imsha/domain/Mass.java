@@ -66,7 +66,7 @@ public class Mass {
 
     @LastModifiedDate
     @JsonSerialize(using= CustomLocalDateTimeSerializer.class)
-    private ZonedDateTime lastModifiedDate;
+    private LocalDateTime lastModifiedDate;
 
 
 
@@ -239,11 +239,11 @@ public class Mass {
         this.days = days;
     }
 
-    public ZonedDateTime getLastModifiedDate() {
+    public LocalDateTime getLastModifiedDate() {
         return lastModifiedDate;
     }
 
-    public void setLastModifiedDate(ZonedDateTime lastModifiedDate) {
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
     }
 }

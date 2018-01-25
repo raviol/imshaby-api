@@ -3,7 +3,6 @@ package by.imsha;
 
 import by.imsha.repository.factory.QuerableMongoRepositoryFactoryBean;
 import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.MapperFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import de.codecentric.boot.admin.config.EnableAdminServer;
@@ -14,20 +13,23 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.context.web.SpringBootServletInitializer;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
+import org.springframework.context.annotation.*;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+
+import java.net.UnknownHostException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 
 @SpringBootApplication
 @ComponentScan(basePackages = {"by.imsha", "com.auth"})
 
-@EnableAutoConfiguration(   )  // Sprint Boot Auto Configuration
+@EnableAutoConfiguration()  // Sprint Boot Auto Configuration
 @EnableAdminServer
 @EnableMongoRepositories(
         repositoryFactoryBeanClass = QuerableMongoRepositoryFactoryBean.class
@@ -64,26 +66,7 @@ public class Application extends SpringBootServletInitializer {
         return jsonConverter;
     }
 
-    /**
-     * Shared JAXB marshaller/unmarshaller instance
-     * @return The marshaller/unmarshaller instance
-     */
-/*    @Bean
-    public Jaxb2Marshaller marshaller() throws Exception
-    {
-        Jaxb2Marshaller marshaller = new Jaxb2Marshaller();
-        marshaller.setPackagesToScan("by.imsha.domain");
-        return marshaller;
-    }
-
-    @Bean
-    public WebServiceTemplate webServiceTemplate(final Jaxb2Marshaller marshaller)
-    {
-        WebServiceTemplate webServiceTemplate = new WebServiceTemplate();
-        webServiceTemplate.setMarshaller(marshaller);
-        webServiceTemplate.setUnmarshaller(marshaller);
-        return webServiceTemplate;
-    }*/
 
 }
+
 
