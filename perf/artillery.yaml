@@ -5,10 +5,18 @@ config:
       "port": 8125,
       "prefix": "artillery"
     }
-  target: "http://localhost:3000"
+  target: "http://api-imshaby.mycloud.by"
   http:
     pool: 10 # All HTTP requests from all virtual users will be sent over the same 10 connections
   phases:
+    - duration: 120
+      arrivalRate: 2
+      rampTo: 5
+      name: "Warm up the application"
+    - duration: 600
+      arrivalRate: 5
+      name: "Sustained max load"
+
     - duration: 10
       arrivalRate: 2
   payload:
@@ -19,8 +27,7 @@ config:
 scenarios:
     - name: "Week schedule"
       flow:
-        - loop:
-            - get:
-                url: "/api/mass/week?date={{ date }}"
-                cookie:
-                    cityId: "{{ cityId }}"
+        - get:
+            url: "/api/mass/week?date={{ date }}"
+            cookie:
+                cityId: "{{ cityId }}"
