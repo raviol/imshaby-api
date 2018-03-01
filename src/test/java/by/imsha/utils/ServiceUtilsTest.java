@@ -26,4 +26,10 @@ public class ServiceUtilsTest {
         assertThat(result.getDayOfMonth(), equalTo(4));
     }
 
+    @Test
+    public void checkDateToTimestamp(){
+        long timestamp = ServiceUtils.dateToUTCTimestamp("03-12-2017");
+        assertThat(timestamp, equalTo(1512259200L));
+    }
+
 }
