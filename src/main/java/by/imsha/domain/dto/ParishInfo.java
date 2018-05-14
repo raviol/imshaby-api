@@ -11,6 +11,7 @@ public class ParishInfo implements Serializable {
     private String imgPath;
     private LocationInfo gps;
     private String address;
+    private boolean needUpdate;
 
     @Override
     public boolean equals(Object o) {
@@ -44,6 +45,7 @@ public class ParishInfo implements Serializable {
                 ", imgPath='" + imgPath + '\'' +
                 ", gps=" + gps +
                 ", address='" + address + '\'' +
+                ", needUpdate=" + needUpdate +
                 '}';
     }
 
@@ -85,5 +87,13 @@ public class ParishInfo implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    public boolean isNeedUpdate() {
+        return needUpdate;
+    }
+
+    public void setNeedUpdate(boolean needUpdate) {
+        this.needUpdate = needUpdate;
     }
 }

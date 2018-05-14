@@ -1,14 +1,20 @@
 package by.imsha.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import by.imsha.api.rest.serializers.CustomLocalDateTimeSerializer;
+import by.imsha.utils.ServiceUtils;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 
 /**
- *
  * Represent Parish class
  */
 //@ApiObject(show = true, name = "Parish", description = "Parish object json structure.")
@@ -19,23 +25,57 @@ public class Parish {
 
     private String imgPath;
 
-//    @ApiObjectField(description = "Auth0 system user identificator. It is provided only after futhentification in auth0.com with current login API.", required = true)
+    //    @ApiObjectField(description = "Auth0 system user identificator. It is provided only after futhentification in auth0.com with current login API.", required = true)
 //    @NotNull
     private String userId;
 
-//    @ApiObjectField(description = "Name of parish.", required = true)
+    //    @ApiObjectField(description = "Name of parish.", required = true)
     @NotNull
     @NotEmpty
     private String name;
 
-//    @ApiObjectField(description = "Address string of parish (only street and house number).", required = false)
+    //    @ApiObjectField(description = "Address string of parish (only street and house number).", required = false)
     private String address;
 
-//    @ApiObjectField(description = "Coordinates of parish in format ##.###### for longitude/latitude", required = true)
+    //    @ApiObjectField(description = "Coordinates of parish in format ##.###### for longitude/latitude", required = true)
 //    @NotNull
     private Coordinate gps;
 
-    public Parish(){}
+    private int updatePeriodInDays = 14;
+
+    private boolean needUpdate = false;
+
+    public boolean isNeedUpdate() {
+        boolean result = false;
+        ZonedDateTime nowTime = ServiceUtils.localDateTimeToZoneDateTime(LocalDateTime.now(), ZoneId.systemDefault(), ZoneId.of("Europe/Minsk"));
+        if (lastModifiedDate == null || ChronoUnit.DAYS.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate()) > updatePeriodInDays) {
+            result = true;
+        }
+        return result;
+    }
+
+    @LastModifiedDate
+    @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
+    private LocalDateTime lastModifiedDate;
+
+    public LocalDateTime getLastModifiedDate() {
+        return lastModifiedDate;
+    }
+
+    public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
+        this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public int getUpdatePeriodInDays() {
+        return updatePeriodInDays;
+    }
+
+    public void setUpdatePeriodInDays(int updatePeriodInDays) {
+        this.updatePeriodInDays = updatePeriodInDays;
+    }
+
+    public Parish() {
+    }
 
     public Parish(String userId, String name, Coordinate gps, String cityId, String supportPhone, String email) {
         this.userId = userId;
@@ -46,25 +86,25 @@ public class Parish {
         this.email = email;
     }
 
-//    @ApiObjectField(description = "City ID of parish.", required = true)
+    //    @ApiObjectField(description = "City ID of parish.", required = true)
     @NotNull
     @NotEmpty
     private String cityId;
 
-//    @ApiObjectField(description = "Official phone provided by parish; phone available for public audience.", required = false)
+    //    @ApiObjectField(description = "Official phone provided by parish; phone available for public audience.", required = false)
     private String phone;
 
-//    @ApiObjectField(description = "Not available for public audience; used for internal purpose.", required = true)
+    //    @ApiObjectField(description = "Not available for public audience; used for internal purpose.", required = true)
     @NotNull
     @NotEmpty
     private String supportPhone;
 
-//    @ApiObjectField(description = "Parish email.", required = true)
+    //    @ApiObjectField(description = "Parish email.", required = true)
     @Email
     @NotNull
     private String email;
 
-//    @ApiObjectField(description = "Parish web-site link.", required = false)
+    //    @ApiObjectField(description = "Parish web-site link.", required = false)
     private String website;
 
     @Override

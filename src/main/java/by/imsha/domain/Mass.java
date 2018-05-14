@@ -1,6 +1,7 @@
 package by.imsha.domain;
 
 import by.imsha.api.rest.serializers.CustomLocalDateTimeSerializer;
+import by.imsha.utils.ServiceUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -12,6 +13,7 @@ import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
@@ -45,8 +47,7 @@ public class Mass {
     @Pattern(regexp = "^[0-2][0-9]:[0-5][0-9]$")
     private String time;
 
-
-//    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
+    //    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
     private int[] days;
 
 //    @ApiObjectField(description =  "Parish ID for mass", required = true)

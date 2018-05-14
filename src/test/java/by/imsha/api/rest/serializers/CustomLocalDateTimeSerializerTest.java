@@ -35,7 +35,7 @@ public class CustomLocalDateTimeSerializerTest {
 
         LocalDateTime londonLocalDateTime = LocalDateTime.parse(londonTimeString, dateTimeFormatter);
 
-        ZonedDateTime minskTime = customTimeSerializer.localDateTimeToZoneDateTime(londonLocalDateTime, ZoneId.of("Europe/London"), ZoneId.of("Europe/Minsk"));
+        ZonedDateTime minskTime = ServiceUtils.localDateTimeToZoneDateTime(londonLocalDateTime, ZoneId.of("Europe/London"), ZoneId.of("Europe/Minsk"));
 //        System.out.println("minskTime = " + minskTime);
         assertThat(ZoneId.of("Europe/Minsk"), is(equalTo(minskTime.getZone())));
     }

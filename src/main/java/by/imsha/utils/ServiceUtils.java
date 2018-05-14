@@ -49,6 +49,10 @@ public class ServiceUtils {
 
         return date.atStartOfDay().toEpochSecond(ZoneOffset.UTC);
     }
-
+  
+    public static ZonedDateTime localDateTimeToZoneDateTime(LocalDateTime localDateTime, ZoneId fromZone, ZoneId toZone) {
+        ZonedDateTime date = ZonedDateTime.of(localDateTime, fromZone);
+        return date.withZoneSameInstant(toZone);
+    }
 
 }
