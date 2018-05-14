@@ -6,7 +6,7 @@
     <groupId>by.imsha</groupId>
     <artifactId>imshaby-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <!--<packaging>war</packaging>-->
+    <packaging>war</packaging>
 
 
 
@@ -303,7 +303,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.5.1</version>
+                        <version>3.6.1</version>
                         <configuration>
                             <source>1.8</source>
                             <target>1.8</target>
@@ -344,7 +344,7 @@
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-compiler-plugin</artifactId>
-                        <version>3.5.1</version>
+                        <version>3.6.1</version>
                         <configuration>
                             <source>1.8</source>
                             <target>1.8</target>
