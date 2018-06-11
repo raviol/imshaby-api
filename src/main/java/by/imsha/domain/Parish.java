@@ -7,6 +7,8 @@ import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
@@ -18,6 +20,7 @@ import java.time.temporal.ChronoUnit;
  * Represent Parish class
  */
 //@ApiObject(show = true, name = "Parish", description = "Parish object json structure.")
+@Document
 public class Parish {
 
     @Id
@@ -102,6 +105,7 @@ public class Parish {
     //    @ApiObjectField(description = "Parish email.", required = true)
     @Email
     @NotNull
+    @Indexed(unique=true)
     private String email;
 
     //    @ApiObjectField(description = "Parish web-site link.", required = false)

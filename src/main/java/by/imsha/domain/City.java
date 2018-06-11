@@ -3,6 +3,8 @@ package by.imsha.domain;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 
@@ -11,6 +13,7 @@ import javax.validation.constraints.NotNull;
  * Represents city class
  *
  */
+@Document
 public class City {
 
     @Id
@@ -18,6 +21,7 @@ public class City {
 
     @NotNull
     @NotEmpty
+    @Indexed(unique = true)
     private String name;
 
 
