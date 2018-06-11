@@ -291,7 +291,9 @@
     <profiles>
         <profile>
             <id>jelastic</id>
-
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
             <build>
                 <resources>
                     <resource>
