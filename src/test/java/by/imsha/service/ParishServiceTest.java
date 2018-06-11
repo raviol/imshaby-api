@@ -20,9 +20,10 @@ import java.util.List;
 /**
  * @author Alena Misan
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(Application.class)
-@WebIntegrationTest({"server.port=0"})
+//@RunWith(SpringJUnit4ClassRunner.class)
+
+//@SpringApplicationConfiguration(Application.class)
+//@WebIntegrationTest({"server.port=0"})
 public class ParishServiceTest {
 
     @Autowired
