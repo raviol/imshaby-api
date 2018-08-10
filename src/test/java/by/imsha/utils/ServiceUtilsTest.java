@@ -32,4 +32,10 @@ public class ServiceUtilsTest {
         assertThat(timestamp, equalTo(1512259200L));
     }
 
+    @Test
+    public void checkDateTimeToTimestamp(){
+        long timestamp = ServiceUtils.dateTimeToUTCTimestamp("03-07-2018 15:35");
+        assertThat(timestamp, equalTo(1530632100L));
+    }
+
 }

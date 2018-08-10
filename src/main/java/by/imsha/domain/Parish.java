@@ -12,6 +12,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -49,9 +50,15 @@ public class Parish {
     private boolean needUpdate = false;
 
     public boolean isNeedUpdate() {
+
+        LocalDateTime now = LocalDateTime.now();
+        return needUpdateFrom(now);
+    }
+
+    protected boolean needUpdateFrom(LocalDateTime now) {
         boolean result = false;
-        ZonedDateTime nowTime = ServiceUtils.localDateTimeToZoneDateTime(LocalDateTime.now(), ZoneId.systemDefault(), ZoneId.of("Europe/Minsk"));
-        if (lastModifiedDate == null || ChronoUnit.DAYS.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate()) > updatePeriodInDays) {
+        ZonedDateTime nowTime = ServiceUtils.localDateTimeToZoneDateTime(now, ZoneId.systemDefault(), ZoneId.of("Europe/Minsk"));
+        if (lastModifiedDate == null || Math.abs(Period.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate().minusDays(1)).getDays())  > updatePeriodInDays) {
             result = true;
         }
         return result;

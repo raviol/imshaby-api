@@ -1,7 +1,6 @@
 package by.imsha.utils;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -13,6 +12,8 @@ import java.time.format.DateTimeParseException;
 public class ServiceUtils {
 
     private static String dateFormat = "dd-MM-yyyy";
+    private static String timeFormat = "dd-MM-yyyy HH:mm";
+
 
     public static String[] parseSortValue(String sort){
         if(StringUtils.isBlank(sort)){
@@ -53,6 +54,20 @@ public class ServiceUtils {
     public static ZonedDateTime localDateTimeToZoneDateTime(LocalDateTime localDateTime, ZoneId fromZone, ZoneId toZone) {
         ZonedDateTime date = ZonedDateTime.of(localDateTime, fromZone);
         return date.withZoneSameInstant(toZone);
+    }
+
+    public static long dateTimeToUTCTimestamp(String day) throws DateTimeParseException{
+        LocalDateTime date = null;
+        if(day != null){
+            try{
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(timeFormat);
+                date = LocalDateTime.parse(day, formatter);
+            }catch (DateTimeParseException ex){
+                throw new DateTimeParseException(String.format("Date time format is incorrect. Date time - %s,format - %s ", day, timeFormat), ex.getParsedString(), ex.getErrorIndex());
+            }
+        }
+
+        return date.toEpochSecond(ZoneOffset.UTC);
     }
 
 }

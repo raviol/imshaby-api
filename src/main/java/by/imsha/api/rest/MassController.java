@@ -102,8 +102,9 @@ public class MassController extends AbstractRestHandler {
     @ResponseStatus(HttpStatus.OK)
     public UpdateEntityInfo removeMass(@PathVariable("massId") String id, HttpServletRequest request,
                                        HttpServletResponse response) {
-        checkResourceFound(this.massService.getMass(id));
-        this.massService.removeMass(id);
+        Mass mass = this.massService.getMass(id);
+        checkResourceFound(mass);
+        this.massService.removeMass(mass);
         return new UpdateEntityInfo(id, UpdateEntityInfo.STATUS.DELETED);
     }
 
