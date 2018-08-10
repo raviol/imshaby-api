@@ -56,7 +56,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         if (env.equals("prod")) {
 //        http.csrf().disable();
-//        http.cors();
+        http.cors();
 
             http.authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/api/mass/week").permitAll()
