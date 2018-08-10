@@ -54,7 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      */
     protected void authorizeRequests(final HttpSecurity http) throws Exception {
 
-        if (env.equals("production")) {
+        if (env.equals("prod")) {
 //        http.csrf().disable();
 //        http.cors();
 
