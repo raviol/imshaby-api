@@ -55,13 +55,18 @@ public class Parish {
         return needUpdateFrom(now);
     }
 
+    /**
+     *
+     * */
     protected boolean needUpdateFrom(LocalDateTime now) {
-        boolean result = false;
+
+        boolean result;
         ZonedDateTime nowTime = ServiceUtils.localDateTimeToZoneDateTime(now, ZoneId.systemDefault(), ZoneId.of("Europe/Minsk"));
-	    Period period = Period.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate().minusDays(1));
-	    boolean needUpdate = Math.abs(period.getDays())  > updatePeriodInDays || Math.abs(period.getMonths()) > 0 || Math.abs(period.getYears()) > 0;
-	    if (lastModifiedDate == null || needUpdate ) {
+        if(lastModifiedDate == null){
             result = true;
+        }else{
+            Period period = Period.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate().minusDays(1));
+            result = Math.abs(period.getDays())  > updatePeriodInDays || Math.abs(period.getMonths()) > 0 || Math.abs(period.getYears()) > 0;
         }
         return result;
     }
@@ -82,6 +87,10 @@ public class Parish {
         return updatePeriodInDays;
     }
 
+
+    /**
+     * Not needed to set update period more than 28 days;
+     */
     public void setUpdatePeriodInDays(int updatePeriodInDays) {
         this.updatePeriodInDays = updatePeriodInDays;
     }

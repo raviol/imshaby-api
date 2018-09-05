@@ -25,4 +25,13 @@ public class ParishTest {
         parish.setLastModifiedDate(lastModifiedDate);
         assertThat(parish.isNeedUpdate(), equalTo(Boolean.TRUE));
     }
+
+    @Test
+    public void testNeedUpdateIfLastModifiedDateIsNull(){
+        Parish parish = new Parish();
+        parish.setUpdatePeriodInDays(14);
+        parish.setLastModifiedDate(null);
+        assertThat(parish.isNeedUpdate(), equalTo(Boolean.TRUE));
+    }
+
 }
