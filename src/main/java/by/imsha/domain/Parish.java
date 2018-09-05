@@ -58,7 +58,9 @@ public class Parish {
     protected boolean needUpdateFrom(LocalDateTime now) {
         boolean result = false;
         ZonedDateTime nowTime = ServiceUtils.localDateTimeToZoneDateTime(now, ZoneId.systemDefault(), ZoneId.of("Europe/Minsk"));
-        if (lastModifiedDate == null || Math.abs(Period.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate().minusDays(1)).getDays())  > updatePeriodInDays) {
+	    Period period = Period.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate().minusDays(1));
+	    boolean needUpdate = Math.abs(period.getDays())  > updatePeriodInDays || Math.abs(period.getMonths()) > 0 || Math.abs(period.getYears()) > 0;
+	    if (lastModifiedDate == null || needUpdate ) {
             result = true;
         }
         return result;
