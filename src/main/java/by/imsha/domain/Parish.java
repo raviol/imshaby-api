@@ -65,8 +65,9 @@ public class Parish {
         if(lastModifiedDate == null){
             result = true;
         }else{
-            Period period = Period.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate().minusDays(1));
-            result = Math.abs(period.getDays())  > updatePeriodInDays || Math.abs(period.getMonths()) > 0 || Math.abs(period.getYears()) > 0;
+//            Period period = Period.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate().minusDays(1));
+//            result = Math.abs(period.getDays())  > updatePeriodInDays || Math.abs(period.getMonths()) > 0 || Math.abs(period.getYears()) > 0;
+            result = Math.abs(ChronoUnit.DAYS.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate().minusDays(1))) > getUpdatePeriodInDays();
         }
         return result;
     }
