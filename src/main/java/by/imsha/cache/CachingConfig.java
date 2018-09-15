@@ -19,7 +19,7 @@ public class CachingConfig {
     @Bean
     public CacheManager cacheManager() {
         return new SpringCache2kCacheManager()
-                .defaultSetup(b -> b.entryCapacity(500).enableJmx(true))
+                .defaultSetup(b -> b.entryCapacity(500).enableJmx(true).permitNullValues(true))
                 .addCaches(
                         b -> b.name("parishCache").entryCapacity(100).expireAfterWrite(14, TimeUnit.DAYS),
                         b -> b.name("cityCache").entryCapacity(10),
