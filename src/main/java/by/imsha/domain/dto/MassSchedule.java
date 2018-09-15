@@ -75,10 +75,7 @@ public class MassSchedule implements Serializable {
             long singleStartTimestamp = mass.getSingleStartTimestamp();
             // TODO get ZONE from parish : to support
             LocalDateTime singleStartTime = singleStartTimestamp > 0 ? ServiceUtils.timestampToLocalDate(singleStartTimestamp, ZoneId.of("Europe/Minsk")) : null;
-            if (mass.getParishId() == null) {
-                log.error(String.format("Mass with ID: %s is configured incorrectly - parish can not be null!", mass.getId()));
-                continue;
-            }
+
             if (singleStartTime != null) {
                 if (mass.getTime() != null) {
                     log.error(String.format("Mass with ID: %s is configured incorrectly - time and singleStartTime cannot be not null at the same time!", mass.getId()));

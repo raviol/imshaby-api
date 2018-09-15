@@ -51,7 +51,7 @@ public class MassService {
         return massRepository.save(masses);
     }
 
-    public Mass getMassByParish(String parishId){
+    public List<Mass> getMassByParish(String parishId){
         return massRepository.findByParishId(parishId);
     }
 
