@@ -7,6 +7,7 @@ import by.imsha.domain.dto.UpdateEntityInfo;
 import by.imsha.exception.ResourceNotFoundException;
 import by.imsha.service.CityService;
 import by.imsha.service.MassService;
+import by.imsha.service.ScheduleFactory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -46,6 +47,9 @@ public class MassController extends AbstractRestHandler {
 
     @Autowired
     private CityService cityService;
+
+    @Autowired
+    private ScheduleFactory scheduleFactory;
 
 
     @ApiOperation(value = "Create mass", response = Mass.class)
@@ -144,9 +148,10 @@ public class MassController extends AbstractRestHandler {
             date = LocalDate.now();
         }
 
-        MassSchedule massHolder = new MassSchedule(date);
 
-        massHolder.build(masses).buildSchedule();
+        MassSchedule massHolder = scheduleFactory.build(masses, date);
+
+        massHolder.createSchedule();
 
         if(log.isDebugEnabled()){
             log.debug(String.format("%s masses found: %s. Scheduler is built.", masses.size(), masses));
