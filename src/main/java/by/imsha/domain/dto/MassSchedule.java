@@ -42,7 +42,8 @@ public class MassSchedule implements Serializable {
         this.schedule = schedule;
     }
 
-    private Map<DayOfWeek, Map<LocalTime, List<MassInfo>>> massesByDay;
+	@JsonIgnore
+	private Map<DayOfWeek, Map<LocalTime, List<MassInfo>>> massesByDay;
 
     public Map<DayOfWeek, Map<LocalTime, List<MassInfo>>> getMassesByDay() {
         return massesByDay;
