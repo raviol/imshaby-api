@@ -81,7 +81,7 @@ public class ParishController extends AbstractRestHandler {
             method = RequestMethod.DELETE,
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.OK)
-    public UpdateEntityInfo removeParish(@PathVariable("parishId") String id, @RequestParam("cascade") Boolean cascade, HttpServletRequest request,
+    public UpdateEntityInfo removeParish(@PathVariable("parishId") String id, @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade, HttpServletRequest request,
                                          HttpServletResponse response) {
         Parish parish = this.parishService.getParish(id);
         checkResourceFound(parish);
