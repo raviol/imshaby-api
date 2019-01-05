@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import java.util.Enumeration;
 
 /*
  * Demonstrates how to set up RESTful API endpoints using Spring MVC
@@ -47,6 +48,11 @@ public class CityController extends AbstractRestHandler {
                                       @ApiParam(value = "Tha page size", required = true)
                                       @RequestParam(value = "size", required = true, defaultValue = DEFAULT_PAGE_SIZE) Integer size,
                                       HttpServletRequest request, HttpServletResponse response) {
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()){
+            String headerName = headerNames.nextElement();
+            log.warn(String.format("%s = %s", headerName , request.getHeader(headerName)));
+        }
         return this.cityService.getAllCities(page, size);
     }
 
