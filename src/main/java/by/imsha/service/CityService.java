@@ -38,7 +38,7 @@ public class CityService {
         return cityRepository.save(city);
     }
 
-    @Cacheable(cacheNames = "cityCache", key="'default'")
+    @Cacheable(cacheNames = "cityCache", key="'default'", unless = "#result != null")
     public City defaultCity(){
         return cityRepository.findByName(getDefaultCityName());
     }
