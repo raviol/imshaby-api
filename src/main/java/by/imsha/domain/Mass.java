@@ -24,7 +24,10 @@ import java.util.Arrays;
 /**
  */
 @Document
-@CompoundIndexes(value = {@CompoundIndex(name = "scheduled_time_index", def = "{'time': 1, 'days': 1, 'parishId':1}", unique = true)})
+@CompoundIndexes(
+        value = {@CompoundIndex(name = "unique_mass_index", def = "{'time': 1, 'days': 1, 'singleStartTimestamp':1, 'parishId':1}", unique = true)}
+        
+        )
 public class Mass {
 
     @Id
