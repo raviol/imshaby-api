@@ -5,7 +5,8 @@ config:
       "port": 8125,
       "prefix": "artillery"
     }
-  target: "http://api-imshaby.mycloud.by"
+#    expect: {}
+  target: "https://api.imsha.by"
   http:
     pool: 10 # All HTTP requests from all virtual users will be sent over the same 10 connections
   phases:
@@ -31,3 +32,7 @@ scenarios:
             url: "/api/mass/week?date={{ date }}"
             cookie:
                 cityId: "{{ cityId }}"
+#            expect:
+#              - statusCode: 200
+#              - contentType: json
+#              - hasProperty: schedule

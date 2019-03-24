@@ -23,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -145,7 +147,7 @@ public class MassController extends AbstractRestHandler {
            }
         }
         if(date == null){
-            date = LocalDate.now();
+            date = LocalDateTime.now(ZoneId.of("Europe/Minsk")).toLocalDate();
         }
 
 
