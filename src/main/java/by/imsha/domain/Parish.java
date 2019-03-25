@@ -44,7 +44,7 @@ public class Parish {
 //    @NotNull
     private Coordinate gps;
 
-    private int updatePeriodInDays = 14;
+    private Integer updatePeriodInDays = 14;
 
     private boolean needUpdate;
 
@@ -67,7 +67,7 @@ public class Parish {
         this.lastModifiedDate = lastModifiedDate;
     }
 
-    public int getUpdatePeriodInDays() {
+    public Integer getUpdatePeriodInDays() {
         return updatePeriodInDays;
     }
 
@@ -75,7 +75,7 @@ public class Parish {
     /**
      * Not needed to set update period more than 28 days;
      */
-    public void setUpdatePeriodInDays(int updatePeriodInDays) {
+    public void setUpdatePeriodInDays(Integer updatePeriodInDays) {
         this.updatePeriodInDays = updatePeriodInDays;
     }
 

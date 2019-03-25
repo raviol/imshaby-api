@@ -15,7 +15,7 @@ public class ParishInfo implements Serializable {
     private String imgPath;
     private LocationInfo gps;
     private String address;
-    private int updatePeriodInDays;
+    private Integer updatePeriodInDays;
     private String supportPhone;
     private String email;
     private String phone;
@@ -108,14 +108,6 @@ public class ParishInfo implements Serializable {
         this.address = address;
     }
 
-    public int getUpdatePeriodInDays() {
-        return updatePeriodInDays;
-    }
-
-    public void setUpdatePeriodInDays(int updatePeriodInDays) {
-        this.updatePeriodInDays = updatePeriodInDays;
-    }
-
     public String getSupportPhone() {
         return supportPhone;
     }
@@ -154,5 +146,13 @@ public class ParishInfo implements Serializable {
 
     public void setWebsite(String website) {
         this.website = website;
+    }
+
+    public Integer getUpdatePeriodInDays() {
+        return updatePeriodInDays;
+    }
+
+    public void setUpdatePeriodInDays(Integer updatePeriodInDays) {
+        this.updatePeriodInDays = updatePeriodInDays;
     }
 }
