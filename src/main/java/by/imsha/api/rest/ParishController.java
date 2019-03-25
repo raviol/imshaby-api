@@ -3,6 +3,7 @@ package by.imsha.api.rest;
 import by.imsha.domain.Mass;
 import by.imsha.domain.Parish;
 import by.imsha.domain.dto.CascadeUpdateEntityInfo;
+import by.imsha.domain.dto.ParishInfo;
 import by.imsha.domain.dto.UpdateEntityInfo;
 import by.imsha.exception.DataFormatException;
 import by.imsha.exception.ValidationError;
@@ -69,13 +70,15 @@ public class ParishController extends AbstractRestHandler {
             consumes = {"application/json", "application/xml"},
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.OK)
-    public UpdateEntityInfo updateParish(@PathVariable("parishId") String id, @Valid @RequestBody Parish parish,
-                                         HttpServletRequest request, HttpServletResponse response) {
-        checkResourceFound(this.parishService.getParish(id));
-        parish.setId(id);
-        Parish updatedParish = this.parishService.updateParish(parish);
+    public UpdateEntityInfo updateParish(@PathVariable("parishId") String id, @RequestBody ParishInfo parishInfo) {
+        Parish parishToUpdate = this.parishService.getParish(id);
+        checkResourceFound(parishToUpdate);
+        Parish updatedParish = this.parishService.updateParish(parishInfo, parishToUpdate );
         return new UpdateEntityInfo(updatedParish.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
+
+
+
 
     @RequestMapping(value = "/{parishId}",
             method = RequestMethod.DELETE,

@@ -16,6 +16,6 @@ public interface LocationInfoMapper {
 
     LocationInfo toLocationInfo(Coordinate coordinate);
 
-
+    Coordinate map(LocationInfo gps);
 
 }

@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 
 /**
  * @author Alena Misan
@@ -69,5 +70,21 @@ public class ServiceUtils {
 
         return date.toEpochSecond(ZoneOffset.UTC);
     }
+
+    /**
+     *
+     * */
+    public static boolean needUpdateFromNow(LocalDateTime pLastModifiedDate, int pUpdatePeriodInDays) {
+        LocalDateTime now = LocalDateTime.now();
+        boolean result;
+        ZonedDateTime nowTime = ServiceUtils.localDateTimeToZoneDateTime(now, ZoneId.systemDefault(), ZoneId.of("Europe/Minsk"));
+        if(pLastModifiedDate == null){
+            result = true;
+        }else{
+            result = Math.abs(ChronoUnit.DAYS.between(nowTime.toLocalDate(), pLastModifiedDate.toLocalDate().minusDays(1))) > pUpdatePeriodInDays;
+        }
+        return result;
+    }
+
 
 }

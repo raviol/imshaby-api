@@ -12,7 +12,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
@@ -47,30 +46,14 @@ public class Parish {
 
     private int updatePeriodInDays = 14;
 
-    private boolean needUpdate = false;
+    private boolean needUpdate;
 
     public boolean isNeedUpdate() {
 
-        LocalDateTime now = LocalDateTime.now();
-        return needUpdateFrom(now);
+        return ServiceUtils.needUpdateFromNow(lastModifiedDate, getUpdatePeriodInDays());
     }
 
-    /**
-     *
-     * */
-    protected boolean needUpdateFrom(LocalDateTime now) {
 
-        boolean result;
-        ZonedDateTime nowTime = ServiceUtils.localDateTimeToZoneDateTime(now, ZoneId.systemDefault(), ZoneId.of("Europe/Minsk"));
-        if(lastModifiedDate == null){
-            result = true;
-        }else{
-//            Period period = Period.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate().minusDays(1));
-//            result = Math.abs(period.getDays())  > updatePeriodInDays || Math.abs(period.getMonths()) > 0 || Math.abs(period.getYears()) > 0;
-            result = Math.abs(ChronoUnit.DAYS.between(nowTime.toLocalDate(), lastModifiedDate.toLocalDate().minusDays(1))) > getUpdatePeriodInDays();
-        }
-        return result;
-    }
 
     @LastModifiedDate
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
@@ -126,6 +109,11 @@ public class Parish {
     @NotNull
     @Indexed(unique=true)
     private String email;
+
+    @Email
+    private String lastModifiedEmail;
+
+
 
     //    @ApiObjectField(description = "Parish web-site link.", required = false)
     private String website;
@@ -249,5 +237,13 @@ public class Parish {
 
     public void setImgPath(String imgPath) {
         this.imgPath = imgPath;
+    }
+
+    public String getLastModifiedEmail() {
+        return lastModifiedEmail;
+    }
+
+    public void setLastModifiedEmail(String lastModifiedEmail) {
+        this.lastModifiedEmail = lastModifiedEmail;
     }
 }

@@ -1,22 +1,25 @@
 package by.imsha.domain.dto.mapper;
 
+import by.imsha.domain.City;
 import by.imsha.domain.Parish;
+import by.imsha.domain.dto.CityInfo;
+import by.imsha.domain.dto.MassParishInfo;
 import by.imsha.domain.dto.ParishInfo;
-import org.mapstruct.InheritInverseConfiguration;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 /**
  * @author Alena Misan
  */
-@Mapper( uses = {LocationInfoMapper.class})
+@Mapper( uses = {LocationInfoMapper.class},
+        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS )
 public interface ParishInfoMapper {
     ParishInfoMapper MAPPER = Mappers.getMapper(ParishInfoMapper.class);
-
     @Mappings({
-     @Mapping(source = "id", target = "parishId")
+            @Mapping(source = "address", target = "address")
     })
     ParishInfo toParishInfo(Parish parish);
+
+    void updateParishFromDTO(ParishInfo parishInfo, @MappingTarget Parish parish);
+
 }
