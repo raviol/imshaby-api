@@ -16,7 +16,7 @@ public class MassParishInfo implements Serializable {
     private boolean needUpdate;
 
     @JsonIgnore
-    private int updatePeriodInDays;
+    private Integer updatePeriodInDays;
 
     @Override
     public boolean equals(Object o) {
@@ -103,11 +103,11 @@ public class MassParishInfo implements Serializable {
         this.needUpdate = needUpdate;
     }
 
-    public int getUpdatePeriodInDays() {
+    public Integer getUpdatePeriodInDays() {
         return updatePeriodInDays;
     }
 
-    public void setUpdatePeriodInDays(int updatePeriodInDays) {
+    public void setUpdatePeriodInDays(Integer updatePeriodInDays) {
         this.updatePeriodInDays = updatePeriodInDays;
     }
 }
