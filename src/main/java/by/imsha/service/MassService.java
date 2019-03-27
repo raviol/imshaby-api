@@ -43,6 +43,9 @@ public class MassService {
     @Autowired
     private MassRepository massRepository;
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId")
+    })
     public Mass createMass(Mass mass){
         return massRepository.save(mass);
     }

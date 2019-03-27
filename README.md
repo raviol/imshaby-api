@@ -1,4 +1,4 @@
-
+﻿
 [![Build Status](https://travis-ci.org/childRon/imshaby-api.svg?branch=master)](https://travis-ci.org/childRon/imshaby-api)
 
 # imshaby-api
@@ -31,6 +31,8 @@ git push openshift HEAD
 #  CI/CD
 
 build war for prod: mvn clean install -Pprod
+
+mongod --port 27017 --dbpath "C:\Env\mongo\db"
 
 
 
