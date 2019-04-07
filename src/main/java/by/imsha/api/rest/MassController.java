@@ -7,6 +7,7 @@ import by.imsha.domain.dto.UpdateEntityInfo;
 import by.imsha.exception.ResourceNotFoundException;
 import by.imsha.service.CityService;
 import by.imsha.service.MassService;
+import by.imsha.service.ScheduleFactory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -22,6 +23,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
@@ -46,6 +49,9 @@ public class MassController extends AbstractRestHandler {
 
     @Autowired
     private CityService cityService;
+
+    @Autowired
+    private ScheduleFactory scheduleFactory;
 
 
     @ApiOperation(value = "Create mass", response = Mass.class)
@@ -102,8 +108,9 @@ public class MassController extends AbstractRestHandler {
     @ResponseStatus(HttpStatus.OK)
     public UpdateEntityInfo removeMass(@PathVariable("massId") String id, HttpServletRequest request,
                                        HttpServletResponse response) {
-        checkResourceFound(this.massService.getMass(id));
-        this.massService.removeMass(id);
+        Mass mass = this.massService.getMass(id);
+        checkResourceFound(mass);
+        this.massService.removeMass(mass);
         return new UpdateEntityInfo(id, UpdateEntityInfo.STATUS.DELETED);
     }
 
@@ -140,12 +147,13 @@ public class MassController extends AbstractRestHandler {
            }
         }
         if(date == null){
-            date = LocalDate.now();
+            date = LocalDateTime.now(ZoneId.of("Europe/Minsk")).toLocalDate();
         }
 
-        MassSchedule massHolder = new MassSchedule(date);
 
-        massHolder.build(masses).buildSchedule();
+        MassSchedule massHolder = scheduleFactory.build(masses, date);
+
+        massHolder.createSchedule();
 
         if(log.isDebugEnabled()){
             log.debug(String.format("%s masses found: %s. Scheduler is built.", masses.size(), masses));

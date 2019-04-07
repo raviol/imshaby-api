@@ -2,7 +2,9 @@ package by.imsha.service;
 
 
 import by.imsha.domain.Parish;
+import by.imsha.domain.dto.MassParishInfo;
 import by.imsha.domain.dto.ParishInfo;
+import by.imsha.domain.dto.mapper.MassParishInfoMapper;
 import by.imsha.domain.dto.mapper.ParishInfoMapper;
 import by.imsha.repository.ParishRepository;
 import by.imsha.utils.ServiceUtils;
@@ -14,13 +16,10 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -37,10 +36,10 @@ public class ParishService {
         INSTANCE = this;
     }
 
-    public static ParishInfo extractParishInfo(String parishId){
+    public static MassParishInfo extractMassParishInfo(String parishId){
         Parish parish = INSTANCE.getParish(parishId);
-        return ParishInfoMapper.MAPPER.toParishInfo(parish);
-    };
+        return MassParishInfoMapper.MAPPER.toMassParishInfo(parish);
+    }
 
 
     private static Logger logger = LoggerFactory.getLogger(ParishService.class);
@@ -65,7 +64,7 @@ public class ParishService {
     }
 
     public Parish getParish(String id){
-        return parishRepository.findOne(id);
+        return parishRepository.findById(id);
     }
 
     public List<Parish> search(String filter){
@@ -79,6 +78,8 @@ public class ParishService {
                 logger.info("No searching parishes: query is blank");
             }
             return null;
+        }else{
+
         }
         int page = PAGE;
         int limitPerPage = LIMIT;
@@ -115,8 +116,9 @@ public class ParishService {
 
 
 //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public Parish updateParish(Parish parish){
-        return parishRepository.save(parish);
+    public Parish updateParish(ParishInfo parishInfo, Parish parishToUpdate){
+        ParishInfoMapper.MAPPER.updateParishFromDTO(parishInfo, parishToUpdate);
+        return parishRepository.save(parishToUpdate);
     }
 
     //TODO enable for production env

@@ -6,6 +6,8 @@ import by.imsha.repository.CityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.actuate.metrics.CounterService;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -36,20 +38,26 @@ public class CityService {
         return cityRepository.save(city);
     }
 
+    @Cacheable(cacheNames = "cityCache", key="'default'", unless = "#result != null")
     public City defaultCity(){
         return cityRepository.findByName(getDefaultCityName());
     }
 
+
+    @CacheEvict(cacheNames = "cityCache", condition = "#result != null")
     public void removeCity(String id) {
         cityRepository.delete(id);
     }
 
+    @CacheEvict(cacheNames = "cityCache", key = "#p0.id", condition = "#result != null")
     public City updateCity(City city) {
         return cityRepository.save(city);
     }
 
+
+    @Cacheable(cacheNames = "cityCache")
     public City retrieveCity(String id){
-        return cityRepository.findOne(id);
+        return cityRepository.findById(id);
     }
 
     public Page<City> getAllCities(Integer page, Integer size) {

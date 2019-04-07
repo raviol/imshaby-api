@@ -11,6 +11,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -40,6 +43,9 @@ public class MassService {
     @Autowired
     private MassRepository massRepository;
 
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId")
+    })
     public Mass createMass(Mass mass){
         return massRepository.save(mass);
     }
@@ -48,10 +54,11 @@ public class MassService {
         return massRepository.save(masses);
     }
 
-    public Mass getMassByParish(String parishId){
+    public List<Mass> getMassByParish(String parishId){
         return massRepository.findByParishId(parishId);
     }
 
+    @Cacheable(cacheNames = "massCache", key = "'massesByCity:' + #cityId")
     public List<Mass> getMassByCity(String cityId){
 //        TODO check index for cityID and deleted.
         List<Mass> masses = massRepository.findByCityIdAndDeleted(cityId, false);
@@ -63,6 +70,7 @@ public class MassService {
         return masses;
     }
 
+    @Cacheable(cacheNames = "massCache")
     public Mass getMass(String id){
         return massRepository.findOne(id);
     }
@@ -118,14 +126,20 @@ public class MassService {
     }
 
 
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "massCache", key = "#p0.id"),
+            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId")
+    })
     public Mass updateMass(Mass mass){
         return massRepository.save(mass);
     }
 
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
-    public void removeMass(String id){
-        massRepository.delete(id);
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "massCache", key = "#p0.id"),
+            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId")
+    })
+    public void removeMass(Mass mass){
+        massRepository.delete(mass.getId());
     }
 
 

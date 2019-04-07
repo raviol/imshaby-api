@@ -1,24 +1,27 @@
 package by.imsha.domain.dto;
 
 import by.imsha.api.rest.serializers.CustomLocalDateTimeSerializer;
+import by.imsha.utils.ServiceUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
 
 /**
  * @author Alena Misan
  */
 public class MassInfo implements Serializable{
     private String langCode;
-    private ParishInfo parish;
+    private MassParishInfo parish;
     private int duration;
     private String info;
 
     @JsonSerialize(using= CustomLocalDateTimeSerializer.class)
     private LocalDateTime lastModifiedDate;
+
+    public boolean isNeedUpdate() {
+        return ServiceUtils.needUpdateFromNow(lastModifiedDate, parish.getUpdatePeriodInDays()) && parish.isNeedUpdate();
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -61,11 +64,11 @@ public class MassInfo implements Serializable{
         this.langCode = langCode;
     }
 
-    public ParishInfo getParish() {
+    public MassParishInfo getParish() {
         return parish;
     }
 
-    public void setParish(ParishInfo parish) {
+    public void setParish(MassParishInfo parish) {
         this.parish = parish;
     }
 

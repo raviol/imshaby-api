@@ -1,4 +1,4 @@
-
+﻿
 [![Build Status](https://travis-ci.org/childRon/imshaby-api.svg?branch=master)](https://travis-ci.org/childRon/imshaby-api)
 
 # imshaby-api
@@ -13,7 +13,7 @@ git push openshift HEAD
  Новый сервер MongoDB был добавлен к вашему окружению Jelastic PaaS. 
  
  Этот сервер выделен эксклюзивно для вас (без доступа для других пользователей), поэтому все ресурсы и производительность находятся под вашим контролем. Вы также можете настроить конфигурационные файлы через панель управления. 
- 
+
  Доступ к интерфейсу веб-администрирования RockMongo: 
  URL: https://mongodb48105-api-imshaby.mycloud.by 
  Логин: admin 
@@ -28,6 +28,11 @@ git push openshift HEAD
  Не следует использовать Localhost в коде приложения. MariaDB находится на выделенном сервере, поэтому вы должны использовать mongodb48105-api-imshaby.mycloud.by для подключения.
  
 
+#  CI/CD
+
+build war for prod: mvn clean install -Pprod
+
+mongod --port 27017 --dbpath "C:\Env\mongo\db"
 
 
 

@@ -1,22 +1,33 @@
 package by.imsha.domain;
 
 import by.imsha.api.rest.serializers.CustomLocalDateTimeSerializer;
+import by.imsha.utils.ServiceUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 
 /**
  */
+@Document
+@CompoundIndexes(
+        value = {@CompoundIndex(name = "unique_mass_index", def = "{'time': 1, 'days': 1, 'singleStartTimestamp':1, 'parishId':1}", unique = true)}
+
+        )
 public class Mass {
 
     @Id
@@ -42,16 +53,18 @@ public class Mass {
 //    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
 //    @JsonSerialize(using = LocalDateTimeSerializer.class)
 
+    @Indexed
     @Pattern(regexp = "^[0-2][0-9]:[0-5][0-9]$")
     private String time;
 
-
-//    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
+    //    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
+    @Indexed
     private int[] days;
 
 //    @ApiObjectField(description =  "Parish ID for mass", required = true)
     @NotNull
     @NotEmpty
+    @Indexed
     private String parishId;
 
 //    @ApiObjectField(description = "Flag defines whether mass is deleted by merchant-user", required = false)

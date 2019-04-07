@@ -5,6 +5,7 @@ package by.imsha.domain.dto;
 import by.imsha.api.rest.serializers.LocalDateSerializer;
 import by.imsha.api.rest.serializers.LocalTimeSerializer;
 import by.imsha.domain.Mass;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import java.io.Serializable;
@@ -68,6 +69,8 @@ public class MassDay implements Serializable{
         @JsonSerialize(using=LocalTimeSerializer.class)
         private LocalTime hour;
         private List<MassInfo> data;
+
+        @JsonIgnore
         private boolean active;
 
         MassHour(LocalTime hour, List<MassInfo> data) {

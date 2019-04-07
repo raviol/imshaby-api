@@ -9,7 +9,7 @@ import java.io.Serializable;
  */
 public class UpdateEntityInfo implements Serializable {
     public enum STATUS {
-        UPDATED, DELETED
+        UPDATED, DELETED, ERROR
     }
     private String id;
     private String status;

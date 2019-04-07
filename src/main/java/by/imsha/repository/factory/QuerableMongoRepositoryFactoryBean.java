@@ -22,6 +22,10 @@ import java.io.Serializable;
 public class QuerableMongoRepositoryFactoryBean<T extends Repository<S, ID>, S, ID extends Serializable> extends MongoRepositoryFactoryBean<T, S, ID> {
 
 
+    public QuerableMongoRepositoryFactoryBean(Class<? extends T> repositoryInterface) {
+        super(repositoryInterface);
+    }
+
     @Override
     protected RepositoryFactorySupport getFactoryInstance(MongoOperations operations) {
         return new QuerableMongoRepositoryFactory<S, ID>(operations);

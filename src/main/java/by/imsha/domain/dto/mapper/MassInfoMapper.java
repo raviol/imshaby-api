@@ -18,7 +18,7 @@ public interface MassInfoMapper {
 
     @Mappings({
             @Mapping(source = "notes", target = "info"),
-            @Mapping(target = "parish", expression = "java(by.imsha.service.ParishService.extractParishInfo(mass.getParishId()))")
+            @Mapping(target = "parish", expression = "java(by.imsha.service.ParishService.extractMassParishInfo(mass.getParishId()))")
     })
     MassInfo toMassInfo(Mass mass);
 }

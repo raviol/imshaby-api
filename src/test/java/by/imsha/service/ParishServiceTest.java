@@ -9,20 +9,17 @@ import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.CoreMatchers.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.util.List;
 
 /**
  * @author Alena Misan
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(Application.class)
-@WebIntegrationTest({"server.port=0"})
+//@RunWith(SpringJUnit4ClassRunner.class)
+
+//@SpringApplicationConfiguration(Application.class)
+//@WebIntegrationTest({"server.port=0"})
 public class ParishServiceTest {
 
     @Autowired

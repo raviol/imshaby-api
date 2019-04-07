@@ -1,6 +1,7 @@
 package by.imsha.api.rest.serializers;
 
 
+import by.imsha.utils.ServiceUtils;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -29,12 +30,9 @@ public class CustomLocalDateTimeSerializer extends JsonSerializer<LocalDateTime>
     @Override
     public void serialize(LocalDateTime date, JsonGenerator gen, SerializerProvider provider)
             throws IOException{
-        ZonedDateTime timeString = localDateTimeToZoneDateTime(date, ZoneId.systemDefault(), ZoneId.of("Europe/Minsk"));
+        ZonedDateTime timeString = ServiceUtils.localDateTimeToZoneDateTime(date, ZoneId.systemDefault(), ZoneId.of("Europe/Minsk"));
         gen.writeString(timeString.format(formatter));
     }
 
-    protected ZonedDateTime localDateTimeToZoneDateTime(LocalDateTime localDateTime, ZoneId fromZone, ZoneId toZone) {
-        ZonedDateTime date = ZonedDateTime.of(localDateTime, fromZone);
-        return date.withZoneSameInstant(toZone);
-    }
+
 }
