@@ -31,7 +31,7 @@ import java.util.Arrays;
  */
 @Document
 @CompoundIndexes(
-        value = {@CompoundIndex(name = "unique_mass_index", def = "{'time': 1, 'days': 1, 'singleStartTimestamp':1, 'parishId':1}", unique = true)}
+        value = {@CompoundIndex(name = "unique_mass_index_with_dates", def = "{'time': 1, 'days': 1, 'singleStartTimestamp':1, 'parishId':1, 'startDate':1, 'endDate':1}", unique = true)}
 
 )
 public class Mass {
