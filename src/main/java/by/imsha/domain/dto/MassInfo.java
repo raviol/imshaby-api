@@ -2,9 +2,14 @@ package by.imsha.domain.dto;
 
 import by.imsha.api.rest.serializers.CustomLocalDateTimeSerializer;
 import by.imsha.utils.ServiceUtils;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.apache.commons.lang3.builder.ToStringBuilder;
 
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -15,6 +20,11 @@ public class MassInfo implements Serializable{
     private MassParishInfo parish;
     private int duration;
     private String info;
+    @JsonIgnore
+    private LocalDate endDate;
+    @JsonIgnore
+    private LocalDate startDate;
+
 
     @JsonSerialize(using= CustomLocalDateTimeSerializer.class)
     private LocalDateTime lastModifiedDate;
@@ -26,34 +36,62 @@ public class MassInfo implements Serializable{
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
-        if (!(o instanceof MassInfo)) return false;
+
+        if (o == null || getClass() != o.getClass()) return false;
 
         MassInfo massInfo = (MassInfo) o;
 
-        if (duration != massInfo.duration) return false;
-        if (!langCode.equals(massInfo.langCode)) return false;
-        if (!parish.equals(massInfo.parish)) return false;
-        return info != null ? info.equals(massInfo.info) : massInfo.info == null;
+        return new EqualsBuilder()
+                .append(duration, massInfo.duration)
+                .append(langCode, massInfo.langCode)
+                .append(parish, massInfo.parish)
+                .append(info, massInfo.info)
+                .append(endDate, massInfo.endDate)
+                .append(startDate, massInfo.startDate)
+                .append(lastModifiedDate, massInfo.lastModifiedDate)
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        int result = langCode.hashCode();
-        result = 31 * result + parish.hashCode();
-        result = 31 * result + duration;
-        result = 31 * result + (info != null ? info.hashCode() : 0);
-        return result;
+        return new HashCodeBuilder(17, 37)
+                .append(langCode)
+                .append(parish)
+                .append(duration)
+                .append(info)
+                .append(endDate)
+                .append(startDate)
+                .append(lastModifiedDate)
+                .toHashCode();
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
     }
 
     @Override
     public String toString() {
-        return "MassInfo{" +
-                "langCode='" + langCode + '\'' +
-                ", parish=" + parish +
-                ", duration=" + duration +
-                ", info='" + info + '\'' +
-                ", lastModifiedDate=" + lastModifiedDate +
-                '}';
+        return new ToStringBuilder(this)
+                .append("langCode", langCode)
+                .append("parish", parish)
+                .append("duration", duration)
+                .append("info", info)
+                .append("endDate", endDate)
+                .append("startDate", startDate)
+                .append("lastModifiedDate", lastModifiedDate)
+                .toString();
     }
 
     public String getLangCode() {

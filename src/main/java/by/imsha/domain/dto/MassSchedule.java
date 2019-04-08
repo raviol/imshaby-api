@@ -12,6 +12,7 @@ import org.slf4j.LoggerFactory;
 import java.io.Serializable;
 import java.time.*;
 import java.util.*;
+import java.util.function.Predicate;
 
 /**
  * @author Alena Misan
@@ -58,7 +59,7 @@ public class MassSchedule implements Serializable {
     }
 
     public void populateContainers(Mass mass, DayOfWeek dayOfWeek, LocalTime time) {
-        addToWeekMasses(mass, dayOfWeek, time);
+       // addToWeekMasses(mass, dayOfWeek, time);
         addToMassesByDay(mass, dayOfWeek, time);
     }
 
@@ -97,11 +98,28 @@ public class MassSchedule implements Serializable {
                 for (Map.Entry<LocalTime, List<MassInfo>> massHourEntry : massHours.entrySet()) {
                     LocalTime hour = massHourEntry.getKey();
                     List<MassInfo> data = massHourEntry.getValue();
-                    MassDay.MassHour massHour = new MassDay.MassHour(hour, data);
-                    massDay.getMassHours().add(massHour);
+                    LocalDate date = massDay.getDate();
+                    Predicate<MassInfo> massInfoPredicate = massInfo ->
+                    {
+                        boolean result = false;
+                        if(massInfo.getStartDate() != null){
+                            result = massInfo.getStartDate().isAfter(date);
+                        }
+                        if(massInfo.getEndDate() != null && !result){
+                            result = massInfo.getEndDate().isBefore(date);
+                        }
+                        return result;
+                    };
+                    data.removeIf(massInfoPredicate);
+                    if(data.size() > 0) {
+                        MassDay.MassHour massHour = new MassDay.MassHour(hour, data);
+                        massDay.getMassHours().add(massHour);
+                    }
                 }
-                massDay.getMassHours().sort((h1, h2) -> h1.getHour().compareTo(h2.getHour()));
-                schedule.add(massDay);
+                if(massDay.getMassHours().size() > 0){
+                    massDay.getMassHours().sort((h1, h2) -> h1.getHour().compareTo(h2.getHour()));
+                    schedule.add(massDay);
+                }
             }
 
             startDate = startDate.plusDays(1);
