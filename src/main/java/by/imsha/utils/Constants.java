@@ -13,5 +13,6 @@ public class Constants {
 
     public static int PAGE = 0;
 
+    public static String DATE_FORMAT = "MM/dd/yyyy";
 
 }
