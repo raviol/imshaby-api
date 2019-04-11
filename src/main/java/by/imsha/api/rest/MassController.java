@@ -2,11 +2,14 @@ package by.imsha.api.rest;
 
 import by.imsha.domain.City;
 import by.imsha.domain.Mass;
+import by.imsha.domain.Parish;
 import by.imsha.domain.dto.MassSchedule;
+import by.imsha.domain.dto.UpdateEntitiesInfo;
 import by.imsha.domain.dto.UpdateEntityInfo;
 import by.imsha.exception.ResourceNotFoundException;
 import by.imsha.service.CityService;
 import by.imsha.service.MassService;
+import by.imsha.service.ParishService;
 import by.imsha.service.ScheduleFactory;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -28,6 +31,7 @@ import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -46,6 +50,10 @@ public class MassController extends AbstractRestHandler {
 
     @Autowired
     private MassService massService;
+
+
+    @Autowired
+    private ParishService parishService;
 
     @Autowired
     private CityService cityService;
@@ -113,6 +121,19 @@ public class MassController extends AbstractRestHandler {
         this.massService.removeMass(mass);
         return new UpdateEntityInfo(id, UpdateEntityInfo.STATUS.DELETED);
     }
+
+
+    @RequestMapping(method = RequestMethod.DELETE,
+            produces = {"application/json", "application/xml"})
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateEntitiesInfo removeMasses(@RequestParam(value="parishId", required = true) String parishId) {
+        Parish massParish = this.parishService.getParish(parishId);
+        checkResourceFound(massParish);
+        List<Mass> deletedMasses = this.massService.removeMasses(parishId);
+        return new UpdateEntitiesInfo(deletedMasses.stream()
+                .map(Mass::getId).collect(Collectors.toList()), UpdateEntitiesInfo.STATUS.DELETED);
+    }
+
 
 
     @RequestMapping(value = "/week",
