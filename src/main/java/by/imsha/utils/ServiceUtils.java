@@ -1,11 +1,21 @@
 package by.imsha.utils;
 
+import com.github.rutledgepaulv.qbuilders.builders.GeneralQueryBuilder;
+import com.github.rutledgepaulv.qbuilders.conditions.Condition;
+import com.github.rutledgepaulv.qbuilders.visitors.MongoVisitor;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+
+import static by.imsha.utils.Constants.LIMIT;
+import static by.imsha.utils.Constants.PAGE;
 
 /**
  * @author Alena Misan
@@ -57,6 +67,43 @@ public class ServiceUtils {
         return date.withZoneSameInstant(toZone);
     }
 
+    public static int[] calculateOffsetAndLimit(int offset, int limit){
+        int page = PAGE;
+        int limitPerPage = LIMIT;
+        if(offset > -1 && limit > 0){
+            if(offset % limit == 0){
+                page = offset;
+                limitPerPage = limit;
+            }else{
+                page = PAGE;
+                limitPerPage = limit;
+            }
+        }else if( limit < 0 && offset > 0 && offset % LIMIT == 0){
+            page = offset;
+            limitPerPage = LIMIT;
+        } else if(offset < 0 && limit > 0 && PAGE % limit == 0 ){
+            page = PAGE;
+            limitPerPage = limit;
+        }
+        int[] result = new int[2];
+        result[0] = page;
+        result[1] = limitPerPage;
+        return result;
+
+    }
+
+    public static Query buildMongoQuery(String sort, int page, int limitPerPage, Condition<GeneralQueryBuilder> condition, MongoVisitor mongoVisitor) {
+        Criteria criteria = condition.query(mongoVisitor);
+        Query query = new Query();
+        query.addCriteria(criteria);
+        query.with(new PageRequest(page, limitPerPage));
+        String[] sortValue = ServiceUtils.parseSortValue(sort);
+        if(sortValue != null){
+            Sort.Direction direction = sortValue[1].equals("+") ? Sort.Direction.ASC : Sort.Direction.DESC;
+            query.with(new Sort(direction, sortValue[0]));
+        }
+        return query;
+    }
     public static long dateTimeToUTCTimestamp(String day) throws DateTimeParseException{
         LocalDateTime date = null;
         if(day != null){
