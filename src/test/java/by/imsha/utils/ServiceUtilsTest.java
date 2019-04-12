@@ -34,6 +34,29 @@ public class ServiceUtilsTest {
     }
 
     @Test
+    public void testOffsetLimitPositive(){
+        int[] result = ServiceUtils.calculateOffsetAndLimit(0,20);
+        assertThat(result[0], equalTo(0));
+        assertThat(result[1], equalTo(20));
+    }
+
+
+    @Test
+    public void testOffsetLimitPaging(){
+        int[] result = ServiceUtils.calculateOffsetAndLimit(10,20);
+        assertThat(result[0], equalTo(0));
+        assertThat(result[1], equalTo(20));
+    }
+
+    @Test
+    public void testOffsetLimitNegative(){
+        int[] result = ServiceUtils.calculateOffsetAndLimit(3,5);
+        assertThat(result[0], equalTo(0));
+        assertThat(result[1], equalTo(5));
+    }
+
+
+    @Test
     public void checkDateToTimestamp(){
         long timestamp = ServiceUtils.dateToUTCTimestamp("03-12-2017");
         assertThat(timestamp, equalTo(1512259200L));

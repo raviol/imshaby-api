@@ -78,44 +78,20 @@ public class ParishService {
                 logger.info("No searching parishes: query is blank");
             }
             return null;
-        }else{
-
-        }
-        int page = PAGE;
-        int limitPerPage = LIMIT;
-        if(offset > 0 && limit > 0){
-            if(offset % limit == 0){
-                page = offset;
-                limitPerPage = limit;
-            }else{
-                page = PAGE;
-                limitPerPage = limit;
-            }
-        }else if( limit < 0 && offset > 0 && offset % LIMIT == 0){
-           page = offset;
-            limitPerPage = LIMIT;
-        } else if(offset < 0 && limit > 0 && PAGE % limit == 0 ){
-            page = PAGE;
-            limitPerPage = limit;
         }
 
+        int[] offsetAndLimit = ServiceUtils.calculateOffsetAndLimit(offset, limit);
         Condition<GeneralQueryBuilder> condition = pipeline.apply(filter, Parish.class);
-        Criteria criteria = condition.query(mongoVisitor);
-        Query query = new Query();
-        query.addCriteria(criteria);
-        query.with(new PageRequest(page, limitPerPage));
-        String[] sortValue = ServiceUtils.parseSortValue(sort);
-        if(sortValue != null){
-            Sort.Direction direction = sortValue[1].equals("+") ? Sort.Direction.ASC : Sort.Direction.DESC;
-            query.with(new Sort(direction, sortValue[0]));
-        }
+        Query query = ServiceUtils.buildMongoQuery(sort, offsetAndLimit[0], offsetAndLimit[1], condition, mongoVisitor);
         List<Parish> parishes = this.parishRepository.search(query, Parish.class);
         return parishes;
     }
 
 
 
-//    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
+
+
+    //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Parish updateParish(ParishInfo parishInfo, Parish parishToUpdate){
         ParishInfoMapper.MAPPER.updateParishFromDTO(parishInfo, parishToUpdate);
         return parishRepository.save(parishToUpdate);

@@ -94,35 +94,9 @@ public class MassService {
             }
             return null;
         }
-        int page = PAGE;
-        int limitPerPage = LIMIT;
-        if(offset > 0 && limit > 0){
-            if(offset % limit == 0){
-                page = offset;
-                limitPerPage = limit;
-            }else{
-                page = PAGE;
-                limitPerPage = limit;
-            }
-        }else if( limit < 0 && offset > 0 && offset % LIMIT == 0){
-            page = offset;
-            limitPerPage = LIMIT;
-        } else if(offset < 0 && limit > 0 && PAGE % limit == 0 ){
-            page = PAGE;
-            limitPerPage = limit;
-        }
-
+        int[] offsetAndLimit = ServiceUtils.calculateOffsetAndLimit(offset, limit);
         Condition<GeneralQueryBuilder> condition = pipeline.apply(filter, Mass.class);
-        Criteria criteria = condition.query(mongoVisitor);
-        Query query = new Query();
-        query.addCriteria(criteria);
-        query.with(new PageRequest(page, limitPerPage));
-        String[] sortValue = ServiceUtils.parseSortValue(sort);
-        if(sortValue != null){
-            Sort.Direction direction = sortValue[1].equals("+") ? Sort.Direction.ASC : Sort.Direction.DESC;
-            query.with(new Sort(direction, sortValue[0]));
-        }
-        return query;
+        return ServiceUtils.buildMongoQuery(sort, offsetAndLimit[0], offsetAndLimit[1], condition, mongoVisitor);
     }
 
 
@@ -142,5 +116,8 @@ public class MassService {
         massRepository.delete(mass.getId());
     }
 
+    public List<Mass> removeMasses(String parishId){
+        return massRepository.deleteByParishId(parishId);
+    }
 
 }
