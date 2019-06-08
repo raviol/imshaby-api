@@ -1,15 +1,15 @@
 package by.imsha.api.rest;
 
-import by.imsha.domain.City;
 import by.imsha.domain.Ping;
-import org.springframework.data.domain.Page;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Locale;
 
 /**
  * @author Alena Misan
@@ -30,7 +30,8 @@ public class PingController extends AbstractRestHandler {
     public @ResponseBody Resource<Ping> ping(HttpServletRequest request, HttpServletResponse response) {
         log.info("ping-o execution...");
 
-        return new Resource<Ping>(new Ping("1231312"));
+        Locale locale = RequestContextUtils.getLocale(request);
+        return new Resource<Ping>(new Ping("locale: " + locale));
     }
 
 

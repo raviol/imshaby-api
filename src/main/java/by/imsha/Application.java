@@ -6,11 +6,13 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.boot.web.support.SpringBootServletInitializer;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.annotation.PropertySources;
 import org.springframework.data.mongodb.config.EnableMongoAuditing;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -20,7 +22,6 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 @SpringBootApplication
 @ComponentScan(basePackages = {"by.imsha", "com.auth0"})
 
-@EnableAutoConfiguration()  // Sprint Boot Auto Configuration
 //@EnableAdminServer
 @EnableMongoRepositories(
         repositoryFactoryBeanClass = QuerableMongoRepositoryFactoryBean.class

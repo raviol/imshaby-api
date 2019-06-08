@@ -1,11 +1,15 @@
 package by.imsha.api.rest;
 
 import by.imsha.domain.City;
+import by.imsha.domain.LocalizedCity;
 import by.imsha.domain.dto.CityInfo;
+import by.imsha.domain.dto.LocalizedCityInfo;
 import by.imsha.domain.dto.UpdateEntityInfo;
 import by.imsha.domain.dto.mapper.CityMapper;
+import by.imsha.exception.InvalidLocaleException;
 import by.imsha.service.CityService;
 import io.swagger.annotations.ApiParam;
+import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -15,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.Enumeration;
+import java.util.Locale;
 
 /*
  * Demonstrates how to set up RESTful API endpoints using Spring MVC
@@ -36,6 +41,28 @@ public class CityController extends AbstractRestHandler {
                                  HttpServletRequest request, HttpServletResponse response) {
         City createdCity = this.cityService.createCity(new City(city.getName()));
         return createdCity;
+    }
+
+    @RequestMapping(value = "/{cityId}/lang/{lc}",
+            method = RequestMethod.PUT,
+            consumes = {"application/json", "application/xml"},
+            produces = {"application/json", "application/xml"})
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateEntityInfo createLocalizedCity(@Valid @RequestBody LocalizedCityInfo cityInfo,
+                                    @PathVariable("cityId") String id,
+                                    @PathVariable("lc") String locale,
+                                    HttpServletRequest request, HttpServletResponse response) {
+        City origin = this.cityService.retrieveCity(id);
+        checkResourceFound(origin);
+        Locale localeObj = new Locale(locale);
+        if(!LocaleUtils.isAvailableLocale(localeObj)){
+            throw new InvalidLocaleException("Invalid lang specified : " + locale);
+        }
+        LocalizedCity localizedCity = new LocalizedCity(localeObj, id, cityInfo.getName());
+        origin.getLocalizedInfo().put(localeObj, localizedCity);
+
+        City updatedCity = this.cityService.updateCity(origin);
+        return new UpdateEntityInfo(updatedCity.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
 
     @RequestMapping(value = "",

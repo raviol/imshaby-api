@@ -1,12 +1,15 @@
 package by.imsha.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import by.imsha.utils.ServiceUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  *
@@ -24,9 +27,16 @@ public class City {
     @Indexed(unique = true)
     private String name;
 
+//    @JsonIgnore
+    private Map<Locale, LocalizedBaseInfo> localizedInfo = new HashMap<>();
 
     public String getName() {
-        return name;
+        LocalizedBaseInfo localizedBaseInfo = ServiceUtils.fetchLocalizedObject(getLocalizedInfo());
+        String calculatedName = name;
+        if(localizedBaseInfo != null){
+            calculatedName = ((LocalizedCity) localizedBaseInfo).getName();
+        }
+        return calculatedName;
     }
 
     public void setName(String name) {
@@ -48,6 +58,13 @@ public class City {
     public City() {
     }
 
+    public Map<Locale, LocalizedBaseInfo> getLocalizedInfo() {
+        return localizedInfo;
+    }
+
+    public void setLocalizedInfo(Map<Locale, LocalizedBaseInfo> localizedInfo) {
+        this.localizedInfo = localizedInfo;
+    }
 
     @Override
     public boolean equals(Object o) {
