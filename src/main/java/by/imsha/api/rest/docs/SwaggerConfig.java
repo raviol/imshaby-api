@@ -1,20 +1,17 @@
 package by.imsha.api.rest.docs;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
-import springfox.documentation.swagger2.annotations.EnableSwagger2;
+import springfox.documentation.swagger.web.UiConfiguration;
 
 
-@Configuration
-@EnableSwagger2
-@ComponentScan("by.imsha.api.rest")
+//@Configuration
+//@EnableSwagger2
+//@ComponentScan("by.imsha.api.rest")
 public class SwaggerConfig {
 
     public static final String DEFAULT_INCLUDE_PATTERNS = "/api/.*";
@@ -28,6 +25,10 @@ public class SwaggerConfig {
                 .apiInfo(apiInfo());
     }
 
+    @Bean
+    public UiConfiguration uiConfig() {
+        return UiConfiguration.DEFAULT;
+    }
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo(
                 "Imsha.by REST API",
