@@ -4,7 +4,6 @@ import by.imsha.api.rest.serializers.CustomLocalDateTimeSerializer;
 import by.imsha.api.rest.serializers.LocalDateDeserializer;
 import by.imsha.api.rest.serializers.LocalDateSerializer;
 import by.imsha.utils.ServiceUtils;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.ArrayUtils;
@@ -16,15 +15,17 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * TODO refactor Mass model to have different types of Masses
@@ -79,6 +80,15 @@ public class Mass {
     //    @ApiObjectField(description = "Notes for mass created", required = false)
     private String notes;
 
+    private Map<Locale, LocalizedMass> localizedInfo = new HashMap<>();
+
+    public Map<Locale, LocalizedMass> getLocalizedInfo() {
+        return localizedInfo;
+    }
+
+    public void setLocalizedInfo(Map<Locale, LocalizedMass> localizedInfo) {
+        this.localizedInfo = localizedInfo;
+    }
 
     //    @ApiObjectField(description = "Start time for non regular mass, that occurs and is defined only once", required = false)
     private long singleStartTimestamp;
@@ -234,7 +244,13 @@ public class Mass {
     }
 
     public String getNotes() {
-        return notes;
+        LocalizedMass localizedMass = getLocalizedInfo().
+                get(RequestContextUtils.getLocale(ServiceUtils.getCurrentHttpRequest().get()));
+        String calculatedNotes = notes;
+        if(localizedMass != null){
+            calculatedNotes =  localizedMass.getNotes();
+        }
+        return calculatedNotes;
     }
 
     public void setNotes(String notes) {

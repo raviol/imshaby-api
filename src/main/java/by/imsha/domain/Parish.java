@@ -12,9 +12,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Represent Parish class
@@ -45,6 +45,9 @@ public class Parish {
     private Coordinate gps;
 
     private Integer updatePeriodInDays = 14;
+
+    private Map<Locale, LocalizedBaseInfo> localizedInfo = new HashMap<>();
+
 
     private boolean needUpdate;
 
@@ -159,7 +162,13 @@ public class Parish {
     }
 
     public String getName() {
-        return name;
+        LocalizedBaseInfo localizedBaseInfo;
+        localizedBaseInfo = ServiceUtils.fetchLocalizedObject(getLocalizedInfo());
+        String calculatedName = name;
+        if(localizedBaseInfo != null){
+            calculatedName = ((LocalizedParish) localizedBaseInfo).getName();
+        }
+        return calculatedName;
     }
 
     public void setName(String name) {
@@ -167,7 +176,12 @@ public class Parish {
     }
 
     public String getAddress() {
-        return address;
+        LocalizedBaseInfo localizedBaseInfo = ServiceUtils.fetchLocalizedObject(getLocalizedInfo());
+        String calcAddress = address;
+        if(localizedBaseInfo != null){
+            calcAddress = ((LocalizedParish)localizedBaseInfo).getAddress();
+        }
+        return calcAddress;
     }
 
     public void setAddress(String address) {
@@ -245,5 +259,13 @@ public class Parish {
 
     public void setLastModifiedEmail(String lastModifiedEmail) {
         this.lastModifiedEmail = lastModifiedEmail;
+    }
+
+    public Map<Locale, LocalizedBaseInfo> getLocalizedInfo() {
+        return localizedInfo;
+    }
+
+    public void setLocalizedInfo(Map<Locale, LocalizedBaseInfo> localizedInfo) {
+        this.localizedInfo = localizedInfo;
     }
 }

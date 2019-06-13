@@ -3,11 +3,12 @@ package by.imsha.domain.dto;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 
 /**
  * @author Alena Misan
  */
-public class LocalizedCityInfo {
+public class LocalizedCityInfo implements Serializable {
     @NotNull
     @NotEmpty
     private String name;

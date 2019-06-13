@@ -1,19 +1,19 @@
 package by.imsha.api.rest;
 
+import by.imsha.domain.LocalizedParish;
 import by.imsha.domain.Mass;
 import by.imsha.domain.Parish;
 import by.imsha.domain.dto.CascadeUpdateEntityInfo;
+import by.imsha.domain.dto.LocalizedParishInfo;
 import by.imsha.domain.dto.ParishInfo;
 import by.imsha.domain.dto.UpdateEntityInfo;
-import by.imsha.exception.DataFormatException;
-import by.imsha.exception.ValidationError;
-import by.imsha.exception.ValidationErrorBuilder;
+import by.imsha.exception.InvalidLocaleException;
 import by.imsha.service.MassService;
 import by.imsha.service.ParishService;
+import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.linkTo;
 import static org.springframework.hateoas.mvc.ControllerLinkBuilder.methodOn;
@@ -74,6 +75,27 @@ public class ParishController extends AbstractRestHandler {
         Parish parishToUpdate = this.parishService.getParish(id);
         checkResourceFound(parishToUpdate);
         Parish updatedParish = this.parishService.updateParish(parishInfo, parishToUpdate );
+        return new UpdateEntityInfo(updatedParish.getId(), UpdateEntityInfo.STATUS.UPDATED);
+    }
+
+    @RequestMapping(value = "/{parishId}/lang/{lc}",
+            method = RequestMethod.PUT,
+            consumes = {"application/json"},
+            produces = {"application/json"})
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateEntityInfo createLocalizedParish(@PathVariable("parishId") String id, @PathVariable("lc") String locale,
+                                                  @RequestBody LocalizedParishInfo localizedParishInfo){
+        Parish parishToUpdate = this.parishService.getParish(id);
+        checkResourceFound(parishToUpdate);
+        Locale localeObj = new Locale(locale);
+        if(!LocaleUtils.isAvailableLocale(localeObj)){
+            throw new InvalidLocaleException("Invalid lang specified : " + locale);
+        }
+        LocalizedParish localizedParish = new LocalizedParish(localeObj, id);
+        localizedParish.setAddress(localizedParishInfo.getAddress());
+        localizedParish.setName(localizedParishInfo.getName());
+        parishToUpdate.getLocalizedInfo().put(localeObj, localizedParish);
+        Parish updatedParish = this.parishService.updateParish(parishToUpdate);
         return new UpdateEntityInfo(updatedParish.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
 
