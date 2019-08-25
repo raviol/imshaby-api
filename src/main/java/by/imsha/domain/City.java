@@ -1,6 +1,8 @@
 package by.imsha.domain;
 
 import by.imsha.utils.ServiceUtils;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
@@ -17,6 +19,7 @@ import java.util.Map;
  *
  */
 @Document
+@ApiModel
 public class City {
 
     @Id
@@ -28,9 +31,13 @@ public class City {
     private String name;
 
 //    @JsonIgnore
+    @ApiModelProperty(value = "key <*> is language code")
     private Map<Locale, LocalizedBaseInfo> localizedInfo = new HashMap<>();
-
     public String getName() {
+        return this.name;
+    }
+
+    public String getLocalizedName() {
         LocalizedBaseInfo localizedBaseInfo = ServiceUtils.fetchLocalizedObject(getLocalizedInfo());
         String calculatedName = name;
         if(localizedBaseInfo != null){

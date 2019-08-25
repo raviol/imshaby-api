@@ -1,6 +1,6 @@
 package by.imsha.domain.dto;
 
-import by.imsha.api.rest.serializers.CustomLocalDateTimeSerializer;
+import by.imsha.rest.serializers.CustomLocalDateTimeSerializer;
 import by.imsha.utils.ServiceUtils;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

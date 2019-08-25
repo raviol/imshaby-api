@@ -1,6 +1,6 @@
 package by.imsha.domain.dto;
 
-import org.springframework.data.annotation.Transient;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.io.Serializable;
 
@@ -12,6 +12,8 @@ public class UpdateEntityInfo implements Serializable {
         UPDATED, DELETED, ERROR
     }
     private String id;
+
+    @ApiModelProperty(allowableValues = "UPDATED, DELETED, ERROR")
     private String status;
 
     public UpdateEntityInfo(String id, STATUS status) {

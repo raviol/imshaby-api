@@ -1,4 +1,4 @@
-package by.imsha.api.rest.docs;
+package by.imsha.rest.docs;
 
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.PathSelectors;
@@ -7,6 +7,7 @@ import springfox.documentation.service.ApiInfo;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger.web.UiConfiguration;
+import springfox.documentation.swagger.web.UiConfigurationBuilder;
 
 
 //@Configuration
@@ -27,7 +28,7 @@ public class SwaggerConfig {
 
     @Bean
     public UiConfiguration uiConfig() {
-        return UiConfiguration.DEFAULT;
+        return UiConfigurationBuilder.builder().build();
     }
     private ApiInfo apiInfo() {
         ApiInfo apiInfo = new ApiInfo(

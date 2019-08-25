@@ -1,10 +1,12 @@
 package by.imsha.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import io.swagger.annotations.ApiModel;
 
 import java.util.Locale;
 import java.util.Objects;
 
+@ApiModel
 public class LocalizedBaseInfo {
     @JsonIgnore
     private Locale locale;

@@ -1,4 +1,4 @@
-package by.imsha.api.rest.serializers;
+package by.imsha.rest.serializers;
 
 import by.imsha.utils.ServiceUtils;
 import org.junit.Before;

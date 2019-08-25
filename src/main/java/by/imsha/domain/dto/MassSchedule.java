@@ -1,17 +1,19 @@
 package by.imsha.domain.dto;
 
-import by.imsha.api.rest.serializers.LocalDateSerializer;
 import by.imsha.domain.Mass;
 import by.imsha.domain.dto.mapper.MassInfoMapper;
-import by.imsha.utils.ServiceUtils;
+import by.imsha.rest.serializers.LocalDateSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
-import java.time.*;
-import java.util.*;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Predicate;
 
 /**

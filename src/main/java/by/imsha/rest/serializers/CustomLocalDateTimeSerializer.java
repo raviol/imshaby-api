@@ -1,4 +1,4 @@
-package by.imsha.api.rest.serializers;
+package by.imsha.rest.serializers;
 
 
 import by.imsha.utils.ServiceUtils;
@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;

@@ -2,9 +2,8 @@ package by.imsha.domain.dto;
 
 //import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
-import by.imsha.api.rest.serializers.LocalDateSerializer;
-import by.imsha.api.rest.serializers.LocalTimeSerializer;
-import by.imsha.domain.Mass;
+import by.imsha.rest.serializers.LocalDateSerializer;
+import by.imsha.rest.serializers.LocalTimeSerializer;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 

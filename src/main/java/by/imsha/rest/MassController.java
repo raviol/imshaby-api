@@ -1,4 +1,4 @@
-package by.imsha.api.rest;
+package by.imsha.rest;
 
 import by.imsha.domain.City;
 import by.imsha.domain.Mass;
@@ -62,11 +62,11 @@ public class MassController extends AbstractRestHandler {
     private ScheduleFactory scheduleFactory;
 
 
-    @ApiOperation(value = "Create mass", response = Mass.class)
+    @ApiOperation( value=  "Create mass", response = Mass.class)
     @RequestMapping(value = "",
             method = RequestMethod.POST,
-            consumes = {"application/json", "application/xml"},
-            produces = {"application/json", "application/xml"})
+            consumes = {"application/json"},
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Mass> createMass(@Valid @RequestBody Mass mass, HttpServletRequest request, HttpServletResponse response){
         return ResponseEntity.ok().body(massService.createMass(mass));
@@ -95,36 +95,33 @@ public class MassController extends AbstractRestHandler {
     @ApiOperation(value = "Update mass with data provided")
     @RequestMapping(value = "/{massId}",
             method = RequestMethod.PUT,
-            consumes = {"application/json", "application/xml"},
-            produces = {"application/json", "application/xml"})
+            consumes = {"application/json"},
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
-    public Resource<Mass> updateMass(@PathVariable("massId") String id,@Valid @RequestBody Mass mass,
-                             HttpServletRequest request, HttpServletResponse response) {
+    public UpdateEntityInfo updateMass(@PathVariable("massId") String id,@Valid @RequestBody Mass mass) {
         Mass massForUpdate = this.massService.getMass(id);
         checkResourceFound(massForUpdate);
         // TODO check implementation??
         mass.setId(id);
         Mass updatedMass = this.massService.updateMass(mass);
-        Resource<Mass> massResource = new Resource<Mass>(updatedMass);
-        massResource.add(linkTo(methodOn(MassController.class).updateMass(id,mass,request, response)).withSelfRel());
-        return massResource;
+        return new UpdateEntityInfo(updatedMass.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
 
+    @ApiOperation(value = "Remove mass by ID")
     @RequestMapping(value = "/{massId}",
             method = RequestMethod.DELETE,
-            produces = {"application/json", "application/xml"})
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
-    public UpdateEntityInfo removeMass(@PathVariable("massId") String id, HttpServletRequest request,
-                                       HttpServletResponse response) {
+    public UpdateEntityInfo removeMass(@PathVariable("massId") String id) {
         Mass mass = this.massService.getMass(id);
         checkResourceFound(mass);
         this.massService.removeMass(mass);
         return new UpdateEntityInfo(id, UpdateEntityInfo.STATUS.DELETED);
     }
 
-
+    @ApiOperation(value = "Remove masses for parish")
     @RequestMapping(method = RequestMethod.DELETE,
-            produces = {"application/json", "application/xml"})
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     public UpdateEntitiesInfo removeMasses(@RequestParam(value="parishId", required = true) String parishId) {
         Parish massParish = this.parishService.getParish(parishId);
@@ -187,18 +184,17 @@ public class MassController extends AbstractRestHandler {
 
 
 
+    @ApiOperation(value = "Filter masses using query language")
     @RequestMapping(value = "",
             method = RequestMethod.GET,
-            consumes = {"application/json", "application/xml"},
-            produces = {"application/json", "application/xml"})
+            consumes = {"application/json"},
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<Mass> filterMasses(@RequestParam("filter") String filter,
                                        @RequestParam(value="offset", required = false, defaultValue = "0") String page,
                                        @RequestParam(value="limit", required = false, defaultValue = "10") String perPage,
-                                       @RequestParam(value="sort", required = false, defaultValue = "+name") String sorting,
-                                       HttpServletRequest request, HttpServletResponse response ){
-//        massService.search(filter);
+                                       @RequestParam(value="sort", required = false, defaultValue = "+name") String sorting){
         return massService.search(filter, Integer.parseInt(page), Integer.parseInt(perPage), sorting);
     }
 
