@@ -37,6 +37,49 @@ mongod --port 27017 --dbpath "C:\Env\mongo\db"
 
 export from beta: mongoexport --db api --collection city --username admin --password Hvd6jxKpiF --authenticationDatabase admin --jsonArray --out /tmp/city-pretty.json
 
+#  CI/CD in local k8s cluster (minkube on local VM)
+### Build jar & docker image 
+```bash
+> sh build/build_imshaby_api.sh
+```
+### Deploy ImshaBy API & MongoDB single-pod clusters
+```bash
+> sh build/deploy_all.sh
+```
+### Destroy ImshaBy API & MongoDB single-pod clusters
+```bash
+> sh build/destroy_all.sh
+```
+### ImshaBy API helm chart configuration (values-<env_to_deploy>.yaml)
+```yaml
+# count of service API pods
+replicaCount: 1 
+image:
+  # docker repository
+  repository: local/imshaby-api
+  # image tag
+  tag: v1.0
+  # policy to pull docker image
+  pullPolicy: IfNotPresent
 
-
-
+# spring active profile
+activeProfile: local
+  
+mongodb:
+  # mongodb instance host
+  host: mongodb
+  # mongodb instance port
+  port: 27017
+  # mongodb instance database name
+  database: api
+  # mongodb user name
+  user: api_admin
+  # mongodb password
+  password: api_admin
+  
+service:
+  # Load balancing type
+  type: ClusterIP
+  # Load balancing outcome port
+  port: 3000
+```
