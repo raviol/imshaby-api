@@ -15,7 +15,6 @@ import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.validation.constraints.AssertTrue;
 import javax.validation.constraints.NotNull;
@@ -80,13 +79,13 @@ public class Mass {
     //    @ApiObjectField(description = "Notes for mass created", required = false)
     private String notes;
 
-    private Map<Locale, LocalizedMass> localizedInfo = new HashMap<>();
+    private Map<String, LocalizedMass> localizedInfo = new HashMap<>();
 
-    public Map<Locale, LocalizedMass> getLocalizedInfo() {
+    public Map<String, LocalizedMass> getLocalizedInfo() {
         return localizedInfo;
     }
 
-    public void setLocalizedInfo(Map<Locale, LocalizedMass> localizedInfo) {
+    public void setLocalizedInfo(Map<String, LocalizedMass> localizedInfo) {
         this.localizedInfo = localizedInfo;
     }
 
@@ -244,8 +243,8 @@ public class Mass {
     }
 
     public String getNotes() {
-        LocalizedMass localizedMass = getLocalizedInfo().
-                get(RequestContextUtils.getLocale(ServiceUtils.getCurrentHttpRequest().get()));
+        LocalizedMass localizedMass = getLocalizedInfo().get(ServiceUtils.fetchUserLangFromHttpRequest());
+
         String calculatedNotes = notes;
         if(localizedMass != null){
             calculatedNotes =  localizedMass.getNotes();

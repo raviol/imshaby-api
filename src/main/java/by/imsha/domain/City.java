@@ -32,13 +32,14 @@ public class City {
 
 //    @JsonIgnore
     @ApiModelProperty(value = "key <*> is language code")
-    private Map<Locale, LocalizedBaseInfo> localizedInfo = new HashMap<>();
+    private Map<String, LocalizedBaseInfo> localizedInfo = new HashMap<>();
+
     public String getName() {
         return this.name;
     }
 
     public String getLocalizedName() {
-        LocalizedBaseInfo localizedBaseInfo = ServiceUtils.fetchLocalizedObject(getLocalizedInfo());
+        LocalizedBaseInfo localizedBaseInfo = getLocalizedInfo().get(ServiceUtils.fetchUserLangFromHttpRequest());
         String calculatedName = name;
         if(localizedBaseInfo != null){
             calculatedName = ((LocalizedCity) localizedBaseInfo).getName();
@@ -65,11 +66,11 @@ public class City {
     public City() {
     }
 
-    public Map<Locale, LocalizedBaseInfo> getLocalizedInfo() {
+    public Map<String, LocalizedBaseInfo> getLocalizedInfo() {
         return localizedInfo;
     }
 
-    public void setLocalizedInfo(Map<Locale, LocalizedBaseInfo> localizedInfo) {
+    public void setLocalizedInfo(Map<String, LocalizedBaseInfo> localizedInfo) {
         this.localizedInfo = localizedInfo;
     }
 

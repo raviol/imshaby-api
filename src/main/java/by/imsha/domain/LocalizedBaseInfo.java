@@ -2,31 +2,31 @@ package by.imsha.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 
-import java.util.Locale;
-import java.util.Objects;
 
 @ApiModel
 public class LocalizedBaseInfo {
     @JsonIgnore
-    private Locale locale;
+    private String lang;
     @JsonIgnore
     private String originObjId;
 
     public LocalizedBaseInfo() {
     }
 
-    public LocalizedBaseInfo(Locale locale, String originObjId) {
-        this.locale = locale;
+    public LocalizedBaseInfo(String lang, String originObjId) {
+        this.lang = lang;
         this.originObjId = originObjId;
     }
 
-    public Locale getLocale() {
-        return locale;
+    public String getLang() {
+        return lang;
     }
 
-    public void setLocale(Locale locale) {
-        this.locale = locale;
+    public void setLang(String lang) {
+        this.lang = lang;
     }
 
     public String getOriginObjId() {
@@ -40,14 +40,22 @@ public class LocalizedBaseInfo {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
+
         if (o == null || getClass() != o.getClass()) return false;
+
         LocalizedBaseInfo that = (LocalizedBaseInfo) o;
-        return Objects.equals(getLocale(), that.getLocale()) &&
-                Objects.equals(getOriginObjId(), that.getOriginObjId());
+
+        return new EqualsBuilder()
+                .append(getLang(), that.getLang())
+                .append(getOriginObjId(), that.getOriginObjId())
+                .isEquals();
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(getLocale(), getOriginObjId());
+        return new HashCodeBuilder(17, 37)
+                .append(getLang())
+                .append(getOriginObjId())
+                .toHashCode();
     }
 }

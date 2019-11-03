@@ -54,15 +54,15 @@ public class CityController extends AbstractRestHandler {
     public UpdateEntityInfo createLocalizedCity(@Valid @RequestBody LocalizedCityInfo cityInfo,
                                     @PathVariable("cityId") String id,
                                      @ApiParam(value = "Language code according ISO 639-1/ISO 639-2 spec" )
-                                    @PathVariable("lc") String locale) {
+                                    @PathVariable("lc") String lang) {
         City origin = this.cityService.retrieveCity(id);
         checkResourceFound(origin);
-        Locale localeObj = new Locale(locale);
+        Locale localeObj = new Locale(lang);
         if(!LocaleUtils.isAvailableLocale(localeObj)){
-            throw new InvalidLocaleException("Invalid lang specified (please specify ISO 639-1/ISO 639-2 lang code : " + locale);
+            throw new InvalidLocaleException("Invalid lang specified (please specify ISO 639-1/ISO 639-2 lang code : " + lang);
         }
-        LocalizedCity localizedCity = new LocalizedCity(localeObj, id, cityInfo.getName());
-        origin.getLocalizedInfo().put(localeObj, localizedCity);
+        LocalizedCity localizedCity = new LocalizedCity(lang, id, cityInfo.getName());
+        origin.getLocalizedInfo().put(lang, localizedCity);
 
         City updatedCity = this.cityService.updateCity(origin);
         return new UpdateEntityInfo(updatedCity.getId(), UpdateEntityInfo.STATUS.UPDATED);

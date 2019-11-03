@@ -5,8 +5,8 @@ import java.util.Objects;
 
 public class LocalizedCity extends LocalizedBaseInfo {
 
-    public LocalizedCity(Locale locale, String originObjId, String name) {
-        super(locale, originObjId);
+    public LocalizedCity(String lang, String originObjId, String name) {
+        super(lang, originObjId);
         this.name = name;
     }
 

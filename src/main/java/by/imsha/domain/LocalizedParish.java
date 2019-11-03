@@ -1,12 +1,11 @@
 package by.imsha.domain;
 
-import java.util.Locale;
 
 public class LocalizedParish extends LocalizedBaseInfo {
     private String name;
     private String address;
-    public LocalizedParish(Locale locale, String originObjId) {
-        super(locale, originObjId);
+    public LocalizedParish(String lang, String originObjId) {
+        super(lang, originObjId);
     }
 
     public String getName() {

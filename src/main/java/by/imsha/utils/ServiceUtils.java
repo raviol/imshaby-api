@@ -31,6 +31,8 @@ import static by.imsha.utils.Constants.PAGE;
 public class ServiceUtils {
 
     private static String dateFormat = "dd-MM-yyyy";
+    private static String langParamName = "lang";
+
     private static String timeFormat = "dd-MM-yyyy HH:mm";
 
 
@@ -106,9 +108,14 @@ public class ServiceUtils {
                 .map(ServletRequestAttributes::getRequest);
     }
 
-    public static LocalizedBaseInfo fetchLocalizedObject(Map<Locale, LocalizedBaseInfo> localizedInfoMap){
-        Locale requestLocale = RequestContextUtils.getLocale(ServiceUtils.getCurrentHttpRequest().get());
-        return localizedInfoMap.get(requestLocale);
+    public static String fetchUserLangFromHttpRequest(){
+        HttpServletRequest httpServletRequest = ServiceUtils.getCurrentHttpRequest().get();
+        String paramLang = httpServletRequest.getParameter(langParamName);
+        if(StringUtils.isEmpty(paramLang)){
+            //it's ok to determine lang as part of locale as fallback user language
+            paramLang = RequestContextUtils.getLocale(httpServletRequest).getLanguage();
+        }
+        return paramLang;
     }
     public static Query buildMongoQuery(String sort, int page, int limitPerPage, Condition<GeneralQueryBuilder> condition, MongoVisitor mongoVisitor) {
         Criteria criteria = condition.query(mongoVisitor);

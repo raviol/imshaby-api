@@ -48,7 +48,7 @@ public class Parish {
 
     private Integer updatePeriodInDays = 14;
 
-    private Map<Locale, LocalizedBaseInfo> localizedInfo = new HashMap<>();
+    private Map<String, LocalizedBaseInfo> localizedInfo = new HashMap<>();
 
 
     private boolean needUpdate;
@@ -164,8 +164,7 @@ public class Parish {
     }
 
     public String getName() {
-        LocalizedBaseInfo localizedBaseInfo;
-        localizedBaseInfo = ServiceUtils.fetchLocalizedObject(getLocalizedInfo());
+        LocalizedBaseInfo localizedBaseInfo = getLocalizedInfo().get(ServiceUtils.fetchUserLangFromHttpRequest());
         String calculatedName = name;
         if(localizedBaseInfo != null){
             calculatedName = ((LocalizedParish) localizedBaseInfo).getName();
@@ -178,7 +177,7 @@ public class Parish {
     }
 
     public String getAddress() {
-        LocalizedBaseInfo localizedBaseInfo = ServiceUtils.fetchLocalizedObject(getLocalizedInfo());
+        LocalizedBaseInfo localizedBaseInfo = getLocalizedInfo().get(ServiceUtils.fetchUserLangFromHttpRequest());
         String calcAddress = address;
         if(localizedBaseInfo != null){
             calcAddress = ((LocalizedParish)localizedBaseInfo).getAddress();
@@ -263,11 +262,11 @@ public class Parish {
         this.lastModifiedEmail = lastModifiedEmail;
     }
 
-    public Map<Locale, LocalizedBaseInfo> getLocalizedInfo() {
+    public Map<String, LocalizedBaseInfo> getLocalizedInfo() {
         return localizedInfo;
     }
 
-    public void setLocalizedInfo(Map<Locale, LocalizedBaseInfo> localizedInfo) {
+    public void setLocalizedInfo(Map<String, LocalizedBaseInfo> localizedInfo) {
         this.localizedInfo = localizedInfo;
     }
 }

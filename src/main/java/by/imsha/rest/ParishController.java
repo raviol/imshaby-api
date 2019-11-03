@@ -87,18 +87,18 @@ public class ParishController extends AbstractRestHandler {
             consumes = {"application/json"},
             produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
-    public UpdateEntityInfo createLocalizedParish(@PathVariable("parishId") String id, @PathVariable("lc") String locale,
+    public UpdateEntityInfo createLocalizedParish(@PathVariable("parishId") String id, @PathVariable("lc") String lang,
                                                   @RequestBody LocalizedParishInfo localizedParishInfo){
         Parish parishToUpdate = this.parishService.getParish(id);
         checkResourceFound(parishToUpdate);
-        Locale localeObj = new Locale(locale);
+        Locale localeObj = new Locale(lang);
         if(!LocaleUtils.isAvailableLocale(localeObj)){
-            throw new InvalidLocaleException("Invalid lang specified : " + locale);
+            throw new InvalidLocaleException("Invalid lang specified : " + lang);
         }
-        LocalizedParish localizedParish = new LocalizedParish(localeObj, id);
+        LocalizedParish localizedParish = new LocalizedParish(lang, id);
         localizedParish.setAddress(localizedParishInfo.getAddress());
         localizedParish.setName(localizedParishInfo.getName());
-        parishToUpdate.getLocalizedInfo().put(localeObj, localizedParish);
+        parishToUpdate.getLocalizedInfo().put(lang, localizedParish);
         Parish updatedParish = this.parishService.updateParish(parishToUpdate);
         return new UpdateEntityInfo(updatedParish.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
