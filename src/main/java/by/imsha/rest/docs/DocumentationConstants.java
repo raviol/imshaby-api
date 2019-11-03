@@ -1,4 +1,4 @@
-package by.imsha.api.rest.docs;
+package by.imsha.rest.docs;
 
 
 public class  DocumentationConstants {

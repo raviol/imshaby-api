@@ -1,15 +1,13 @@
-package by.imsha.api.rest.serializers;
+package by.imsha.rest.serializers;
 
 import by.imsha.domain.Parish;
-
-import static org.hamcrest.MatcherAssert.*;
-
-import static org.hamcrest.CoreMatchers.*;
-import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 /**
  * @author Alena Misan

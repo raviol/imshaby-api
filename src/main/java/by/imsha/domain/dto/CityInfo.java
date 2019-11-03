@@ -1,6 +1,6 @@
 package by.imsha.domain.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import io.swagger.annotations.ApiModel;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
@@ -8,6 +8,7 @@ import javax.validation.constraints.NotNull;
 /**
  * @author Alena Misan
  */
+@ApiModel
 public class CityInfo {
     @NotNull
     @NotEmpty

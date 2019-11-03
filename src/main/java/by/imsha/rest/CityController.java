@@ -1,4 +1,4 @@
-package by.imsha.api.rest;
+package by.imsha.rest;
 
 import by.imsha.domain.City;
 import by.imsha.domain.LocalizedCity;
@@ -8,6 +8,7 @@ import by.imsha.domain.dto.UpdateEntityInfo;
 import by.imsha.domain.dto.mapper.CityMapper;
 import by.imsha.exception.InvalidLocaleException;
 import by.imsha.service.CityService;
+import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,10 +33,11 @@ public class CityController extends AbstractRestHandler {
     @Autowired
     private CityService cityService;
 
+    @ApiOperation(value = "Create city")
     @RequestMapping(value = "",
             method = RequestMethod.POST,
-            consumes = {"application/json", "application/xml"},
-            produces = {"application/json", "application/xml"})
+            consumes = {"application/json"},
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.CREATED)
     public City createCity( @Valid @RequestBody CityInfo city,
                                  HttpServletRequest request, HttpServletResponse response) {
@@ -43,20 +45,21 @@ public class CityController extends AbstractRestHandler {
         return createdCity;
     }
 
+    @ApiOperation(value = "Add localized info to the city")
     @RequestMapping(value = "/{cityId}/lang/{lc}",
             method = RequestMethod.PUT,
-            consumes = {"application/json", "application/xml"},
-            produces = {"application/json", "application/xml"})
+            consumes = {"application/json"},
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     public UpdateEntityInfo createLocalizedCity(@Valid @RequestBody LocalizedCityInfo cityInfo,
                                     @PathVariable("cityId") String id,
-                                    @PathVariable("lc") String locale,
-                                    HttpServletRequest request, HttpServletResponse response) {
+                                     @ApiParam(value = "Language code according ISO 639-1/ISO 639-2 spec" )
+                                    @PathVariable("lc") String locale) {
         City origin = this.cityService.retrieveCity(id);
         checkResourceFound(origin);
         Locale localeObj = new Locale(locale);
         if(!LocaleUtils.isAvailableLocale(localeObj)){
-            throw new InvalidLocaleException("Invalid lang specified : " + locale);
+            throw new InvalidLocaleException("Invalid lang specified (please specify ISO 639-1/ISO 639-2 lang code : " + locale);
         }
         LocalizedCity localizedCity = new LocalizedCity(localeObj, id, cityInfo.getName());
         origin.getLocalizedInfo().put(localeObj, localizedCity);
@@ -65,15 +68,17 @@ public class CityController extends AbstractRestHandler {
         return new UpdateEntityInfo(updatedCity.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
 
+    @ApiOperation(value = "Get all available cities.",
+            notes = "The list is paginated. You can provide a page number (default 0) and a page size (default 100)")
     @RequestMapping(value = "",
             method = RequestMethod.GET,
-            produces = {"application/json", "application/xml"})
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Page<City> getAllCity(@ApiParam(value = "The page number (zero-based)", required = true)
-                                      @RequestParam(value = "page", required = true, defaultValue = DEFAULT_PAGE_NUM) Integer page,
-                                      @ApiParam(value = "Tha page size", required = true)
-                                      @RequestParam(value = "size", required = true, defaultValue = DEFAULT_PAGE_SIZE) Integer size,
+    public Page<City> getAllCity(@ApiParam(value = "The page number (zero-based)")
+                                      @RequestParam(value = "page",  defaultValue = DEFAULT_PAGE_NUM) int page,
+                                      @ApiParam(value = "Tha page size" )
+                                      @RequestParam(value = "size", defaultValue = DEFAULT_PAGE_SIZE) int size,
                                       HttpServletRequest request, HttpServletResponse response) {
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()){
@@ -83,40 +88,41 @@ public class CityController extends AbstractRestHandler {
         return this.cityService.getAllCities(page, size);
     }
 
+    @ApiOperation(value = "Get city by ID")
     @RequestMapping(value = "/{id}",
             method = RequestMethod.GET,
-            produces = {"application/json", "application/xml"})
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public City getCity(@ApiParam(value = "The ID of the city.", required = true)
-                             @PathVariable("id") String id,
-                             HttpServletRequest request, HttpServletResponse response) throws Exception {
+                             @PathVariable("id") String id) {
         City city = this.cityService.retrieveCity(id);
         checkResourceFound(city);
         //todo: http://goo.gl/6iNAkz
         return city;
     }
 
+    @ApiOperation(value = "Update city details by ID")
     @RequestMapping(value = "/{id}",
             method = RequestMethod.PUT,
-            consumes = {"application/json", "application/xml"},
-            produces = {"application/json", "application/xml"})
+            consumes = {"application/json"},
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
-    public UpdateEntityInfo updateCity(@ApiParam(value = "The ID of the existing cityDTO resource.", required = true)
-                                 @PathVariable("id") String id, @Valid @RequestBody CityInfo cityDTO,
-                                 HttpServletRequest request, HttpServletResponse response) {
+    public UpdateEntityInfo updateCity(@ApiParam(value = "The ID of the existing city", required = true)
+                                 @PathVariable("id") String id, @Valid @RequestBody CityInfo cityInfo) {
         City resource = this.cityService.retrieveCity(id);
         checkResourceFound(resource);
-        CityMapper.MAPPER.updateCityFromDTO(cityDTO, resource);
+        CityMapper.MAPPER.updateCityFromDTO(cityInfo, resource);
         City updatedSity = this.cityService.updateCity(resource);
       return new UpdateEntityInfo(updatedSity.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
 
+    @ApiOperation(value = "Delete city")
     @RequestMapping(value = "/{id}",
             method = RequestMethod.DELETE,
-            produces = {"application/json", "application/xml"})
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
-    public UpdateEntityInfo deleteCity(@ApiParam(value = "The ID of the existing city resource.", required = true)
+    public UpdateEntityInfo deleteCity(@ApiParam(value = "The ID of the existing city.", required = true)
                                  @PathVariable("id") String id, HttpServletRequest request,
                                        HttpServletResponse response) {
         checkResourceFound(this.cityService.retrieveCity(id));

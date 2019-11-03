@@ -1,4 +1,4 @@
-package by.imsha.api.rest;
+package by.imsha.rest;
 
 import by.imsha.exception.*;
 import org.slf4j.Logger;

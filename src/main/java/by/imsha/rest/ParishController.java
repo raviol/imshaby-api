@@ -1,4 +1,4 @@
-package by.imsha.api.rest;
+package by.imsha.rest;
 
 import by.imsha.domain.LocalizedParish;
 import by.imsha.domain.Mass;
@@ -10,6 +10,7 @@ import by.imsha.domain.dto.UpdateEntityInfo;
 import by.imsha.exception.InvalidLocaleException;
 import by.imsha.service.MassService;
 import by.imsha.service.ParishService;
+import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.LocaleUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.Resource;
@@ -43,18 +44,20 @@ public class ParishController extends AbstractRestHandler {
     @Autowired
     private MassService massService;
 
+    @ApiOperation(value = "Create parish")
     @RequestMapping(value = "",
             method = RequestMethod.POST,
-            consumes = {"application/json", "application/xml"},
-            produces = {"application/json", "application/xml"})
+            consumes = {"application/json"},
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.CREATED)
-    public Parish createParish(@Valid @RequestBody Parish parish, HttpServletRequest request, HttpServletResponse response) {
+    public Parish createParish(@Valid @RequestBody Parish parish) {
         return parishService.createParish(parish);
     }
 
+    @ApiOperation(value = "Get parish details")
     @RequestMapping(value = "/{parishId}",
             method = RequestMethod.GET,
-            produces = {"application/json", "application/xml"})
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Resource<Parish> retrieveParish(@PathVariable("parishId") String id,
@@ -66,10 +69,11 @@ public class ParishController extends AbstractRestHandler {
         return parishResource;
     }
 
+    @ApiOperation(value = "Update parish")
     @RequestMapping(value = "/{parishId}",
             method = RequestMethod.PUT,
-            consumes = {"application/json", "application/xml"},
-            produces = {"application/json", "application/xml"})
+            consumes = {"application/json"},
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     public UpdateEntityInfo updateParish(@PathVariable("parishId") String id, @RequestBody ParishInfo parishInfo) {
         Parish parishToUpdate = this.parishService.getParish(id);
@@ -101,10 +105,10 @@ public class ParishController extends AbstractRestHandler {
 
 
 
-
+    @ApiOperation(value = "Remove parish")
     @RequestMapping(value = "/{parishId}",
             method = RequestMethod.DELETE,
-            produces = {"application/json", "application/xml"})
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     public UpdateEntityInfo removeParish(@PathVariable("parishId") String id, @RequestParam(value = "cascade", defaultValue = "false") Boolean cascade, HttpServletRequest request,
                                          HttpServletResponse response) {
@@ -138,7 +142,7 @@ public class ParishController extends AbstractRestHandler {
 
     @RequestMapping(value = "/user/{userId}",
             method = RequestMethod.GET,
-            produces = {"application/json", "application/xml"})
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public Resource<Parish> retrieveParishByUser(@PathVariable("userId") String userId, HttpServletRequest request, HttpServletResponse response) {
@@ -150,10 +154,11 @@ public class ParishController extends AbstractRestHandler {
     }
 
 
+    @ApiOperation(value = "Filter parish by query language")
     @RequestMapping(value = "",
             method = RequestMethod.GET,
-            consumes = {"application/json", "application/xml"},
-            produces = {"application/json", "application/xml"})
+            consumes = {"application/json"},
+            produces = {"application/json"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     public List<Parish> filterParishes(@RequestParam("filter") String filter,
