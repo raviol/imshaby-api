@@ -3,11 +3,11 @@ package by.imsha.domain;
 import by.imsha.rest.serializers.CustomLocalDateTimeSerializer;
 import by.imsha.rest.serializers.LocalDateDeserializer;
 import by.imsha.rest.serializers.LocalDateSerializer;
+import by.imsha.service.MassService;
+import by.imsha.utils.Constants;
 import by.imsha.utils.ServiceUtils;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.apache.commons.lang3.ArrayUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -23,7 +23,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -111,27 +110,17 @@ public class Mass {
 
     @AssertTrue(message = "Only one of fields have to be populated: time or singleStartTimestamp")
     private boolean isValid() {
-        boolean timeIsNotNull = StringUtils.isNotBlank(this.time) && singleStartTimestamp == 0;
-        boolean singleTimestampIsNotNull = singleStartTimestamp != 0 && StringUtils.isBlank(this.time);
-        return timeIsNotNull || singleTimestampIsNotNull;
+        return MassService.isMassTimeConfigIsValid(this);
     }
 
     @AssertTrue(message = "Please specify 'days' for scheduled mass (you already specified field 'time').")
     private boolean isValidScheduledMassEmptyDays() {
-        boolean validScheduledMass = true;
-        if (StringUtils.isNotBlank(this.time)) {
-            validScheduledMass = ArrayUtils.isNotEmpty(this.days);
-        }
-        return validScheduledMass;
+        return MassService.isScheduleMassDaysIsCorrect(this);
     }
 
     @AssertTrue(message = "Please specify 'time' for scheduled mass (you already specified field 'days').")
     private boolean isValidScheduledMassEmptyTime() {
-        boolean validScheduledMass = true;
-        if (ArrayUtils.isNotEmpty(this.days)) {
-            validScheduledMass = StringUtils.isNotBlank(this.time);
-        }
-        return validScheduledMass;
+        return MassService.isScheduleMassTimeIsCorrect(this);
     }
 
 
@@ -243,11 +232,13 @@ public class Mass {
     }
 
     public String getNotes() {
-        LocalizedMass localizedMass = getLocalizedInfo().get(ServiceUtils.fetchUserLangFromHttpRequest());
-
-        String calculatedNotes = notes;
+        String lang = ServiceUtils.fetchUserLangFromHttpRequest();
+        LocalizedMass localizedMass = getLocalizedInfo().get(lang);
+        String calculatedNotes = null;
         if(localizedMass != null){
             calculatedNotes =  localizedMass.getNotes();
+        }else if(Constants.DEFAULT_LANG.equalsIgnoreCase(lang)){
+            calculatedNotes = notes;
         }
         return calculatedNotes;
     }

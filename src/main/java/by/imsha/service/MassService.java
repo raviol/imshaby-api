@@ -7,6 +7,7 @@ import com.github.rutledgepaulv.qbuilders.builders.GeneralQueryBuilder;
 import com.github.rutledgepaulv.qbuilders.conditions.Condition;
 import com.github.rutledgepaulv.qbuilders.visitors.MongoVisitor;
 import com.github.rutledgepaulv.rqe.pipes.QueryConversionPipeline;
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,15 +15,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
-import java.util.Collections;
 import java.util.List;
 
 import static by.imsha.utils.Constants.LIMIT;
@@ -53,6 +49,36 @@ public class MassService {
     public List<Mass> createMassesWithList(List<Mass> masses){
         return massRepository.save(masses);
     }
+
+    public static boolean isMassTimeConfigIsValid(Mass mass) {
+        long singleStartTimestamp = mass.getSingleStartTimestamp();
+        String time = mass.getTime();
+        boolean timeIsNotNull = StringUtils.isNotBlank(time) && singleStartTimestamp == 0;
+        boolean singleTimestampIsNotNull = singleStartTimestamp != 0 && StringUtils.isBlank(time);
+        return timeIsNotNull || singleTimestampIsNotNull;
+    }
+
+
+    public static boolean isScheduleMassDaysIsCorrect(Mass mass) {
+        String time = mass.getTime();
+        int[] days = mass.getDays();
+        boolean validScheduledMass = true;
+        if (StringUtils.isNotBlank(time)) {
+            validScheduledMass = ArrayUtils.isNotEmpty(days);
+        }
+        return validScheduledMass;
+    }
+
+    public static boolean isScheduleMassTimeIsCorrect(Mass mass) {
+        String time = mass.getTime();
+        int[] days = mass.getDays();
+        boolean validScheduledMass = true;
+        if (ArrayUtils.isNotEmpty(days)) {
+            validScheduledMass = StringUtils.isNotBlank(time);
+        }
+        return validScheduledMass;
+    }
+
 
     public List<Mass> getMassByParish(String parishId){
         return massRepository.findByParishId(parishId);

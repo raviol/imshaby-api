@@ -13,6 +13,8 @@ public class Constants {
 
     public static int PAGE = 0;
 
+    public static String DEFAULT_LANG = "be";
+
     public static String DATE_FORMAT = "MM/dd/yyyy";
 
 }
