@@ -37,6 +37,78 @@ mongod --port 27017 --dbpath "C:\Env\mongo\db"
 
 export from beta: mongoexport --db api --collection city --username admin --password Hvd6jxKpiF --authenticationDatabase admin --jsonArray --out /tmp/city-pretty.json
 
+#  CI/CD in local k8s cluster (minkube on local VM)
+### Build jar & docker image 
+```bash
+> sh build/build_imshaby_api.sh
+```
+### Check local k8s cluster is ready
+#### avg. time to start is about 3 mins after VM reboot
+```bash
+> systemctl status development.env.service
+```
+### Deploy ImshaBy API & MongoDB single-pod clusters
+```bash
+> sh build/deploy_all.sh
+```
+### Check state of all k8s elements in "imsha-by" namespace
+```bash
+> kubectl -n imsha-by get all
+```
+### Follow logs of app running on a k8s pod
+#### \<pod_name\> - a unique name of pod, can be got using "kubectl get" cmd
+```bash
+> kubectl -n imsha-by logs <pod_name> -f
+```
+#### EXAMPLE
+```bash
+> kubectl -n imsha-by logs imshaby-api-6bcf7475bd-wnkz4 -f
+```
+### Forward specific ports of running apps to host VM (pod_name is a unique name of pod, can be got using "kubectl get" cmd)
+#### \<pod_name\> - a unique name of pod, can be got using "kubectl get" cmd
+#### \<local VM port\> - a local port on VM
+#### \<internal pod port\> - an internal port on a k8s pod
+```bash
+> kubectl -n imsha-by port-forward <pod_name> --address=0.0.0.0 <local VM port>:<internal pod port>
+```
+#### EXAMPLE
+```bash
+> kubectl -n imsha-by port-forward imshaby-api-6bcf7475bd-wnkz4 --address=0.0.0.0 8080:8080
+```
+### Destroy ImshaBy API & MongoDB single-pod clusters
+```bash
+> sh build/destroy_all.sh
+```
+### ImshaBy API helm chart configuration (values-<env_to_deploy>.yaml)
+```yaml
+# count of service API pods
+replicaCount: 1 
+image:
+  # docker repository
+  repository: local/imshaby-api
+  # image tag
+  tag: v1.0
+  # policy to pull docker image
+  pullPolicy: IfNotPresent
 
-
-
+# spring active profile
+activeProfile: local
+  
+mongodb:
+  # mongodb instance host
+  host: mongodb
+  # mongodb instance port
+  port: 27017
+  # mongodb instance database name
+  database: api
+  # mongodb user name
+  user: api_admin
+  # mongodb password
+  password: api_admin
+  
+service:
+  # Load balancing type
+  type: ClusterIP
+  # Load balancing outcome port
+  port: 3000
+```

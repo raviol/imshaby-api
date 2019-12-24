@@ -1,8 +1,9 @@
 package by.imsha.domain;
 
-import by.imsha.api.rest.serializers.CustomLocalDateTimeSerializer;
+import by.imsha.rest.serializers.CustomLocalDateTimeSerializer;
 import by.imsha.utils.ServiceUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import io.swagger.annotations.ApiModel;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
@@ -12,15 +13,16 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * Represent Parish class
  */
 //@ApiObject(show = true, name = "Parish", description = "Parish object json structure.")
 @Document
+@ApiModel
 public class Parish {
 
     @Id
@@ -45,6 +47,9 @@ public class Parish {
     private Coordinate gps;
 
     private Integer updatePeriodInDays = 14;
+
+    private Map<String, LocalizedBaseInfo> localizedInfo = new HashMap<>();
+
 
     private boolean needUpdate;
 
@@ -159,7 +164,12 @@ public class Parish {
     }
 
     public String getName() {
-        return name;
+        LocalizedBaseInfo localizedBaseInfo = getLocalizedInfo().get(ServiceUtils.fetchUserLangFromHttpRequest());
+        String calculatedName = name;
+        if(localizedBaseInfo != null){
+            calculatedName = ((LocalizedParish) localizedBaseInfo).getName();
+        }
+        return calculatedName;
     }
 
     public void setName(String name) {
@@ -167,7 +177,12 @@ public class Parish {
     }
 
     public String getAddress() {
-        return address;
+        LocalizedBaseInfo localizedBaseInfo = getLocalizedInfo().get(ServiceUtils.fetchUserLangFromHttpRequest());
+        String calcAddress = address;
+        if(localizedBaseInfo != null){
+            calcAddress = ((LocalizedParish)localizedBaseInfo).getAddress();
+        }
+        return calcAddress;
     }
 
     public void setAddress(String address) {
@@ -245,5 +260,13 @@ public class Parish {
 
     public void setLastModifiedEmail(String lastModifiedEmail) {
         this.lastModifiedEmail = lastModifiedEmail;
+    }
+
+    public Map<String, LocalizedBaseInfo> getLocalizedInfo() {
+        return localizedInfo;
+    }
+
+    public void setLocalizedInfo(Map<String, LocalizedBaseInfo> localizedInfo) {
+        this.localizedInfo = localizedInfo;
     }
 }

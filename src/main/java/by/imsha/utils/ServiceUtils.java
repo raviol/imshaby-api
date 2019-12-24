@@ -1,5 +1,6 @@
 package by.imsha.utils;
 
+import by.imsha.domain.LocalizedBaseInfo;
 import com.github.rutledgepaulv.qbuilders.builders.GeneralQueryBuilder;
 import com.github.rutledgepaulv.qbuilders.conditions.Condition;
 import com.github.rutledgepaulv.qbuilders.visitors.MongoVisitor;
@@ -8,11 +9,18 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Optional;
 
 import static by.imsha.utils.Constants.LIMIT;
 import static by.imsha.utils.Constants.PAGE;
@@ -23,6 +31,8 @@ import static by.imsha.utils.Constants.PAGE;
 public class ServiceUtils {
 
     private static String dateFormat = "dd-MM-yyyy";
+    private static String langParamName = "lang";
+
     private static String timeFormat = "dd-MM-yyyy HH:mm";
 
 
@@ -91,7 +101,22 @@ public class ServiceUtils {
         return result;
 
     }
+    public static Optional<HttpServletRequest> getCurrentHttpRequest() {
+        return Optional.ofNullable(RequestContextHolder.getRequestAttributes())
+                .filter(requestAttributes -> ServletRequestAttributes.class.isAssignableFrom(requestAttributes.getClass()))
+                .map(requestAttributes -> ((ServletRequestAttributes) requestAttributes))
+                .map(ServletRequestAttributes::getRequest);
+    }
 
+    public static String fetchUserLangFromHttpRequest(){
+        HttpServletRequest httpServletRequest = ServiceUtils.getCurrentHttpRequest().get();
+        String paramLang = httpServletRequest.getParameter(langParamName);
+        if(StringUtils.isEmpty(paramLang)){
+            //it's ok to determine lang as part of locale as fallback user language
+            paramLang = RequestContextUtils.getLocale(httpServletRequest).getLanguage();
+        }
+        return paramLang;
+    }
     public static Query buildMongoQuery(String sort, int page, int limitPerPage, Condition<GeneralQueryBuilder> condition, MongoVisitor mongoVisitor) {
         Criteria criteria = condition.query(mongoVisitor);
         Query query = new Query();

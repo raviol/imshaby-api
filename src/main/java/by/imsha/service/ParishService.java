@@ -16,15 +16,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import static by.imsha.utils.Constants.*;
+
+import static by.imsha.utils.Constants.LIMIT;
+import static by.imsha.utils.Constants.PAGE;
 
 @Service
 public class ParishService {
@@ -94,6 +93,10 @@ public class ParishService {
     //    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     public Parish updateParish(ParishInfo parishInfo, Parish parishToUpdate){
         ParishInfoMapper.MAPPER.updateParishFromDTO(parishInfo, parishToUpdate);
+        return parishRepository.save(parishToUpdate);
+    }
+
+    public Parish updateParish(Parish parishToUpdate){
         return parishRepository.save(parishToUpdate);
     }
 
