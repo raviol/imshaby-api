@@ -143,6 +143,11 @@ public class Mass {
         this.days = days;
     }
 
+    public Mass(Mass mass) {
+        this(mass.langCode, mass.cityId, mass.duration, mass.parishId, mass.time, mass.singleStartTimestamp,
+                Arrays.copyOf(mass.days, mass.days.length));
+        localizedInfo = new HashMap<>(mass.localizedInfo);
+    }
 
     @Override
     public boolean equals(Object o) {
