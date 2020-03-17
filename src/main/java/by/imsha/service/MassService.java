@@ -9,6 +9,7 @@ import com.github.rutledgepaulv.qbuilders.visitors.MongoVisitor;
 import com.github.rutledgepaulv.rqe.pipes.QueryConversionPipeline;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import static by.imsha.utils.Constants.LIMIT;
@@ -140,6 +142,45 @@ public class MassService {
     })
     public void removeMass(Mass mass){
         massRepository.delete(mass.getId());
+    }
+
+    @Caching(evict = {
+            @CacheEvict(cacheNames = "massCache", key = "#p0.id"),
+            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId")
+    })
+    public Triple<String, String, String> removeMass(Mass baseMass, LocalDate fromDate, LocalDate toDate){
+        LocalDate baseStartDate = baseMass.getStartDate();
+        LocalDate baseEndDate = baseMass.getEndDate();
+        boolean updated = false;
+        Mass massToSave = baseMass;
+        String updatedMassId = null, createdMassId = null, removedMassId = null;
+        if ((baseStartDate == null || fromDate.isAfter(baseStartDate))
+                && (baseEndDate == null || !baseEndDate.isBefore(fromDate))) {
+            massToSave.setEndDate(fromDate.minusDays(1));
+            massRepository.save(massToSave);
+            updatedMassId = massToSave.getId();
+            updated = true;
+        }
+        if (toDate != null && (baseEndDate == null || baseEndDate.isAfter(toDate))
+                && (baseStartDate == null || !baseStartDate.isAfter(toDate))) {
+            if (updated) {
+                massToSave = new Mass(baseMass);
+            }
+            massToSave.setStartDate(toDate.plusDays(1));
+            massToSave.setEndDate(baseEndDate);
+            massToSave = massRepository.save(massToSave);
+            if (updated) {
+                createdMassId = massToSave.getId();
+            } else {
+                updatedMassId = massToSave.getId();
+            }
+        }
+        if (baseStartDate != null && !fromDate.isAfter(baseStartDate)
+                && (toDate == null || baseEndDate != null && !toDate.isBefore(baseEndDate))) {
+            removeMass(baseMass);
+            removedMassId = baseMass.getId();
+        }
+        return Triple.of(updatedMassId, createdMassId, removedMassId);
     }
 
     public List<Mass> removeMasses(String parishId){

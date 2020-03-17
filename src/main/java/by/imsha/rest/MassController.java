@@ -6,6 +6,7 @@ import by.imsha.domain.Parish;
 import by.imsha.domain.dto.MassSchedule;
 import by.imsha.domain.dto.UpdateEntitiesInfo;
 import by.imsha.domain.dto.UpdateEntityInfo;
+import by.imsha.exception.InvalidDateIntervalException;
 import by.imsha.exception.ResourceNotFoundException;
 import by.imsha.service.CityService;
 import by.imsha.service.MassService;
@@ -15,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.Resource;
@@ -30,6 +32,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -119,6 +122,51 @@ public class MassController extends AbstractRestHandler {
         return new UpdateEntityInfo(id, UpdateEntityInfo.STATUS.DELETED);
     }
 
+    @ApiOperation(value = "Remove mass by ID and time interval")
+    @RequestMapping(value = "/{massId}",
+            method = RequestMethod.DELETE,
+            produces = {"application/json"},
+            params = {"from"})
+    @ResponseStatus(HttpStatus.OK)
+    public List<UpdateEntityInfo> removeMassByTimeInterval(@PathVariable("massId") String id,
+                                                           @RequestParam("from") String fromDateStr) {
+        return removeMassByTimeInterval(id, fromDateStr, null);
+    }
+
+    @ApiOperation(value = "Remove mass by ID and time interval")
+    @RequestMapping(value = "/{massId}",
+            method = RequestMethod.DELETE,
+            produces = {"application/json"},
+            params = {"from", "to"})
+    @ResponseStatus(HttpStatus.OK)
+    public List<UpdateEntityInfo> removeMassByTimeInterval(@PathVariable("massId") String id,
+                                                     @RequestParam("from") String fromDateStr,
+                                                     @RequestParam(name = "to", required = false) String toDateStr) {
+        Mass mass = this.massService.getMass(id);
+        checkResourceFound(mass);
+        LocalDate fromDate = formatDateString(fromDateStr);
+        LocalDate toDate = toDateStr == null ? null : formatDateString(toDateStr);
+        if (toDate != null && fromDate.isAfter(toDate)) {
+            throw new InvalidDateIntervalException(String.format("Invalid date interval bounds (from: %s, to: %s), " +
+                    "the from-date should be equal or less than to-date!", fromDateStr, toDateStr));
+        }
+        Triple<String, String, String> removalResult = this.massService.removeMass(mass, fromDate, toDate);
+        List<UpdateEntityInfo> updateEntityInfos = new ArrayList<>();
+        String infoId = removalResult.getLeft();
+        if (infoId != null) {
+            updateEntityInfos.add(new UpdateEntityInfo(infoId, UpdateEntityInfo.STATUS.UPDATED));
+        }
+        infoId = removalResult.getMiddle();
+        if (infoId != null) {
+            updateEntityInfos.add(new UpdateEntityInfo(infoId, UpdateEntityInfo.STATUS.CREATED));
+        }
+        infoId = removalResult.getRight();
+        if (infoId != null) {
+            updateEntityInfos.add(new UpdateEntityInfo(infoId, UpdateEntityInfo.STATUS.DELETED));
+        }
+        return updateEntityInfos;
+    }
+
     @ApiOperation(value = "Remove masses for parish")
     @RequestMapping(method = RequestMethod.DELETE,
             produces = {"application/json"})
@@ -155,18 +203,7 @@ public class MassController extends AbstractRestHandler {
 
         List<Mass> masses = this.massService.getMassByCity(cityId); // TODO filter by date as well
 
-        LocalDate date = null;
-        if(day != null){
-            try{
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-                date = LocalDate.parse(day, formatter);
-           }catch (DateTimeParseException ex){
-                log.warn(String.format("Date format is incorrect. Date - %s,format - %s ", day, dateFormat));
-           }
-        }
-        if(date == null){
-            date = LocalDateTime.now(ZoneId.of("Europe/Minsk")).toLocalDate();
-        }
+        LocalDate date = formatDateString(day);
 
 
         MassSchedule massHolder = scheduleFactory.build(masses, date);
@@ -182,7 +219,21 @@ public class MassController extends AbstractRestHandler {
         return massResource;
     }
 
-
+    private LocalDate formatDateString(String dateStr) {
+        LocalDate date = null;
+        if(dateStr != null){
+            try{
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+                date = LocalDate.parse(dateStr, formatter);
+            }catch (DateTimeParseException ex){
+                log.warn(String.format("Date format is incorrect. Date - %s,format - %s ", dateStr, dateFormat));
+            }
+        }
+        if(date == null){
+            date = LocalDateTime.now(ZoneId.of("Europe/Minsk")).toLocalDate();
+        }
+        return date;
+    }
 
     @ApiOperation(value = "Filter masses using query language")
     @RequestMapping(value = "",
