@@ -16,6 +16,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -186,25 +187,30 @@ public class MassController extends AbstractRestHandler {
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Resource<MassSchedule> retrieveMassesByCity(@CookieValue(value = "cityId", required = false) String cityId,@RequestParam(value = "date", required = false) String day, HttpServletRequest request, HttpServletResponse response){
-        if(cityId == null){
-            if(log.isWarnEnabled()){
-                log.warn("Looking for default city..");
+    public Resource<MassSchedule> retrieveMassesByCity(@CookieValue(value = "cityId", required = false) String cityId,@RequestParam(value = "date", required = false) String day, @RequestParam(value = "parishId", required = false) String parishId ){
+
+        List<Mass> masses = null;
+        if(StringUtils.isNotEmpty(parishId)){
+            masses = this.massService.getMassByParish(parishId);
+        }else{
+            if(StringUtils.isEmpty(cityId)){
+                if(log.isWarnEnabled()){
+                    log.warn("Looking for default city..");
+                }
+                City defaultCity = cityService.defaultCity();
+                if(defaultCity == null){
+                    throw new ResourceNotFoundException(String.format("No default city (name = %s) founded", cityService.getDefaultCityName()));
+                }
+                cityId = defaultCity.getId();
+                if(log.isWarnEnabled()){
+                    log.warn(String.format("Default city with id = %s is found.", cityId));
+                }
             }
-            City defaultCity = cityService.defaultCity();
-            if(defaultCity == null){
-                throw new ResourceNotFoundException(String.format("No default city (name = %s) founded", cityService.getDefaultCityName()));
-            }
-            cityId = defaultCity.getId();
-            if(log.isWarnEnabled()){
-                log.warn(String.format("Default city with id = %s is found.", cityId));
-            }
+            masses = this.massService.getMassByCity(cityId); // TODO filter by date as well
         }
 
-        List<Mass> masses = this.massService.getMassByCity(cityId); // TODO filter by date as well
 
         LocalDate date = formatDateString(day);
-
 
         MassSchedule massHolder = scheduleFactory.build(masses, date);
 

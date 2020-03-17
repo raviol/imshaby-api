@@ -1,6 +1,11 @@
 package by.imsha.service;
 
 import by.imsha.domain.Mass;
+import by.imsha.domain.Parish;
+import by.imsha.domain.dto.MassInfo;
+import by.imsha.domain.dto.ParishInfo;
+import by.imsha.domain.dto.mapper.MassInfoMapper;
+import by.imsha.domain.dto.mapper.ParishInfoMapper;
 import by.imsha.repository.MassRepository;
 import by.imsha.utils.ServiceUtils;
 import com.github.rutledgepaulv.qbuilders.builders.GeneralQueryBuilder;
@@ -42,7 +47,9 @@ public class MassService {
     private MassRepository massRepository;
 
     @Caching(evict = {
-            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId")
+            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId"),
+            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId")
+
     })
     public Mass createMass(Mass mass){
         return massRepository.save(mass);
@@ -81,9 +88,15 @@ public class MassService {
         return validScheduledMass;
     }
 
-
+    @Cacheable(cacheNames = "massCache", key = "'massesByParish:' + #parishId")
     public List<Mass> getMassByParish(String parishId){
-        return massRepository.findByParishId(parishId);
+        List<Mass> masses = massRepository.findByParishId(parishId);
+        if(CollectionUtils.isEmpty(masses)){
+            if(logger.isWarnEnabled()){
+                logger.warn(String.format("No masses found with parish id = %s", parishId));
+            }
+        }
+        return masses;
     }
 
     @Cacheable(cacheNames = "massCache", key = "'massesByCity:' + #cityId")
@@ -129,8 +142,19 @@ public class MassService {
 
 
     @Caching(evict = {
+            @CacheEvict(cacheNames = "massCache", key = "#p1.id"),
+            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p1.cityId"),
+            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p1.parishId")
+    })
+    public Mass updateMass(MassInfo massInfo, Mass massToUpdate){
+        MassInfoMapper.MAPPER.updateMassFromDTO(massInfo, massToUpdate);
+        return massRepository.save(massToUpdate);
+    }
+
+    @Caching(evict = {
             @CacheEvict(cacheNames = "massCache", key = "#p0.id"),
-            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId")
+            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId"),
+            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId")
     })
     public Mass updateMass(Mass mass){
         return massRepository.save(mass);
@@ -138,7 +162,9 @@ public class MassService {
 
     @Caching(evict = {
             @CacheEvict(cacheNames = "massCache", key = "#p0.id"),
-            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId")
+            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId"),
+            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId")
+
     })
     public void removeMass(Mass mass){
         massRepository.delete(mass.getId());
@@ -146,7 +172,9 @@ public class MassService {
 
     @Caching(evict = {
             @CacheEvict(cacheNames = "massCache", key = "#p0.id"),
-            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId")
+            @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId"),
+            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId")
+
     })
     public Triple<String, String, String> removeMass(Mass baseMass, LocalDate fromDate, LocalDate toDate){
         LocalDate baseStartDate = baseMass.getStartDate();
