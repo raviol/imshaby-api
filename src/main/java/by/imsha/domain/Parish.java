@@ -1,6 +1,7 @@
 package by.imsha.domain;
 
 import by.imsha.rest.serializers.CustomLocalDateTimeSerializer;
+import by.imsha.service.MassService;
 import by.imsha.utils.ServiceUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModel;
@@ -14,7 +15,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -54,10 +54,15 @@ public class Parish {
     private boolean needUpdate;
 
     public boolean isNeedUpdate() {
-
         return ServiceUtils.needUpdateFromNow(lastModifiedDate, getUpdatePeriodInDays());
     }
 
+    @JsonSerialize(using= CustomLocalDateTimeSerializer.class)
+    private LocalDateTime lastMassActualDate;
+
+    public LocalDateTime getLastMassActualDate() {
+        return MassService.getOldestModifiedMassTimeForParish(this.id).plusDays(this.updatePeriodInDays);
+    }
 
 
     @LastModifiedDate
