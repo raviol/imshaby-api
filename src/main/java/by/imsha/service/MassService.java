@@ -1,11 +1,8 @@
 package by.imsha.service;
 
 import by.imsha.domain.Mass;
-import by.imsha.domain.Parish;
 import by.imsha.domain.dto.MassInfo;
-import by.imsha.domain.dto.ParishInfo;
 import by.imsha.domain.dto.mapper.MassInfoMapper;
-import by.imsha.domain.dto.mapper.ParishInfoMapper;
 import by.imsha.repository.MassRepository;
 import by.imsha.utils.ServiceUtils;
 import com.github.rutledgepaulv.qbuilders.builders.GeneralQueryBuilder;
@@ -25,7 +22,9 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static by.imsha.utils.Constants.LIMIT;
@@ -43,13 +42,20 @@ public class MassService {
 
     private MongoVisitor mongoVisitor = new MongoVisitor();
 
+    private static MassService INSTANCE;
+
+    @PostConstruct
+    public void initInstance(){
+        INSTANCE = this;
+    }
+
     @Autowired
     private MassRepository massRepository;
 
     @Caching(evict = {
             @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId"),
-            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId")
-
+            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId"),
+            @CacheEvict(cacheNames = "massCache", key = "'oldestMass:' + #p0.parishId")
     })
     public Mass createMass(Mass mass){
         return massRepository.save(mass);
@@ -144,7 +150,8 @@ public class MassService {
     @Caching(evict = {
             @CacheEvict(cacheNames = "massCache", key = "#p1.id"),
             @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p1.cityId"),
-            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p1.parishId")
+            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p1.parishId"),
+            @CacheEvict(cacheNames = "massCache", key = "'oldestMass:' + #p0.parishId")
     })
     public Mass updateMass(MassInfo massInfo, Mass massToUpdate){
         MassInfoMapper.MAPPER.updateMassFromDTO(massInfo, massToUpdate);
@@ -154,7 +161,8 @@ public class MassService {
     @Caching(evict = {
             @CacheEvict(cacheNames = "massCache", key = "#p0.id"),
             @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId"),
-            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId")
+            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId"),
+            @CacheEvict(cacheNames = "massCache", key = "'oldestMass:' + #p0.parishId")
     })
     public Mass updateMass(Mass mass){
         return massRepository.save(mass);
@@ -163,8 +171,8 @@ public class MassService {
     @Caching(evict = {
             @CacheEvict(cacheNames = "massCache", key = "#p0.id"),
             @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId"),
-            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId")
-
+            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId"),
+            @CacheEvict(cacheNames = "massCache", key = "'oldestMass:' + #p0.parishId")
     })
     public void removeMass(Mass mass){
         massRepository.delete(mass.getId());
@@ -173,8 +181,8 @@ public class MassService {
     @Caching(evict = {
             @CacheEvict(cacheNames = "massCache", key = "#p0.id"),
             @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p0.cityId"),
-            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId")
-
+            @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p0.parishId"),
+            @CacheEvict(cacheNames = "massCache", key = "'oldestMass:' + #p0.parishId")
     })
     public Triple<String, String, String> removeMass(Mass baseMass, LocalDate fromDate, LocalDate toDate){
         LocalDate baseStartDate = baseMass.getStartDate();
@@ -215,4 +223,22 @@ public class MassService {
         return massRepository.deleteByParishId(parishId);
     }
 
+    @Cacheable(cacheNames = "massCache", key = "'oldestMass:' +#p0")
+    public Mass findOldestModifiedMass(String parishId){
+        List<Mass> parishMasses = getMassByParish(parishId);
+        Mass oldestMass = null;
+        for (Mass parishMass : parishMasses) {
+            if(oldestMass == null){
+                oldestMass = parishMass;
+            } else if (parishMass.getLastModifiedDate().isBefore(oldestMass.getLastModifiedDate())){
+                oldestMass = parishMass;
+            }
+        }
+        return oldestMass;
+    }
+
+    public static LocalDateTime getOldestModifiedMassTimeForParish(String parishId){
+        Mass oldestModifiedMass = INSTANCE.findOldestModifiedMass(parishId);
+        return oldestModifiedMass != null ? oldestModifiedMass.getLastModifiedDate() : null;
+    }
 }
