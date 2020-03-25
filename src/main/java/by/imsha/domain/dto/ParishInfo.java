@@ -21,6 +21,8 @@ public class ParishInfo implements Serializable {
     private String phone;
     private String lastModifiedEmail;
     private String website;
+    private String broadcastUrl;
+
 
     @Override
     public boolean equals(Object o) {
@@ -142,6 +144,14 @@ public class ParishInfo implements Serializable {
 
     public String getWebsite() {
         return website;
+    }
+
+    public String getBroadcastUrl() {
+        return broadcastUrl;
+    }
+
+    public void setBroadcastUrl(String broadcastUrl) {
+        this.broadcastUrl = broadcastUrl;
     }
 
     public void setWebsite(String website) {

@@ -16,6 +16,7 @@ public class UpdateMassInfo implements Serializable{
     private int duration;
     private String notes;
     private int[] days;
+    private boolean online;
     //@JsonIgnore
     @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate endDate;
@@ -92,5 +93,13 @@ public class UpdateMassInfo implements Serializable{
 
     public void setTime(String time) {
         this.time = time;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 }

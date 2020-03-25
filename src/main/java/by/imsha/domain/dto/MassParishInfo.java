@@ -14,6 +14,8 @@ public class MassParishInfo implements Serializable {
     private LocationInfo gps;
     private String address;
     private boolean needUpdate;
+    private String broadcastUrl;
+
 
     @JsonIgnore
     private Integer updatePeriodInDays;
@@ -105,6 +107,14 @@ public class MassParishInfo implements Serializable {
 
     public Integer getUpdatePeriodInDays() {
         return updatePeriodInDays;
+    }
+
+    public String getBroadcastUrl() {
+        return broadcastUrl;
+    }
+
+    public void setBroadcastUrl(String broadcastUrl) {
+        this.broadcastUrl = broadcastUrl;
     }
 
     public void setUpdatePeriodInDays(Integer updatePeriodInDays) {

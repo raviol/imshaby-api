@@ -62,20 +62,18 @@ public class Mass {
     @Pattern(regexp = "^[0-2][0-9]:[0-5][0-9]$")
     private String time;
 
-    //    @ApiObjectField(description = "Array of days that is defined for regular mass. Days are presented via codes from 1 to 7:  Monday = 1 .. Saturday = 6, Sunday = 7", required = false)
     @Indexed
     private int[] days;
 
-    //    @ApiObjectField(description =  "Parish ID for mass", required = true)
+    private boolean online;
+
+
     @NotNull
     @NotEmpty
     @Indexed
     private String parishId;
 
-    //    @ApiObjectField(description = "Flag defines whether mass is deleted by merchant-user", required = false)
     private boolean deleted = false;
-
-    //    @ApiObjectField(description = "Notes for mass created", required = false)
     private String notes;
 
     private Map<String, LocalizedMass> localizedInfo = new HashMap<>();
@@ -250,6 +248,14 @@ public class Mass {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 
     public String getTime() {
