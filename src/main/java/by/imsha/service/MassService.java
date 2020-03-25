@@ -1,7 +1,7 @@
 package by.imsha.service;
 
 import by.imsha.domain.Mass;
-import by.imsha.domain.dto.MassInfo;
+import by.imsha.domain.dto.UpdateMassInfo;
 import by.imsha.domain.dto.mapper.MassInfoMapper;
 import by.imsha.repository.MassRepository;
 import by.imsha.utils.ServiceUtils;
@@ -147,13 +147,14 @@ public class MassService {
     }
 
 
+
     @Caching(evict = {
             @CacheEvict(cacheNames = "massCache", key = "#p1.id"),
             @CacheEvict(cacheNames = "massCache", key = "'massesByCity:' + #p1.cityId"),
             @CacheEvict(cacheNames = "massCache", key = "'massesByParish:' + #p1.parishId"),
-            @CacheEvict(cacheNames = "massCache", key = "'oldestMass:' + #p0.parishId")
+            @CacheEvict(cacheNames = "massCache", key = "'oldestMass:' + #p1.parishId")
     })
-    public Mass updateMass(MassInfo massInfo, Mass massToUpdate){
+    public Mass updateMass(UpdateMassInfo massInfo, Mass massToUpdate){
         MassInfoMapper.MAPPER.updateMassFromDTO(massInfo, massToUpdate);
         return massRepository.save(massToUpdate);
     }

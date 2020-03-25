@@ -6,6 +6,7 @@ import by.imsha.domain.Parish;
 import by.imsha.domain.dto.MassSchedule;
 import by.imsha.domain.dto.UpdateEntitiesInfo;
 import by.imsha.domain.dto.UpdateEntityInfo;
+import by.imsha.domain.dto.UpdateMassInfo;
 import by.imsha.exception.InvalidDateIntervalException;
 import by.imsha.exception.ResourceNotFoundException;
 import by.imsha.service.CityService;
@@ -110,6 +111,36 @@ public class MassController extends AbstractRestHandler {
         Mass updatedMass = this.massService.updateMass(mass);
         return new UpdateEntityInfo(updatedMass.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
+
+
+    @RequestMapping(value = "/{massId}",
+            method = RequestMethod.PUT,
+            consumes = {"application/json"},
+            produces = {"application/json"},
+            params = {"doRefresh"})
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateEntityInfo refreshMass(@PathVariable("massId") String id, @RequestParam("doRefresh") String refreshFlag) {
+        Mass massForUpdate = this.massService.getMass(id);
+        checkResourceFound(massForUpdate);
+        Mass updatedMass = this.massService.updateMass(new UpdateMassInfo(), massForUpdate);
+        return new UpdateEntityInfo(updatedMass.getId(), UpdateEntityInfo.STATUS.UPDATED);
+    }
+
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            consumes = {"application/json"},
+            produces = {"application/json"},
+            params = {"parishId"})
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateEntitiesInfo refreshMasses(@RequestParam("parishId") String parishId) {
+        List<Mass> massesToRefresh = massService.getMassByParish(parishId);
+        for (Mass massForUpdate : massesToRefresh) {
+            this.massService.updateMass(new UpdateMassInfo(), massForUpdate);
+        }
+        return new UpdateEntitiesInfo(massesToRefresh.stream()
+                .map(Mass::getId).collect(Collectors.toList()), UpdateEntitiesInfo.STATUS.UPDATED);
+    }
+
 
     @ApiOperation(value = "Remove mass by ID")
     @RequestMapping(value = "/{massId}",
