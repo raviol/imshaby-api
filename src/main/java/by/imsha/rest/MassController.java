@@ -119,10 +119,13 @@ public class MassController extends AbstractRestHandler {
             produces = {"application/json"},
             params = {"doRefresh"})
     @ResponseStatus(HttpStatus.OK)
-    public UpdateEntityInfo refreshMass(@PathVariable("massId") String id, @RequestParam("doRefresh") String refreshFlag) {
+    public UpdateEntityInfo refreshMass(@PathVariable("massId") String id,@Valid @RequestBody (required = false) UpdateMassInfo massInfo,  @RequestParam("doRefresh") String refreshFlag) {
         Mass massForUpdate = this.massService.getMass(id);
         checkResourceFound(massForUpdate);
-        Mass updatedMass = this.massService.updateMass(new UpdateMassInfo(), massForUpdate);
+        if(massInfo == null){
+            massInfo = new UpdateMassInfo();
+        }
+        Mass updatedMass = this.massService.updateMass(massInfo, massForUpdate);
         return new UpdateEntityInfo(updatedMass.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
 

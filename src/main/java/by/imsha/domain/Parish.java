@@ -30,6 +30,8 @@ public class Parish {
 
     private String imgPath;
 
+    private String broadcastUrl;
+
     //    @ApiObjectField(description = "Auth0 system user identificator. It is provided only after futhentification in auth0.com with current login API.", required = true)
 //    @NotNull
     private String userId;
@@ -61,9 +63,14 @@ public class Parish {
     private LocalDateTime lastMassActualDate;
 
     public LocalDateTime getLastMassActualDate() {
-        return MassService.getOldestModifiedMassTimeForParish(this.id).plusDays(this.updatePeriodInDays);
+        LocalDateTime oldestModifiedMassTimeForParish = MassService.getOldestModifiedMassTimeForParish(this.id);
+        LocalDateTime localDateTime = oldestModifiedMassTimeForParish != null ? oldestModifiedMassTimeForParish.plusDays(this.updatePeriodInDays) : null;
+        return localDateTime;
     }
 
+    public void setLastMassActualDate(LocalDateTime lastMassActualDate) {
+        this.lastMassActualDate = lastMassActualDate;
+    }
 
     @LastModifiedDate
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
@@ -273,5 +280,13 @@ public class Parish {
 
     public void setLocalizedInfo(Map<String, LocalizedBaseInfo> localizedInfo) {
         this.localizedInfo = localizedInfo;
+    }
+
+    public String getBroadcastUrl() {
+        return broadcastUrl;
+    }
+
+    public void setBroadcastUrl(String broadcastUrl) {
+        this.broadcastUrl = broadcastUrl;
     }
 }
