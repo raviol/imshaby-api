@@ -63,9 +63,14 @@ public class Parish {
     private LocalDateTime lastMassActualDate;
 
     public LocalDateTime getLastMassActualDate() {
-        return MassService.getOldestModifiedMassTimeForParish(this.id).plusDays(this.updatePeriodInDays);
+        LocalDateTime oldestModifiedMassTimeForParish = MassService.getOldestModifiedMassTimeForParish(this.id);
+        LocalDateTime localDateTime = oldestModifiedMassTimeForParish != null ? oldestModifiedMassTimeForParish.plusDays(this.updatePeriodInDays) : null;
+        return localDateTime;
     }
 
+    public void setLastMassActualDate(LocalDateTime lastMassActualDate) {
+        this.lastMassActualDate = lastMassActualDate;
+    }
 
     @LastModifiedDate
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
