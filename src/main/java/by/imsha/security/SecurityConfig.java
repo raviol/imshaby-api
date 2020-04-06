@@ -46,7 +46,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(urls));
-        configuration.setAllowedMethods(Arrays.asList("GET"));
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "OPTION"));
         configuration.setAllowCredentials(true);
         configuration.addAllowedHeader("Authorization");
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -74,14 +74,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .csrf().disable();
 
-        if (env.equals("prod")) {
+//        if (env.equals("prod")) {
 //        http.cors();
 
             http.authorizeRequests()
                     .antMatchers(HttpMethod.GET, "/api/mass/week").permitAll()
                     .anyRequest().authenticated();
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        }
+//        }
 
     }
 
