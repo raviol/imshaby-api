@@ -113,13 +113,13 @@ public class MassController extends AbstractRestHandler {
     }
 
 
-    @RequestMapping(value = "/{massId}",
+    @RequestMapping(value = "/refresh/{massId}",
             method = RequestMethod.PUT,
             consumes = {"application/json"},
-            produces = {"application/json"},
-            params = {"doRefresh"})
+            produces = {"application/json"}
+            )
     @ResponseStatus(HttpStatus.OK)
-    public UpdateEntityInfo refreshMass(@PathVariable("massId") String id,@Valid @RequestBody (required = false) UpdateMassInfo massInfo,  @RequestParam("doRefresh") String refreshFlag) {
+    public UpdateEntityInfo refreshMass(@PathVariable("massId") String id,@Valid @RequestBody (required = false) UpdateMassInfo massInfo) {
         Mass massForUpdate = this.massService.getMass(id);
         checkResourceFound(massForUpdate);
         if(massInfo == null){
@@ -221,7 +221,8 @@ public class MassController extends AbstractRestHandler {
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Resource<MassSchedule> retrieveMassesByCity(@CookieValue(value = "cityId", required = false) String cityId,@RequestParam(value = "date", required = false) String day, @RequestParam(value = "parishId", required = false) String parishId ){
+    public Resource<MassSchedule> retrieveMassesByCity(@CookieValue(value = "cityId", required = false) String cityId,@RequestParam(value = "date", required = false) String day,
+                                                       @RequestParam(value = "parishId", required = false) String parishId, @RequestParam(value = "online", defaultValue = "false") String online){
 
         List<Mass> masses = null;
         if(StringUtils.isNotEmpty(parishId)){
@@ -243,6 +244,9 @@ public class MassController extends AbstractRestHandler {
             masses = this.massService.getMassByCity(cityId); // TODO filter by date as well
         }
 
+        if(Boolean.valueOf(online)){
+            masses = massService.filterOutOnlyOnline(masses);
+        }
 
         LocalDate date = formatDateString(day);
 

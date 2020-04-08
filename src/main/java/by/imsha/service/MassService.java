@@ -26,6 +26,7 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static by.imsha.utils.Constants.LIMIT;
 import static by.imsha.utils.Constants.PAGE;
@@ -146,6 +147,10 @@ public class MassService {
         return ServiceUtils.buildMongoQuery(sort, offsetAndLimit[0], offsetAndLimit[1], condition, mongoVisitor);
     }
 
+    public List<Mass> filterOutOnlyOnline(List<Mass> masses){
+        return masses.stream().filter(mass -> mass.isOnline())
+                .collect(Collectors.toList());
+    }
 
 
     @Caching(evict = {
