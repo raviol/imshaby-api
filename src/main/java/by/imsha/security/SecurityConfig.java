@@ -74,16 +74,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * and instead ensure any unlisted endpoint in our config is secured by default
      */
     protected void authorizeRequests(final HttpSecurity http) throws Exception {
-            http.cors()
+        http.cors()
                 .and()
                 .csrf().disable();
 
-//        if (env.equals("prod")) {
+        if (env.equals("prod")) {
 //        http.cors();
 
-            http.authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/api/mass/week").permitAll()
-                    .anyRequest().authenticated();
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/mass/week").permitAll()
+                .anyRequest().authenticated();
+         }
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 //        }
 
