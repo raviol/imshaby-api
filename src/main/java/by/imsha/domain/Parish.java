@@ -1,6 +1,7 @@
 package by.imsha.domain;
 
 import by.imsha.rest.serializers.CustomLocalDateTimeSerializer;
+import by.imsha.service.MassService;
 import by.imsha.utils.ServiceUtils;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import io.swagger.annotations.ApiModel;
@@ -14,7 +15,6 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -29,6 +29,8 @@ public class Parish {
     private String id;
 
     private String imgPath;
+
+    private String broadcastUrl;
 
     //    @ApiObjectField(description = "Auth0 system user identificator. It is provided only after futhentification in auth0.com with current login API.", required = true)
 //    @NotNull
@@ -54,11 +56,21 @@ public class Parish {
     private boolean needUpdate;
 
     public boolean isNeedUpdate() {
-
         return ServiceUtils.needUpdateFromNow(lastModifiedDate, getUpdatePeriodInDays());
     }
 
+    @JsonSerialize(using= CustomLocalDateTimeSerializer.class)
+    private LocalDateTime lastMassActualDate;
 
+    public LocalDateTime getLastMassActualDate() {
+        LocalDateTime oldestModifiedMassTimeForParish = MassService.getOldestModifiedMassTimeForParish(this.id);
+        LocalDateTime localDateTime = oldestModifiedMassTimeForParish != null ? oldestModifiedMassTimeForParish.plusDays(this.updatePeriodInDays) : null;
+        return localDateTime;
+    }
+
+    public void setLastMassActualDate(LocalDateTime lastMassActualDate) {
+        this.lastMassActualDate = lastMassActualDate;
+    }
 
     @LastModifiedDate
     @JsonSerialize(using = CustomLocalDateTimeSerializer.class)
@@ -268,5 +280,13 @@ public class Parish {
 
     public void setLocalizedInfo(Map<String, LocalizedBaseInfo> localizedInfo) {
         this.localizedInfo = localizedInfo;
+    }
+
+    public String getBroadcastUrl() {
+        return broadcastUrl;
+    }
+
+    public void setBroadcastUrl(String broadcastUrl) {
+        this.broadcastUrl = broadcastUrl;
     }
 }

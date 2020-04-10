@@ -2,17 +2,15 @@ package by.imsha.domain.dto.mapper;
 
 import by.imsha.domain.Mass;
 import by.imsha.domain.dto.MassInfo;
-import by.imsha.service.ParishService;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.Mappings;
+import by.imsha.domain.dto.UpdateMassInfo;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
-import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * @author Alena Misan
  */
-@Mapper(uses = ParishInfoMapper.class)
+@Mapper(uses = ParishInfoMapper.class,
+        nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS)
 public interface MassInfoMapper {
     MassInfoMapper MAPPER = Mappers.getMapper(MassInfoMapper.class);
 
@@ -21,4 +19,6 @@ public interface MassInfoMapper {
             @Mapping(target = "parish", expression = "java(by.imsha.service.ParishService.extractMassParishInfo(mass.getParishId()))")
     })
     MassInfo toMassInfo(Mass mass);
+
+    void updateMassFromDTO(UpdateMassInfo massInfo, @MappingTarget Mass mass);
 }

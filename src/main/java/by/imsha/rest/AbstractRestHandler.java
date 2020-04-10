@@ -37,6 +37,16 @@ public abstract class AbstractRestHandler implements ApplicationEventPublisherAw
         return new RestErrorInfo(ex, "You messed up.");
     }
 
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidDateIntervalException.class)
+    public
+    @ResponseBody
+    RestErrorInfo handleDataStoreException(InvalidDateIntervalException ex, WebRequest request, HttpServletResponse response) {
+        log.info("InvalidDateIntervalException handler : " + ex.getMessage());
+
+        return new RestErrorInfo(ex, "Sorry I couldn't filter by the provided interval.");
+    }
+
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler(ResourceNotFoundException.class)
     public

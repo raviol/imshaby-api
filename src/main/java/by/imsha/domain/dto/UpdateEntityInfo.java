@@ -9,11 +9,11 @@ import java.io.Serializable;
  */
 public class UpdateEntityInfo implements Serializable {
     public enum STATUS {
-        UPDATED, DELETED, ERROR
+        UPDATED, DELETED, CREATED, ERROR
     }
     private String id;
 
-    @ApiModelProperty(allowableValues = "UPDATED, DELETED, ERROR")
+    @ApiModelProperty(allowableValues = "UPDATED, DELETED, CREATED, ERROR")
     private String status;
 
     public UpdateEntityInfo(String id, STATUS status) {

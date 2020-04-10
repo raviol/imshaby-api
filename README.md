@@ -40,7 +40,8 @@ export from beta: mongoexport --db api --collection city --username admin --pass
 #  CI/CD in local k8s cluster (minkube on local VM)
 ### Build jar & docker image 
 ```bash
-> sh build/build_imshaby_api.sh
+> cd build
+> sh build_imshaby_api.sh
 ```
 ### Check local k8s cluster is ready
 #### avg. time to start is about 3 mins after VM reboot
@@ -49,7 +50,8 @@ export from beta: mongoexport --db api --collection city --username admin --pass
 ```
 ### Deploy ImshaBy API & MongoDB single-pod clusters
 ```bash
-> sh build/deploy_all.sh
+> cd build
+> sh deploy_all.sh
 ```
 ### Check state of all k8s elements in "imsha-by" namespace
 ```bash
@@ -77,7 +79,8 @@ export from beta: mongoexport --db api --collection city --username admin --pass
 ```
 ### Destroy ImshaBy API & MongoDB single-pod clusters
 ```bash
-> sh build/destroy_all.sh
+> cd build
+> sh destroy_all.sh
 ```
 ### ImshaBy API helm chart configuration (values-<env_to_deploy>.yaml)
 ```yaml

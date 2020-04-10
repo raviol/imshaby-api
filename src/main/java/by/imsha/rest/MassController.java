@@ -6,6 +6,8 @@ import by.imsha.domain.Parish;
 import by.imsha.domain.dto.MassSchedule;
 import by.imsha.domain.dto.UpdateEntitiesInfo;
 import by.imsha.domain.dto.UpdateEntityInfo;
+import by.imsha.domain.dto.UpdateMassInfo;
+import by.imsha.exception.InvalidDateIntervalException;
 import by.imsha.exception.ResourceNotFoundException;
 import by.imsha.service.CityService;
 import by.imsha.service.MassService;
@@ -15,6 +17,8 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Triple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.hateoas.Resource;
@@ -30,6 +34,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,6 +112,39 @@ public class MassController extends AbstractRestHandler {
         return new UpdateEntityInfo(updatedMass.getId(), UpdateEntityInfo.STATUS.UPDATED);
     }
 
+
+    @RequestMapping(value = "/refresh/{massId}",
+            method = RequestMethod.PUT,
+            consumes = {"application/json"},
+            produces = {"application/json"}
+            )
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateEntityInfo refreshMass(@PathVariable("massId") String id,@Valid @RequestBody (required = false) UpdateMassInfo massInfo) {
+        Mass massForUpdate = this.massService.getMass(id);
+        checkResourceFound(massForUpdate);
+        if(massInfo == null){
+            massInfo = new UpdateMassInfo();
+        }
+        Mass updatedMass = this.massService.updateMass(massInfo, massForUpdate);
+        return new UpdateEntityInfo(updatedMass.getId(), UpdateEntityInfo.STATUS.UPDATED);
+    }
+
+    @RequestMapping(
+            method = RequestMethod.PUT,
+            consumes = {"application/json"},
+            produces = {"application/json"},
+            params = {"parishId"})
+    @ResponseStatus(HttpStatus.OK)
+    public UpdateEntitiesInfo refreshMasses(@RequestParam("parishId") String parishId) {
+        List<Mass> massesToRefresh = massService.getMassByParish(parishId);
+        for (Mass massForUpdate : massesToRefresh) {
+            this.massService.updateMass(new UpdateMassInfo(), massForUpdate);
+        }
+        return new UpdateEntitiesInfo(massesToRefresh.stream()
+                .map(Mass::getId).collect(Collectors.toList()), UpdateEntitiesInfo.STATUS.UPDATED);
+    }
+
+
     @ApiOperation(value = "Remove mass by ID")
     @RequestMapping(value = "/{massId}",
             method = RequestMethod.DELETE,
@@ -117,6 +155,51 @@ public class MassController extends AbstractRestHandler {
         checkResourceFound(mass);
         this.massService.removeMass(mass);
         return new UpdateEntityInfo(id, UpdateEntityInfo.STATUS.DELETED);
+    }
+
+    @ApiOperation(value = "Remove mass by ID and time interval")
+    @RequestMapping(value = "/{massId}",
+            method = RequestMethod.DELETE,
+            produces = {"application/json"},
+            params = {"from"})
+    @ResponseStatus(HttpStatus.OK)
+    public List<UpdateEntityInfo> removeMassByTimeInterval(@PathVariable("massId") String id,
+                                                           @RequestParam("from") String fromDateStr) {
+        return removeMassByTimeInterval(id, fromDateStr, null);
+    }
+
+    @ApiOperation(value = "Remove mass by ID and time interval")
+    @RequestMapping(value = "/{massId}",
+            method = RequestMethod.DELETE,
+            produces = {"application/json"},
+            params = {"from", "to"})
+    @ResponseStatus(HttpStatus.OK)
+    public List<UpdateEntityInfo> removeMassByTimeInterval(@PathVariable("massId") String id,
+                                                     @RequestParam("from") String fromDateStr,
+                                                     @RequestParam(name = "to", required = false) String toDateStr) {
+        Mass mass = this.massService.getMass(id);
+        checkResourceFound(mass);
+        LocalDate fromDate = formatDateString(fromDateStr);
+        LocalDate toDate = toDateStr == null ? null : formatDateString(toDateStr);
+        if (toDate != null && fromDate.isAfter(toDate)) {
+            throw new InvalidDateIntervalException(String.format("Invalid date interval bounds (from: %s, to: %s), " +
+                    "the from-date should be equal or less than to-date!", fromDateStr, toDateStr));
+        }
+        Triple<String, String, String> removalResult = this.massService.removeMass(mass, fromDate, toDate);
+        List<UpdateEntityInfo> updateEntityInfos = new ArrayList<>();
+        String infoId = removalResult.getLeft();
+        if (infoId != null) {
+            updateEntityInfos.add(new UpdateEntityInfo(infoId, UpdateEntityInfo.STATUS.UPDATED));
+        }
+        infoId = removalResult.getMiddle();
+        if (infoId != null) {
+            updateEntityInfos.add(new UpdateEntityInfo(infoId, UpdateEntityInfo.STATUS.CREATED));
+        }
+        infoId = removalResult.getRight();
+        if (infoId != null) {
+            updateEntityInfos.add(new UpdateEntityInfo(infoId, UpdateEntityInfo.STATUS.DELETED));
+        }
+        return updateEntityInfos;
     }
 
     @ApiOperation(value = "Remove masses for parish")
@@ -138,36 +221,34 @@ public class MassController extends AbstractRestHandler {
             produces = {"application/json", "application/xml"})
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
-    public Resource<MassSchedule> retrieveMassesByCity(@CookieValue(value = "cityId", required = false) String cityId,@RequestParam(value = "date", required = false) String day, HttpServletRequest request, HttpServletResponse response){
-        if(cityId == null){
-            if(log.isWarnEnabled()){
-                log.warn("Looking for default city..");
+    public Resource<MassSchedule> retrieveMassesByCity(@CookieValue(value = "cityId", required = false) String cityId,@RequestParam(value = "date", required = false) String day,
+                                                       @RequestParam(value = "parishId", required = false) String parishId, @RequestParam(value = "online", defaultValue = "false") String online){
+
+        List<Mass> masses = null;
+        if(StringUtils.isNotEmpty(parishId)){
+            masses = this.massService.getMassByParish(parishId);
+        }else{
+            if(StringUtils.isEmpty(cityId)){
+                if(log.isWarnEnabled()){
+                    log.warn("Looking for default city..");
+                }
+                City defaultCity = cityService.defaultCity();
+                if(defaultCity == null){
+                    throw new ResourceNotFoundException(String.format("No default city (name = %s) founded", cityService.getDefaultCityName()));
+                }
+                cityId = defaultCity.getId();
+                if(log.isWarnEnabled()){
+                    log.warn(String.format("Default city with id = %s is found.", cityId));
+                }
             }
-            City defaultCity = cityService.defaultCity();
-            if(defaultCity == null){
-                throw new ResourceNotFoundException(String.format("No default city (name = %s) founded", cityService.getDefaultCityName()));
-            }
-            cityId = defaultCity.getId();
-            if(log.isWarnEnabled()){
-                log.warn(String.format("Default city with id = %s is found.", cityId));
-            }
+            masses = this.massService.getMassByCity(cityId); // TODO filter by date as well
         }
 
-        List<Mass> masses = this.massService.getMassByCity(cityId); // TODO filter by date as well
-
-        LocalDate date = null;
-        if(day != null){
-            try{
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
-                date = LocalDate.parse(day, formatter);
-           }catch (DateTimeParseException ex){
-                log.warn(String.format("Date format is incorrect. Date - %s,format - %s ", day, dateFormat));
-           }
-        }
-        if(date == null){
-            date = LocalDateTime.now(ZoneId.of("Europe/Minsk")).toLocalDate();
+        if(Boolean.valueOf(online)){
+            masses = massService.filterOutOnlyOnline(masses);
         }
 
+        LocalDate date = formatDateString(day);
 
         MassSchedule massHolder = scheduleFactory.build(masses, date);
 
@@ -182,7 +263,21 @@ public class MassController extends AbstractRestHandler {
         return massResource;
     }
 
-
+    private LocalDate formatDateString(String dateStr) {
+        LocalDate date = null;
+        if(dateStr != null){
+            try{
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+                date = LocalDate.parse(dateStr, formatter);
+            }catch (DateTimeParseException ex){
+                log.warn(String.format("Date format is incorrect. Date - %s,format - %s ", dateStr, dateFormat));
+            }
+        }
+        if(date == null){
+            date = LocalDateTime.now(ZoneId.of("Europe/Minsk")).toLocalDate();
+        }
+        return date;
+    }
 
     @ApiOperation(value = "Filter masses using query language")
     @RequestMapping(value = "",

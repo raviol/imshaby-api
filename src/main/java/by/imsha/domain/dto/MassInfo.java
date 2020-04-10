@@ -1,8 +1,8 @@
 package by.imsha.domain.dto;
 
 import by.imsha.rest.serializers.CustomLocalDateTimeSerializer;
+import by.imsha.rest.serializers.LocalDateSerializer;
 import by.imsha.utils.ServiceUtils;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -16,13 +16,18 @@ import java.time.LocalDateTime;
  * @author Alena Misan
  */
 public class MassInfo implements Serializable{
+    private String id;
     private String langCode;
     private MassParishInfo parish;
     private int duration;
     private String info;
-    @JsonIgnore
+    private int[] days;
+    private boolean online;
+    //@JsonIgnore
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate endDate;
-    @JsonIgnore
+    //@JsonIgnore
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate startDate;
 
 
@@ -42,26 +47,28 @@ public class MassInfo implements Serializable{
         MassInfo massInfo = (MassInfo) o;
 
         return new EqualsBuilder()
-                .append(duration, massInfo.duration)
-                .append(langCode, massInfo.langCode)
-                .append(parish, massInfo.parish)
-                .append(info, massInfo.info)
-                .append(endDate, massInfo.endDate)
-                .append(startDate, massInfo.startDate)
-                .append(lastModifiedDate, massInfo.lastModifiedDate)
+                .append(getDuration(), massInfo.getDuration())
+                .append(getId(), massInfo.getId())
+                .append(getLangCode(), massInfo.getLangCode())
+                .append(getParish(), massInfo.getParish())
+                .append(getInfo(), massInfo.getInfo())
+                .append(getDays(), massInfo.getDays())
+                .append(getEndDate(), massInfo.getEndDate())
+                .append(getStartDate(), massInfo.getStartDate())
                 .isEquals();
     }
 
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(langCode)
-                .append(parish)
-                .append(duration)
-                .append(info)
-                .append(endDate)
-                .append(startDate)
-                .append(lastModifiedDate)
+                .append(getId())
+                .append(getLangCode())
+                .append(getParish())
+                .append(getDuration())
+                .append(getInfo())
+                .append(getDays())
+                .append(getEndDate())
+                .append(getStartDate())
                 .toHashCode();
     }
 
@@ -84,6 +91,8 @@ public class MassInfo implements Serializable{
     @Override
     public String toString() {
         return new ToStringBuilder(this)
+                .append("id", id)
+                .append("days", days)
                 .append("langCode", langCode)
                 .append("parish", parish)
                 .append("duration", duration)
@@ -132,5 +141,29 @@ public class MassInfo implements Serializable{
 
     public void setLastModifiedDate(LocalDateTime lastModifiedDate) {
         this.lastModifiedDate = lastModifiedDate;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public int[] getDays() {
+        return days;
+    }
+
+    public void setDays(int[] days) {
+        this.days = days;
+    }
+
+    public boolean isOnline() {
+        return online;
+    }
+
+    public void setOnline(boolean online) {
+        this.online = online;
     }
 }

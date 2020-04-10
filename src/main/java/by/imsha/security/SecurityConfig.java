@@ -46,9 +46,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.setAllowedOrigins(Arrays.asList(urls));
-        configuration.setAllowedMethods(Arrays.asList("GET"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
         configuration.setAllowCredentials(true);
-        configuration.addAllowedHeader("Authorization");
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+//        configuration.addAllowedHeader("Content-Type");
+
+//        configuration.addExposedHeader("Content-Type");
+
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
         return source;
@@ -70,18 +74,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
      * and instead ensure any unlisted endpoint in our config is secured by default
      */
     protected void authorizeRequests(final HttpSecurity http) throws Exception {
-            http.cors()
+        http.cors()
                 .and()
                 .csrf().disable();
 
         if (env.equals("prod")) {
 //        http.cors();
 
-            http.authorizeRequests()
-                    .antMatchers(HttpMethod.GET, "/api/mass/week").permitAll()
-                    .anyRequest().authenticated();
+        http.authorizeRequests()
+                .antMatchers(HttpMethod.GET, "/api/mass/week").permitAll()
+                .anyRequest().authenticated();
+         }
             http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        }
+//        }
 
     }
 
