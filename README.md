@@ -32,8 +32,7 @@ git push openshift HEAD
 
 build war for prod: mvn clean install -Pprod
 
-mongod --port 27017 --dbpath "C:\Env\mongo\db"
-
+mongod --port 27017 --dbpath "c:\Env\mongo-4.2.8\db"
 
 export from beta: mongoexport --db api --collection city --username admin --password Hvd6jxKpiF --authenticationDatabase admin --jsonArray --out /tmp/city-pretty.json
 
