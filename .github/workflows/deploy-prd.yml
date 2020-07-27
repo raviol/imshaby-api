@@ -34,9 +34,6 @@ jobs:
     - name: Build with Maven
       run: mvn -B package --file pom.xml
 
-    - name: Current folder
-      run: pwd
-
     - name: Rename war-file
       run: cd target && mv *.war ROOT.war
 
