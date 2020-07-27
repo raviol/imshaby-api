@@ -2,9 +2,9 @@ name: PROD env (api2.imsha.by)
 
 on:
   push:
-     branches: [ ci-cd ]
-#    tags:
-#      - v*
+#     branches: [ ci-cd ]
+    tags:
+      - v*
 jobs:
   build:
 
